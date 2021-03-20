@@ -1,14 +1,13 @@
 package dev.donkz.pendragon.domain.variant;
 
-import dev.donkz.pendragon.domain.NameDescriptionObject;
-import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Value
-public class Race extends NameDescriptionObject {
+public class Race {
+    String name;
+    String description;
     String notes;
     int speed;
     List<AbilityBonus> abilityBonuses;

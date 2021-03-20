@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class Pc {
+public class Pc implements Character {
     private String id;
 
     // General Information
