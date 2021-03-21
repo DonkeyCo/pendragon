@@ -1,11 +1,16 @@
 package dev.donkz.pendragon.domain.character;
 
 import dev.donkz.pendragon.domain.common.Ability;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
+import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class Pc implements Character {
     private String id;
 
@@ -48,4 +53,8 @@ public class Pc implements Character {
     private AbilityScore intelligence;
     private AbilityScore wisdom;
     private AbilityScore charisma;
+
+    public Pc() {
+        this.id = UUID.randomUUID().toString();
+    }
 }

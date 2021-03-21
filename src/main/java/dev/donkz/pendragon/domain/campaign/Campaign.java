@@ -6,6 +6,7 @@ import dev.donkz.pendragon.domain.variant.CampaignVariant;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -23,4 +24,8 @@ public class Campaign {
     private Player dm;
     private List<Player> players;
     private List<Pc> pcs;
+
+    public Campaign() {
+        this.id = UUID.randomUUID().toString();
+    }
 }

@@ -1,15 +1,17 @@
 package dev.donkz.pendragon.infrastructure.persistence.local;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.infrastructure.persistence.Driver;
 import dev.donkz.pendragon.util.FileHandler;
 import dev.donkz.pendragon.util.JSONUtility;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,37 +52,69 @@ public class LocalDriver implements Driver {
         indexObject(id, filename, repository);
     }
 
-    public <T> List<T> select(String repository, TypeReference<T> typeRef) {
+    public void delete(String repository, String id) throws EntityNotFoundException {
+        Path filePath = Paths.get(DATA_PATH, repository, "index.json");
+        if (Files.exists(filePath)) {
+            ObjectNode indices = jsonUtil.getObjectNode(filePath.toFile());
+            Path objectPath = Paths.get(DATA_PATH, repository, indices.get(id).textValue());
+            indices.remove(id);
+            if (Files.exists(objectPath)) {
+                try {
+                    Files.delete(objectPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                throw new EntityNotFoundException();
+            }
+        } else {
+            throw new EntityNotFoundException();
+        }
+    }
+
+    @Override
+    public <T> T update(String repository, String id, T entity) throws EntityNotFoundException {
+        Path filePath = Paths.get(DATA_PATH, repository, "index.json");
+        if (Files.exists(filePath)) {
+            ObjectNode indices = jsonUtil.getObjectNode(filePath.toFile());
+            Path objectPath = Paths.get(DATA_PATH, repository, indices.get(id).textValue());
+            if (Files.exists(objectPath)) {
+                fileHandler.write2File(objectPath, jsonUtil.object2Json(entity));
+                return entity;
+            }
+        }
+        throw new EntityNotFoundException();
+    }
+
+    public <T> List<T> select(String repository, Class<T> classType) {
         Path filePath = Paths.get(DATA_PATH, repository, "index.json");
         List<T> objects = new ArrayList<>();
         if (Files.exists(filePath)) {
             ObjectNode indices = jsonUtil.getObjectNode(filePath.toFile());
-            for(JsonNode index : indices) {
+            for (JsonNode index : indices) {
                 Path objectPath = Paths.get(DATA_PATH, repository, index.textValue());
-                objects.add(jsonUtil.json2Object(objectPath.toFile(), typeRef));
+                if (Files.exists(objectPath)) {
+                    objects.add(jsonUtil.json2Object(objectPath.toFile(), classType));
+                }
             }
         }
         return objects;
     }
 
     @Override
-    public <T> T filterBy(String repository, String attrName, String attrVal, TypeReference<T> typeRef) {
-        return null;
-    }
-
-    @Override
-    public <T> T selectByIndex(String repository, String id, TypeReference<T> typeRef) {
+    public <T> T selectByIndex(String repository, String id, Class<T> classType) throws EntityNotFoundException {
         Path filePath = Paths.get(DATA_PATH, repository, "index.json");
         if (Files.exists(filePath)) {
             ObjectNode indices = jsonUtil.getObjectNode(filePath.toFile());
             JsonNode node = indices.get(id);
             if (node != null) {
-                System.out.println(node.textValue());
-            } else {
-                return null;
+                Path objectPath = Paths.get(DATA_PATH, repository, node.textValue());
+                if (Files.exists(objectPath)) {
+                    return jsonUtil.json2Object(objectPath.toFile(), classType);
+                }
             }
         }
-        return null;
+        throw new EntityNotFoundException();
     }
 
     private void indexObject(String id, String fileName, String repository) {
