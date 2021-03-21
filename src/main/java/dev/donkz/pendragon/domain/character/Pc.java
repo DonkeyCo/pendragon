@@ -57,4 +57,28 @@ public class Pc implements Character {
     public Pc() {
         this.id = UUID.randomUUID().toString();
     }
+
+    public String getName() {
+        return characterInformation.getName();
+    }
+
+    public String getNotes() {
+        return characterInformation.getNotes();
+    }
+
+    public String getAlignment() {
+        return characterInformation.getAlignment();
+    }
+
+    public String getBackground() {
+        return characterInformation.getBackground();
+    }
+
+    public String getKind() {
+        return characterInformation.getKind();
+    }
+
+    public String getRace() {
+        return characterInformation.getRace();
+    }
 }
