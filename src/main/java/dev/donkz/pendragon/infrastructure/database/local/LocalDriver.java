@@ -1,10 +1,9 @@
-package dev.donkz.pendragon.infrastructure.persistence.local;
+package dev.donkz.pendragon.infrastructure.database.local;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
-import dev.donkz.pendragon.infrastructure.persistence.Driver;
 import dev.donkz.pendragon.util.FileHandler;
 import dev.donkz.pendragon.util.JSONUtility;
 

@@ -1,4 +1,4 @@
-package dev.donkz.pendragon.infrastructure.persistence;
+package dev.donkz.pendragon.infrastructure.database.local;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
