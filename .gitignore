@@ -120,3 +120,7 @@ buildNumber.properties
 .flattened-pom.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/Maven,IntelliJ
+
+### Application specifics ###
+# Data Folder
+data/
