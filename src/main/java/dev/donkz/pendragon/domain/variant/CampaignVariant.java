@@ -3,9 +3,15 @@ package dev.donkz.pendragon.domain.variant;
 import dev.donkz.pendragon.domain.character.Monster;
 import dev.donkz.pendragon.domain.character.Npc;
 import dev.donkz.pendragon.domain.player.Player;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
+@Getter
+@Setter
+@ToString
 public class CampaignVariant {
     private String id;
 

@@ -6,6 +6,6 @@ import dev.donkz.pendragon.domain.player.Player;
 import java.util.List;
 
 public interface CampaignVariantRepository extends Repository<CampaignVariant> {
-    CampaignVariant findByName(String name);
+    List<CampaignVariant> findByName(String name);
     List<CampaignVariant> findByCreator(Player player);
 }
