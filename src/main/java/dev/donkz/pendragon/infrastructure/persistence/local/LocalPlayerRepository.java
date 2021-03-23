@@ -4,6 +4,7 @@ import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
+import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.infrastructure.database.local.Driver;
 import dev.donkz.pendragon.infrastructure.database.local.LocalDriver;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 public class LocalPlayerRepository implements PlayerRepository {
     private final static String REPOSITORY = "players";
+    private final static String ACTIVE_NAME = "player";
 
     private final Driver driver;
 
@@ -20,9 +22,27 @@ public class LocalPlayerRepository implements PlayerRepository {
     }
 
     @Override
+    public void saveClient(Player player) throws IndexAlreadyExistsException {
+        this.save(player);
+        driver.customIndex(REPOSITORY, ACTIVE_NAME, player.getId());
+    }
+
+    @Override
     public List<Player> findByUsername(String username) {
         List<Player> players = driver.select(REPOSITORY, Player.class);
         return players.stream().filter(it -> it.getUsername().contains(username)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Player findRegisteredPlayer() throws MultiplePlayersException {
+        List<Player> players = driver.selectCustomIndex(REPOSITORY, ACTIVE_NAME, Player.class);
+        if (players.size() == 1) {
+            return players.get(0);
+        } else if (players.size() == 0) {
+            return null;
+        } else {
+            throw new MultiplePlayersException();
+        }
     }
 
     @Override

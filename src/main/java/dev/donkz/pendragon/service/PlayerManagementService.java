@@ -3,6 +3,7 @@ package dev.donkz.pendragon.service;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
+import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.exception.model.RequiredAttributeMissingException;
 
 public class PlayerManagementService {
@@ -15,13 +16,18 @@ public class PlayerManagementService {
     public void createPlayer(String username) throws RequiredAttributeMissingException {
         Player player = new Player.Builder().setUsername(username).build();
         try {
-            repository.save(player);
+            repository.saveClient(player);
         } catch (IndexAlreadyExistsException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean playerExists() {
-        return repository.findAll().size() > 0;
+    public boolean isPlayerRegistered() {
+        try {
+            return repository.findRegisteredPlayer() != null;
+        } catch (MultiplePlayersException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

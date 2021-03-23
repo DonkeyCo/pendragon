@@ -23,7 +23,7 @@ public class MainWindow extends Application {
         router.registerRoute("home", loader.load());
 
         PlayerManagementService service = new PlayerManagementService(new LocalPlayerRepository());
-        if (service.playerExists()) {
+        if (service.isPlayerRegistered()) {
             router.goTo("home");
         } else {
             router.goTo("playerCreation");
