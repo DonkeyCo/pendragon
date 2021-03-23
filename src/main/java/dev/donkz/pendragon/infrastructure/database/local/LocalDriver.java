@@ -51,6 +51,21 @@ public class LocalDriver implements Driver {
         indexObject(id, filename, repository);
     }
 
+    public void customIndex(String repository, String name, String id) {
+        Path dirPath = Paths.get(DATA_PATH, repository);
+        if (!Files.exists(dirPath)) {
+            try {
+                Files.createDirectories(dirPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        Path filePath = Paths.get(DATA_PATH, repository, name + ".json");
+        String mappedFilename = getMappedFile(repository, id);
+        String content = String.format("{\"%s\": \"%s\"}", id, mappedFilename);
+        fileHandler.write2File(filePath, content);
+    }
+
     public void delete(String repository, String id) throws EntityNotFoundException {
         Path filePath = Paths.get(DATA_PATH, repository, "index.json");
         if (Files.exists(filePath)) {
@@ -87,17 +102,13 @@ public class LocalDriver implements Driver {
 
     public <T> List<T> select(String repository, Class<T> classType) {
         Path filePath = Paths.get(DATA_PATH, repository, "index.json");
-        List<T> objects = new ArrayList<>();
-        if (Files.exists(filePath)) {
-            ObjectNode indices = jsonUtil.getObjectNode(filePath.toFile());
-            for (JsonNode index : indices) {
-                Path objectPath = Paths.get(DATA_PATH, repository, index.textValue());
-                if (Files.exists(objectPath)) {
-                    objects.add(jsonUtil.json2Object(objectPath.toFile(), classType));
-                }
-            }
-        }
-        return objects;
+        return selectByIndices(filePath, repository, classType);
+    }
+
+    @Override
+    public <T> List<T> selectCustomIndex(String repository, String name, Class<T> classType) {
+        Path filePath = Paths.get(DATA_PATH, repository, name + ".json");
+        return selectByIndices(filePath, repository, classType);
     }
 
     @Override
@@ -136,5 +147,28 @@ public class LocalDriver implements Driver {
             return indices.get(id) != null;
         }
         return false;
+    }
+
+    private String getMappedFile(String repository, String id) {
+        Path filePath = Paths.get(DATA_PATH, repository, "index.json");
+        if (Files.exists(filePath)) {
+            ObjectNode indices = jsonUtil.getObjectNode(filePath.toFile());
+            return indices.get(id).textValue();
+        }
+        return null;
+    }
+
+    private <T> List<T> selectByIndices(Path filePath, String repository, Class<T> classType) {
+        List<T> objects = new ArrayList<>();
+        if (Files.exists(filePath)) {
+            ObjectNode indices = jsonUtil.getObjectNode(filePath.toFile());
+            for (JsonNode index : indices) {
+                Path objectPath = Paths.get(DATA_PATH, repository, index.textValue());
+                if (Files.exists(objectPath)) {
+                    objects.add(jsonUtil.json2Object(objectPath.toFile(), classType));
+                }
+            }
+        }
+        return objects;
     }
 }
