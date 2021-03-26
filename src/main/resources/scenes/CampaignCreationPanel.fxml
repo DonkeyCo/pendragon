@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.controlsfx.control.textfield.CustomTextField?>
+<?import javafx.geometry.Insets?>
+<?import org.controlsfx.control.SearchableComboBox?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            maxWidth="Infinity" maxHeight="Infinity"
+            fx:controller="dev.donkz.pendragon.controller.CampaignCreationController"
+            fx:id="root">
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25" />
+    </padding>
+    <top>
+        <Label text="Create new Campaign" styleClass="title" />
+    </top>
+    <center>
+        <GridPane hgap="15" vgap="10">
+            <padding>
+                <Insets top="25" />
+            </padding>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="70.0" />
+            </columnConstraints>
+            <Label text="Campaign Name*:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <CustomTextField fx:id="txtName" promptText="Enter a name..." GridPane.rowIndex="0" GridPane.columnIndex="1">
+                <tooltip>
+                    <Tooltip text="A name to identify the campaign" />
+                </tooltip>
+            </CustomTextField>
+
+            <Label text="Description:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+            <CustomTextField fx:id="txtDescription" promptText="Enter a description..." GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <tooltip>
+                    <Tooltip text="Describe your campaign" />
+                </tooltip>
+            </CustomTextField>
+
+            <Label text="Campaign Variant:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+            <SearchableComboBox fx:id="cmbVariant" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                <placeholder>
+                    <Label text="Choose a campaign variant..." />
+                </placeholder>
+            </SearchableComboBox>
+
+            <Label text="Notes:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+            <TextArea fx:id="txtNotes" promptText="Additional notes for your campaign..." GridPane.rowIndex="3" GridPane.columnIndex="1" >
+                <tooltip>
+                    <Tooltip text="Give some additional notes on your campaign..." />
+                </tooltip>
+            </TextArea>
+        </GridPane>
+    </center>
+    <bottom>
+        <ButtonBar>
+            <buttons>
+                <Button text="Cancel" />
+                <Button text="Save" onAction="#onSave" />
+            </buttons>
+        </ButtonBar>
+    </bottom>
+</BorderPane>
