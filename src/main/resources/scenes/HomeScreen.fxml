@@ -1,25 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import org.controlsfx.control.textfield.CustomTextField?>
-<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="dev.donkz.pendragon.controller.PlayerCreationController" stylesheets="/styles/playerCreation.css"
-          fx:id="root" hgap="10" vgap="10" maxWidth="Infinity" maxHeight="Infinity" alignment="CENTER">
-    <VBox fx:id="input_window" spacing="50" alignment="CENTER_RIGHT">
-        <padding>
-            <Insets top="25" right="50" bottom="25" left="50" />
-        </padding>
-        <ImageView fitHeight="150.0" fitWidth="200.0" preserveRatio="true">
-            <image>
-                <Image url="@/images/300_180_pendragon.png" />
-            </image>
-        </ImageView>
-    </VBox>
-</GridPane>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<SplitPane xmlns:fx="http://javafx.com/fxml" fx:controller="dev.donkz.pendragon.controller.HomeController" stylesheets="/styles/home.css"
+           fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+    <items>
+        <VBox fx:id="sidebar" alignment="TOP_CENTER" spacing="25">
+            <padding>
+                <Insets top="10" />
+            </padding>
+            <ImageView>
+                <image>
+                    <Image url="@/images/pendragon_white.png" />
+                </image>
+            </ImageView>
+            <VBox>
+                <RadioButton fx:id="rbtnCampaign" graphicTextGap="20" maxWidth="Infinity" styleClass="sidebarButton" text="Campaigns" onAction="#onCharacters">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/images/32_32_campaign.png"/>
+                        </ImageView>
+                    </graphic>
+                    <toggleGroup>
+                        <ToggleGroup fx:id="sidebarGroup" />
+                    </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="rbtnCharacter" graphicTextGap="20" toggleGroup="$sidebarGroup" maxWidth="Infinity" styleClass="sidebarButton" text="Characters" onAction="#onCharacters">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/images/32_32_character.png" />
+                        </ImageView>
+                    </graphic>
+                </RadioButton>
+            </VBox>
+        </VBox>
+        <VBox fx:id="content">
+            <AnchorPane fx:id="contentRoot" VBox.vgrow="ALWAYS">
+                <GridPane AnchorPane.rightAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" />
+            </AnchorPane>
+        </VBox>
+    </items>
+</SplitPane>
+
