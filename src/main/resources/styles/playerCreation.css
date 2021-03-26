@@ -1,7 +1,4 @@
-* {
-    -fx-font-size: 14px;
-    -fx-font-family: "Roboto";
-}
+@import "general.css";
 
 #input_window {
     -fx-border-color: #eaeced;
@@ -17,10 +14,6 @@
 }
 .submit:pressed {
     -fx-background-color: #d17300;
-}
-
-GridPane {
-    -fx-background-color: #fff;
 }
 
 CustomTextField {

@@ -1,0 +1,6 @@
+@import "general.css";
+
+.title {
+    -fx-font-size: 1.5em;
+    -fx-font-weight: bold;
+}

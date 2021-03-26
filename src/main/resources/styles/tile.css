@@ -1,0 +1,26 @@
+@import "general.css";
+
+#tile {
+    -fx-background-color: #9D7B50;
+    -fx-background-radius: 5px;
+}
+#tile:hover {
+    -fx-cursor: hand;
+}
+
+.title {
+    -fx-text-fill: whitesmoke;
+    -fx-font-size: 1.5em;
+    -fx-font-weight: bold;
+}
+
+.labelName {
+    -fx-text-fill: whitesmoke;
+    -fx-font-size: 1em;
+    -fx-font-weight: bold;
+}
+
+.textLabel {
+    -fx-text-fill: whitesmoke;
+    -fx-font-size: 1em;
+}

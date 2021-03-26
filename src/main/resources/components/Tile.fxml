@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<fx:root type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:id="tile" spacing="10"
+      stylesheets="@/styles/tile.css">
+    <padding>
+        <Insets topRightBottomLeft="25" />
+    </padding>
+    <Label fx:id="lblTitle" text="Campaign Title" styleClass="title" />
+    <HBox spacing="10">
+        <Label text="Your Character:" styleClass="labelName" />
+        <Label fx:id="lblPc" text="[Character Name]" styleClass="textLabel" />
+    </HBox>
+    <HBox spacing="10">
+        <Label text="Dungeon Master:" styleClass="labelName" />
+        <Label fx:id="lblDm" text="[Dungeon Master]" styleClass="textLabel" />
+    </HBox>
+    <HBox spacing="10">
+        <Label text="Variant:" styleClass="labelName" />
+        <Label fx:id="lblVariant" text="[Campaign Variant]" styleClass="textLabel" />
+    </HBox>
+</fx:root>

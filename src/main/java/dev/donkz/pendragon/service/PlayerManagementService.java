@@ -14,12 +14,21 @@ public class PlayerManagementService {
     }
 
     public void createPlayer(String username) throws RequiredAttributeMissingException {
-        Player player = new Player.Builder().setUsername(username).build();
+        Player player = Player.builder().username(username).build();
         try {
             repository.saveClient(player);
         } catch (IndexAlreadyExistsException e) {
             e.printStackTrace();
         }
+    }
+
+    public Player getRegisteredPlayer() {
+        try {
+            return repository.findRegisteredPlayer();
+        } catch (MultiplePlayersException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public boolean isPlayerRegistered() {
