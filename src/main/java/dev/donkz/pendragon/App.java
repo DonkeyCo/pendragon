@@ -3,10 +3,13 @@ package dev.donkz.pendragon;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.exception.model.RequiredAttributeMissingException;
+import dev.donkz.pendragon.ui.MainWindow;
+import javafx.application.Application;
 
 public class App {
     public static void main(String[] args) throws RequiredAttributeMissingException, IndexAlreadyExistsException, MultiplePlayersException {
         System.out.println("Hello World");
+        Application.launch(MainWindow.class, args);
 //
 //        CampaignRepository repo = new LocalCampaignRepository();
 //        PlayerRepository pRepo = new LocalPlayerRepository();
