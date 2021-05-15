@@ -11,13 +11,14 @@
 <?import javafx.geometry.Insets?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      prefHeight="400.0" prefWidth="600.0">
+      prefHeight="400.0" prefWidth="600.0"
+      fx:controller="dev.donkz.pendragon.controller.ManagementController">
     <children>
         <SplitPane dividerPositions="0.2661469933184855" focusTraversable="false" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
             <items>
                 <VBox maxHeight="1.7976931348623157E308" maxWidth="500.0" prefWidth="500.0" SplitPane.resizableWithParent="false">
                     <children>
-                        <ToggleButton id="tbtnCampaign" maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Campaigns">
+                        <ToggleButton id="tbtnCampaigns" maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Campaigns">
                             <toggleGroup>
                                 <ToggleGroup fx:id="toggleMenu" />
                             </toggleGroup>
@@ -29,7 +30,7 @@
                 </VBox>
                 <ScrollPane fitToHeight="true" fitToWidth="true" SplitPane.resizableWithParent="false">
                     <content>
-                        <StackPane>
+                        <StackPane fx:id="contentPane">
                             <children>
                                 <fx:include fx:id="campaignLayer" source="campaign/campaign_main.fxml" />
                                 <fx:include fx:id="characterLayer" source="character/character_main.fxml" />
