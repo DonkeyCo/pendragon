@@ -1,6 +1,5 @@
 package dev.donkz.pendragon.service;
 
-import dev.donkz.pendragon.domain.campaign.CampaignRepository;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.character.PcRepository;
 import dev.donkz.pendragon.domain.player.Player;

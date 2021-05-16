@@ -23,6 +23,10 @@ public class Player {
     private List<Player> friends;
     private List<Pc> characters;
 
+    public void addCharacter(Pc pc) {
+        characters.add(pc);
+    }
+
     public static class PlayerBuilder {
         @JsonProperty private String id;
         @JsonProperty private String username;
