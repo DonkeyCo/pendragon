@@ -1,0 +1,10 @@
+#root {
+    -fx-background-color: #F2F1F0;
+    -fx-font-size: 15px;
+    -fx-font-family: "Roboto";
+}
+
+.title {
+    -fx-font-size: 1.5em;
+    -fx-font-weight: bold;
+}

@@ -1,16 +1,11 @@
 package dev.donkz.pendragon.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -57,16 +52,18 @@ public class ManagementController {
     private void initToggle() {
         toggleMenu.selectedToggleProperty().addListener((observableValue, oldToggle, newToggle) -> {
             ToggleButton selected = (ToggleButton) observableValue.getValue();
+
+            // Prevent users to deselect toggle button
+            if (newToggle == null) {
+                oldToggle.setSelected(true);
+                return;
+            }
+
             // Change content pane based on selected button
             if (selected != null) {
                 String selectedId = selected.getId();
                 String selectedPaneName = idToPaneName(selectedId);
                 switchPane(selectedPaneName);
-            }
-
-            // Prevent users to deselect toggle button
-            if (newToggle == null) {
-                oldToggle.setSelected(true);
             }
         });
     }
@@ -93,6 +90,7 @@ public class ManagementController {
 
     /**
      * Convert a toggle button ID to its correlating pane name
+     *
      * @param id Toggle button id (sidebar menu)
      * @return pane name
      */
@@ -112,6 +110,7 @@ public class ManagementController {
 
     /**
      * Switch pane based on given pane name
+     *
      * @param paneName name of pane to switch to
      */
     public void switchPane(String paneName) {

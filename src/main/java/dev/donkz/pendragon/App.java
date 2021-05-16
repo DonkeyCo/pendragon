@@ -10,17 +10,17 @@ public class App {
     public static void main(String[] args) throws RequiredAttributeMissingException, IndexAlreadyExistsException, MultiplePlayersException {
         System.out.println("Hello World");
         Application.launch(MainWindow.class, args);
-//
+
 //        CampaignRepository repo = new LocalCampaignRepository();
 //        PlayerRepository pRepo = new LocalPlayerRepository();
 //
 //        Pc pc = new Pc();
 //        pc.setId("ID");
-//        pc.setCharacterInformation(new CharacterInformation("Chara", "", "", "", "Kind", "Race"));
-//
+//        pc.setName("Charaa");
+
 //        Player pl = Player.builder().username("Donkey").character(pc).build();
 //        pRepo.save(pl);
-//
+
 //        Player p = null;
 //        try {
 //            p = pRepo.findRegisteredPlayer();
@@ -30,15 +30,13 @@ public class App {
 //
 //        CampaignVariant variant = new CampaignVariant();
 //        variant.setCreator(p);
-//        variant.setId("ABCDDE");
-//        variant.setName("DnD 4e");
+//        variant.setId("ABCDDEF");
+//        variant.setName("DnD 5e");
 //
 //        Campaign c = null;
-//        try {
-//            c = Campaign.builder().name("Campaign B").dm(pl).campaignVariant(variant).character(pc).player(pl).build();
-//        } catch (RequiredAttributeMissingException e) {
-//            e.printStackTrace();
-//        }
+//        c = new Campaign("Campaign B", variant, p);
+//        c.addPlayer(p);
+//        c.addCharacter(pc);
 //        try {
 //            repo.save(c);
 //        } catch (IndexAlreadyExistsException e) {

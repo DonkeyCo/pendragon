@@ -7,7 +7,8 @@
 <?import javafx.scene.text.Font?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      prefHeight="400.0" prefWidth="600.0" maxWidth="Infinity" maxHeight="Infinity">
+      prefHeight="400.0" prefWidth="600.0" maxWidth="Infinity" maxHeight="Infinity"
+      fx:controller="dev.donkz.pendragon.controller.CampaignListController">
     <children>
         <Label text="Your Campaigns">
             <font>
@@ -17,7 +18,12 @@
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
             </padding>
         </Label>
-        <TilePane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0"
-                  prefWidth="200.0" VBox.vgrow="ALWAYS"/>
+        <TilePane fx:id="tilePane"
+                  maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0"
+                  prefWidth="200.0" VBox.vgrow="ALWAYS" hgap="10" vgap="10">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </TilePane>
     </children>
 </VBox>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<fx:root type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         fx:id="tile" spacing="10" stylesheets="@/styles/tile.css">
+    <padding>
+        <Insets topRightBottomLeft="15" />
+    </padding>
+    <Label fx:id="lblTitle" text="Campaign Title" styleClass="title" />
+</fx:root>

@@ -26,8 +26,7 @@ public class CampaignCreationService {
     public void createCampaign(String name, String description, CampaignVariant variant, String notes) throws IndexAlreadyExistsException, MultiplePlayersException {
         Player player = playerRepository.findRegisteredPlayer();
 
-        Campaign campaign = new Campaign(name, variant);
-        campaign.setDm(player);
+        Campaign campaign = new Campaign(name, variant, player);
         campaign.setDescription(description);
         campaign.setNotes(notes);
 

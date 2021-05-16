@@ -15,7 +15,12 @@ public class Pc implements Character {
     private String id;
 
     // General Information
-    private CharacterInformation characterInformation;
+    private String name;
+    private String notes;
+    private String alignment;
+    private String background;
+    private String kind;
+    private String race;
     private List<Ability> savingThrows;
     private int level;
     private int exp;
@@ -56,29 +61,5 @@ public class Pc implements Character {
 
     public Pc() {
         this.id = UUID.randomUUID().toString();
-    }
-
-    public String getName() {
-        return characterInformation.getName();
-    }
-
-    public String getNotes() {
-        return characterInformation.getNotes();
-    }
-
-    public String getAlignment() {
-        return characterInformation.getAlignment();
-    }
-
-    public String getBackground() {
-        return characterInformation.getBackground();
-    }
-
-    public String getKind() {
-        return characterInformation.getKind();
-    }
-
-    public String getRace() {
-        return characterInformation.getRace();
     }
 }

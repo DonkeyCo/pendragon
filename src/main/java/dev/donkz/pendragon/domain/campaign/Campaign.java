@@ -32,12 +32,16 @@ public class Campaign {
 
     public Campaign() {
         this.id = UUID.randomUUID().toString();
+        campaignStates = new ArrayList<>();
+        players = new ArrayList<>();
+        pcs = new ArrayList<>();
     }
 
-    public Campaign(String name, CampaignVariant variant) {
+    public Campaign(String name, CampaignVariant variant, Player dm) {
         this();
         this.name = name;
         this.campaignVariant = variant;
+        this.dm = dm;
     }
 
     public void addState(CampaignState state) {
