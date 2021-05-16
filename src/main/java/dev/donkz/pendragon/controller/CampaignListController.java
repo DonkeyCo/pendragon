@@ -1,11 +1,8 @@
 package dev.donkz.pendragon.controller;
 
 import dev.donkz.pendragon.domain.campaign.Campaign;
-import dev.donkz.pendragon.domain.campaign.CampaignRepository;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
-import dev.donkz.pendragon.domain.player.PlayerRepository;
-import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.infrastructure.persistence.local.LocalCampaignRepository;
 import dev.donkz.pendragon.infrastructure.persistence.local.LocalPlayerRepository;
 import dev.donkz.pendragon.service.CampaignListingService;
@@ -14,13 +11,13 @@ import dev.donkz.pendragon.ui.Tile;
 import javafx.fxml.FXML;
 import javafx.scene.layout.TilePane;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class CampaignListController {
-    @FXML private TilePane tilePane;
+    @FXML
+    private TilePane tilePane;
 
     private final CampaignListingService listingService;
     private final PlayerManagementService playerManagementService;
@@ -54,8 +51,9 @@ public class CampaignListController {
 
     /**
      * Creates the items map, which contains all Label/Value pairs to create a tile
+     *
      * @param campaign campaign
-     * @param player registered player
+     * @param player   registered player
      * @return map of Label/Value pairs for tile
      */
     private SortedMap<String, String> getTileItems(Campaign campaign, Player player) {
