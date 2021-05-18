@@ -3,31 +3,55 @@ package dev.donkz.pendragon.controller;
 import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
-import dev.donkz.pendragon.infrastructure.persistence.local.LocalCampaignRepository;
-import dev.donkz.pendragon.infrastructure.persistence.local.LocalPlayerRepository;
+import dev.donkz.pendragon.domain.variant.CampaignVariant;
+import dev.donkz.pendragon.service.CampaignCreationService;
 import dev.donkz.pendragon.service.CampaignListingService;
 import dev.donkz.pendragon.service.PlayerManagementService;
+import dev.donkz.pendragon.service.VariantListingService;
 import dev.donkz.pendragon.ui.Tile;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 
+import javax.inject.Inject;
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
-public class CampaignListController {
+public class CampaignListController implements Initializable {
+    @FXML
+    private StackPane campaignRoot;
+    @FXML
+    private ComboBox<String> cmbVariants;
+    @FXML
+    private Pane editor;
     @FXML
     private TilePane tilePane;
+    @FXML
+    private Pane overview;
 
     private final CampaignListingService listingService;
+    private final CampaignCreationService creationService;
     private final PlayerManagementService playerManagementService;
+    private final VariantListingService variantListingService;
 
-    public CampaignListController() {
-        this.listingService = new CampaignListingService(new LocalCampaignRepository());
-        this.playerManagementService = new PlayerManagementService(new LocalPlayerRepository());
+    @Inject
+    public CampaignListController(CampaignListingService listingService, CampaignCreationService creationService, PlayerManagementService playerManagementService, VariantListingService variantListingService) {
+        this.listingService = listingService;
+        this.creationService = creationService;
+        this.playerManagementService = playerManagementService;
+        this.variantListingService = variantListingService;
     }
 
-    public void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         createTiles();
     }
 
@@ -40,11 +64,9 @@ public class CampaignListController {
         }
 
         List<Campaign> campaigns = listingService.getCampaignsForPlayer(player);
-
         for (Campaign campaign : campaigns) {
             SortedMap<String, String> items = getTileItems(campaign, player);
             Tile tile = new Tile(campaign.getName(), items);
-            System.out.print(tile.toString());
             tilePane.getChildren().add(tile);
         }
     }
@@ -69,5 +91,22 @@ public class CampaignListController {
         }
         items.put("Character", characterName);
         return items;
+    }
+
+    @FXML
+    public void onCreate() {
+        overview.setVisible(false);
+        editor.setVisible(true);
+        initVariantPicker();
+    }
+
+    @FXML
+    public void onSave() {
+
+    }
+
+    private void initVariantPicker() {
+        List<String> variants = variantListingService.getAvailableVariants().stream().map(CampaignVariant::getName).collect(Collectors.toList());
+        cmbVariants.setItems(FXCollections.observableList(variants));
     }
 }

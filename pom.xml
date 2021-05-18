@@ -58,5 +58,11 @@
             <artifactId>controlsfx</artifactId>
             <version>11.1.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>5.0.1</version>
+        </dependency>
     </dependencies>
 </project>

@@ -1,17 +1,20 @@
 package dev.donkz.pendragon.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
+import java.net.URL;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
 /**
  * Controller for Management view
  */
-public class ManagementController {
+public class ManagementController implements Initializable {
     @FXML private Pane campaignLayer;
     @FXML private Pane characterLayer;
     @FXML private StackPane contentPane;
@@ -30,7 +33,8 @@ public class ManagementController {
     /**
      * Life-cycle method for JavaFX controllers
      */
-    public void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         loadPanes();
         initToggle();
         initVisibility();
@@ -118,5 +122,4 @@ public class ManagementController {
         currentPane = panes.get(paneName);
         currentPane.setVisible(true);
     }
-
 }

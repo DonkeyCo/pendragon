@@ -1,10 +1,13 @@
 package dev.donkz.pendragon.ui;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import dev.donkz.pendragon.config.StandardModule;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class MainWindow extends Application {
@@ -12,7 +15,13 @@ public class MainWindow extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Pane root = FXMLLoader.load(getClass().getResource(SCENE));
+        Injector injector = Guice.createInjector(new StandardModule());
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setControllerFactory(injector::getInstance);
+        fxmlLoader.setLocation(getClass().getResource(SCENE));
+
+        Parent root = fxmlLoader.load();
         Scene mainScene = new Scene(root, 800, 600);
 
         stage.setScene(mainScene);

@@ -11,6 +11,7 @@ import dev.donkz.pendragon.ui.Tile;
 import javafx.fxml.FXML;
 import javafx.scene.layout.TilePane;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -21,8 +22,9 @@ public class CharacterListController {
 
     private final CharacterListingService listingService;
 
-    public CharacterListController() {
-        this.listingService = new CharacterListingService(new LocalPcRepository(), new LocalPlayerRepository());
+    @Inject
+    public CharacterListController(CharacterListingService listingService) {
+        this.listingService = listingService;
     }
 
     public void initialize() {

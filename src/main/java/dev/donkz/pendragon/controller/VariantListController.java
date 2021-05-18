@@ -1,23 +1,25 @@
 package dev.donkz.pendragon.controller;
 
 import dev.donkz.pendragon.domain.variant.CampaignVariant;
-import dev.donkz.pendragon.infrastructure.persistence.local.LocalCampaignVariantRepository;
 import dev.donkz.pendragon.service.VariantListingService;
 import dev.donkz.pendragon.ui.Tile;
 import javafx.fxml.FXML;
 import javafx.scene.layout.TilePane;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class VariantListController {
-    @FXML private TilePane tilePane;
+    @FXML
+    private TilePane tilePane;
 
     private final VariantListingService listingService;
 
-    public VariantListController() {
-        this.listingService = new VariantListingService(new LocalCampaignVariantRepository());
+    @Inject
+    public VariantListController(VariantListingService listingService) {
+        this.listingService = listingService;
     }
 
     public void initialize() {
