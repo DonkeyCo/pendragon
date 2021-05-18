@@ -20,7 +20,8 @@ public class FileHandler {
 
     public void write2File(Path filePath, String content) {
         try {
-            final BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
+            final BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8);
+            System.out.println(content);
             writer.write(content);
             writer.flush();
         } catch (IOException e) {

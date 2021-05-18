@@ -34,8 +34,8 @@ public class StandardModule extends AbstractModule {
     }
 
     @Provides
-    static CampaignCreationService campaignCreationService() {
-        return new CampaignCreationService(campaignRepository(), campaignVariantRepository(), playerRepository());
+    static CampaignManipulationService campaignCreationService() {
+        return new CampaignManipulationService(campaignRepository(), campaignVariantRepository(), playerRepository());
     }
 
     @Provides

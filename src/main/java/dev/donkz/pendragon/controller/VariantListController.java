@@ -30,7 +30,7 @@ public class VariantListController {
         List<CampaignVariant> variants = listingService.getAvailableVariants();
         for (CampaignVariant variant : variants) {
             SortedMap<String, String> items = getTileItems(variant);
-            Tile tile = new Tile(variant.getName(), items);
+            Tile tile = new Tile(variant.getId(), variant.getName(), items);
             tilePane.getChildren().add(tile);
         }
     }

@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 
 <StackPane fx:id="campaignRoot" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="dev.donkz.pendragon.controller.CampaignListController">
+           fx:controller="dev.donkz.pendragon.controller.CampaignController">
    <children>
       <VBox fx:id="overview" maxHeight="Infinity" maxWidth="Infinity" prefHeight="400.0" prefWidth="600.0">
          <children>
@@ -67,7 +67,7 @@
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <TextField promptText="Enter a campaign name" HBox.hgrow="ALWAYS">
+                              <TextField fx:id="txtName" promptText="Enter a campaign name" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets left="25.0" />
                                  </HBox.margin>
@@ -84,7 +84,7 @@
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <TextField promptText="Enter a campaign description" HBox.hgrow="ALWAYS">
+                              <TextField fx:id="txtDescription" promptText="Enter a campaign description" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets left="25.0" />
                                  </HBox.margin>
@@ -115,7 +115,7 @@
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <TextArea promptText="Add additional notes" HBox.hgrow="ALWAYS">
+                              <TextArea fx:id="txtNotes" promptText="Add additional notes" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets left="25.0" />
                                  </HBox.margin>
@@ -134,8 +134,8 @@
             </ScrollPane>
             <ButtonBar prefHeight="40.0" prefWidth="200.0">
                <buttons>
-                  <Button fx:id="btnCreate1" mnemonicParsing="false" text="Cancel" />
-                  <Button fx:id="btnCreate11" mnemonicParsing="false" text="Submit" />
+                  <Button fx:id="btnCancel" mnemonicParsing="false" text="Cancel" onAction="#onCancel" />
+                  <Button fx:id="btnSave" mnemonicParsing="false" text="Submit" onAction="#onSave" />
                </buttons>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

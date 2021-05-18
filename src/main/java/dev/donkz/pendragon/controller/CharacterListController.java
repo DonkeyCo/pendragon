@@ -44,7 +44,7 @@ public class CharacterListController {
         if (characters.size() > 0) {
             for (Pc character : characters) {
                 SortedMap<String, String> items = getTileItems(character);
-                Tile tile = new Tile(character.getName(), items);
+                Tile tile = new Tile(character.getId(), character.getName(), items);
                 tilePane.getChildren().add(tile);
             }
         }

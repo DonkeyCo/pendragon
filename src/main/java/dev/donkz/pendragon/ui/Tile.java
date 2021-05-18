@@ -2,26 +2,31 @@ package dev.donkz.pendragon.ui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.SortedMap;
 
 public class Tile extends VBox {
-    @FXML private Label lblTitle;
-    @FXML private VBox tile;
+    @FXML
+    private Label lblTitle;
+    @FXML
+    private VBox tile;
+    @FXML
+    private Button btnDelete;
 
+    private final String objectId;
     private final String title;
     private final SortedMap<String, String> items;
 
-    public Tile(String title, SortedMap<String, String> items) {
+    public Tile(String objectId, String title, SortedMap<String, String> items) {
         load();
+        this.objectId = objectId;
         this.title = title;
         this.items = items;
-        System.out.println("Test");
         initTile(title, items);
     }
 
@@ -51,5 +56,21 @@ public class Tile extends VBox {
             row.getChildren().addAll(lblLabel, lblValue);
             tile.getChildren().add(row);
         });
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public SortedMap<String, String> getItems() {
+        return items;
+    }
+
+    public Button getBtnDelete() {
+        return btnDelete;
     }
 }
