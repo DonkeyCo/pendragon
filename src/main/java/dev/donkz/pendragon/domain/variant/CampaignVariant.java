@@ -1,5 +1,6 @@
 package dev.donkz.pendragon.domain.variant;
 
+import dev.donkz.pendragon.domain.Printable;
 import dev.donkz.pendragon.domain.character.Monster;
 import dev.donkz.pendragon.domain.character.Npc;
 import dev.donkz.pendragon.domain.player.Player;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @NoArgsConstructor
-public class CampaignVariant {
+public class CampaignVariant implements Printable {
     private String id;
 
     private String name;
@@ -123,5 +124,14 @@ public class CampaignVariant {
     }
     public void removeRace(Race race) {
         races.remove(race);
+    }
+
+    @Override
+    public String shortString() {
+        return name;
+    }
+
+    public String toString() {
+        return name;
     }
 }

@@ -172,7 +172,7 @@
                                 </VBox>
                                 <HBox alignment="CENTER">
                                     <children>
-                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Race"/>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Race" onAction="#onRaces"/>
                                     </children>
                                 </HBox>
                                 <Separator prefWidth="200.0"/>
@@ -198,7 +198,7 @@
                                 </VBox>
                                 <HBox alignment="CENTER">
                                     <children>
-                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Skill"/>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Skill" onAction="#onSkills"/>
                                     </children>
                                 </HBox>
                                 <Separator prefWidth="200.0"/>
@@ -208,7 +208,7 @@
                             <children>
                                 <Label text="Features">
                                     <font>
-                                        <Font name="System B old" size="18.0"/>
+                                        <Font name="System Bold" size="18.0"/>
                                     </font>
                                 </Label>
                                 <VBox fx:id="featurePane">
@@ -250,7 +250,7 @@
                                 </VBox>
                                 <HBox alignment="CENTER">
                                     <children>
-                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Spell"/>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Spell" onAction="#onSpell"/>
                                     </children>
                                 </HBox>
                                 <Separator prefWidth="200.0"/>
@@ -276,7 +276,7 @@
                                 </VBox>
                                 <HBox alignment="CENTER">
                                     <children>
-                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Equipment"/>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Equipment" onAction="#onEquipment"/>
                                     </children>
                                 </HBox>
                                 <Separator prefWidth="200.0"/>

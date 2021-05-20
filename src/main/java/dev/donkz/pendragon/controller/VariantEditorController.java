@@ -2,9 +2,11 @@ package dev.donkz.pendragon.controller;
 
 import com.sun.javafx.scene.control.IntegerField;
 import dev.donkz.pendragon.domain.common.Ability;
+import dev.donkz.pendragon.domain.common.PriceUnit;
 import dev.donkz.pendragon.domain.variant.*;
 import dev.donkz.pendragon.service.PlayerManagementService;
 import dev.donkz.pendragon.ui.CreateDialog;
+import dev.donkz.pendragon.util.ControlUtility;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -22,19 +24,19 @@ public class VariantEditorController {
     @FXML
     private Pane proficiencyPane;
     @FXML
-    private Label lblNoProficiency;
-    @FXML
-    private Label lblNoTraits;
-    @FXML
     private Pane traitPane;
     @FXML
     private Pane kindPane;
     @FXML
-    private Label lblNoKinds;
+    private Pane racePane;
+    @FXML
+    private Pane equipmentPane;
+    @FXML
+    private Pane spellPane;
     @FXML
     private Pane featurePane;
     @FXML
-    private Label lblNoFeatures;
+    private Pane skillPane;
 
     private CampaignVariant campaignVariant;
     private VariantListController variantListController;
@@ -62,9 +64,9 @@ public class VariantEditorController {
 
     public void onProficiencies() {
         SortedMap<String, Control> items = new TreeMap<>();
-        TextField txtName = new TextField();
-        txtName.setPromptText("Enter a proficiency name");
-        ComboBox<String> cmbAbilities = getAbilityBox();
+
+        TextField txtName = ControlUtility.createTextField("Enter a proficiency name");
+        ComboBox<Ability> cmbAbilities = ControlUtility.createComboBox("Choose an ability type", Arrays.asList(Ability.values()));
 
         items.put("Name", txtName);
         items.put("Ability", cmbAbilities);
@@ -73,11 +75,12 @@ public class VariantEditorController {
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 String name = txtName.getText();
-                Ability ability = Ability.valueOf(cmbAbilities.getValue());
-                campaignVariant.addProficiency(new Proficiency(name, ability));
+                Ability ability = cmbAbilities.getValue();
+                Proficiency proficiency = new Proficiency(name, ability);
+                campaignVariant.addProficiency(proficiency);
 
                 renderContent();
-                return String.join(";", name, ability.getLongName());
+                return proficiency.toString();
             }
             return "None";
         });
@@ -87,23 +90,10 @@ public class VariantEditorController {
 
     public void onTraits() {
         Map<String, Control> items = new LinkedHashMap<>();
-        TextField txtName = new TextField();
-        txtName.setPromptText("Enter a trait name");
-        TextField txtDescription = new TextField();
-        txtDescription.setPromptText("Enter a trait description");
-        CheckComboBox<Proficiency> cmbProficiency = new CheckComboBox<>();
-        cmbProficiency.getItems().addAll(campaignVariant.getProficiencies());
-        cmbProficiency.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(Proficiency proficiency) {
-                return proficiency.getName();
-            }
 
-            @Override
-            public Proficiency fromString(String s) {
-                return campaignVariant.getProficiencies().stream().filter(proficiency -> proficiency.getName().equalsIgnoreCase(s)).findFirst().orElse(null);
-            }
-        });
+        TextField txtName = ControlUtility.createTextField("Enter a trait name");
+        TextField txtDescription = ControlUtility.createTextField("Enter a trait description");
+        CheckComboBox<Proficiency> cmbProficiency = ControlUtility.createCheckComboBox("Select proficiencies", campaignVariant.getProficiencies());
 
         items.put("Name", txtName);
         items.put("Description", txtDescription);
@@ -116,10 +106,11 @@ public class VariantEditorController {
                 String description = txtDescription.getText();
                 List<Proficiency> proficiencies = cmbProficiency.getCheckModel().getCheckedItems();
 
-                campaignVariant.addTrait(new Trait(name, description, proficiencies));
+                Trait trait = new Trait(name, description, proficiencies);
+                campaignVariant.addTrait(trait);
 
                 renderContent();
-                return String.join(";", name);
+                return trait.toString();
             }
             return "None";
         });
@@ -129,13 +120,12 @@ public class VariantEditorController {
 
     public void onKinds() {
         Map<String, Control> items = new LinkedHashMap<>();
-        TextField txtName = new TextField();
-        TextField txtDescription = new TextField();
-        TextArea txtNotes = new TextArea();
-        TextField txtDie = new TextField();
-        CheckComboBox<Proficiency> cmbProficiencies = new CheckComboBox<>();
-        cmbProficiencies.getItems().addAll(campaignVariant.getProficiencies());
-        CheckComboBox<String> cmbAbilities = getMultiAbilityBox();
+        TextField txtName = ControlUtility.createTextField("Enter a class name");
+        TextField txtDescription = ControlUtility.createTextField("Enter a class description");
+        TextArea txtNotes = ControlUtility.createTextArea("Enter additional class notes");
+        TextField txtDie = ControlUtility.createTextField("Enter the hit die for the class");
+        CheckComboBox<Proficiency> cmbProficiencies = ControlUtility.createCheckComboBox("Class Proficiencies", campaignVariant.getProficiencies());
+        CheckComboBox<Ability> cmbAbilities = ControlUtility.createCheckComboBox("Abilities", Arrays.asList(Ability.values()));
 
         items.put("Name", txtName);
         items.put("Description", txtDescription);
@@ -152,12 +142,96 @@ public class VariantEditorController {
                 String notes = txtNotes.getText();
                 String hitDie = txtDie.getText();
                 List<Proficiency> proficiencies = cmbProficiencies.getCheckModel().getCheckedItems();
-                List<Ability> savingThrows = cmbAbilities.getCheckModel().getCheckedItems().stream().map(Ability::valueOf).collect(Collectors.toList());
+                List<Ability> savingThrows = new ArrayList<>(cmbAbilities.getCheckModel().getCheckedItems());
 
-                campaignVariant.addKind(new Kind(name, description, notes, hitDie, proficiencies, savingThrows));
+                Kind kind = new Kind(name, description, notes, hitDie, proficiencies, savingThrows);
+                campaignVariant.addKind(kind);
 
                 renderContent();
-                return String.join(";", name);
+                return kind.toString();
+            }
+            return "None";
+        });
+
+        dialog.show();
+    }
+
+    public void onRaces() {
+        Map<String, Control> items = new LinkedHashMap<>();
+        TextField txtName = ControlUtility.createTextField("Enter a race name");
+        TextField txtDescription = ControlUtility.createTextField("Enter a race description");
+        TextArea txtArea = ControlUtility.createTextArea("Enter additional race notes");
+        IntegerField intFSpeed = ControlUtility.createIntegerField("Enter a speed");
+        CheckComboBox<Ability> cmbAbility = ControlUtility.createCheckComboBox("Ability", Arrays.asList(Ability.values()));
+        TextField txtAlignment = ControlUtility.createTextField("Enter an alignment");
+        TextField txtAge = ControlUtility.createTextField("Enter an age");
+        TextField txtSize = ControlUtility.createTextField("Enter a size");
+        TextField txtLanguages = ControlUtility.createTextField("Enter languages (separate with comma)");
+        CheckComboBox<Proficiency> cmbProficiencies = ControlUtility.createCheckComboBox("Choose starting proficiencies", campaignVariant.getProficiencies());
+        CheckComboBox<Trait> cmbTraits = ControlUtility.createCheckComboBox("Choose traits", campaignVariant.getTraits());
+
+        items.put("Name", txtName);
+        items.put("Description", txtDescription);
+        items.put("Alignment", txtAlignment);
+        items.put("Age", txtAge);
+        items.put("Size", txtSize);
+        items.put("Speed", intFSpeed);
+        items.put("Languages", txtLanguages);
+        items.put("Starting Proficiencies", cmbProficiencies);
+        items.put("Traits", cmbTraits);
+        items.put("Abilities", cmbAbility);
+        items.put("Notes", txtArea);
+
+        Dialog<String> dialog = createDialog("Create Race", items);
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType != null) {
+                String name = txtName.getText();
+                String description = txtDescription.getText();
+                String alignment = txtAlignment.getText();
+                String age = txtAge.getText();
+                String size = txtSize.getText();
+                int speed = intFSpeed.getValue();
+                List<String> languages = Arrays.asList(txtLanguages.getText().split(","));
+                List<Proficiency> proficiencies = cmbProficiencies.getCheckModel().getCheckedItems();
+                List<Trait> traits = cmbTraits.getCheckModel().getCheckedItems();
+                List<Ability> abilities = cmbAbility.getCheckModel().getCheckedItems();
+                List<AbilityBonus> abilityBonuses = abilities.stream().map(ability -> new AbilityBonus(ability, 0)).collect(Collectors.toList());
+                String notes = txtArea.getText();
+
+                Race race = new Race(name, description, notes, speed, abilityBonuses, alignment, age, size, languages, proficiencies, traits);
+                campaignVariant.addRace(race);
+
+                renderContent();
+                return race.toString();
+            }
+            return "None";
+        });
+
+        dialog.show();
+    }
+
+    public void onSkills() {
+        Map<String, Control> items = new LinkedHashMap<>();
+        TextField txtName = ControlUtility.createTextField("Enter a feature name");
+        TextField txtDescription = ControlUtility.createTextField("Enter a feature description");
+        ComboBox<Ability> cmbAbilities = ControlUtility.createComboBox("Choose a class", Arrays.asList(Ability.values()));
+
+        items.put("Name", txtName);
+        items.put("Description", txtDescription);
+        items.put("Ability Score", cmbAbilities);
+
+        Dialog<String> dialog = createDialog("Create Skill", items);
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType != null) {
+                String name = txtName.getText();
+                String description = txtDescription.getText();
+                Ability ability = cmbAbilities.getValue();
+
+                Skill skill = new Skill(name, description, ability);
+                campaignVariant.addSkill(skill);
+
+                renderContent();
+                return skill.toString();
             }
             return "None";
         });
@@ -167,29 +241,15 @@ public class VariantEditorController {
 
     public void onFeature() {
         Map<String, Control> items = new LinkedHashMap<>();
-        TextField txtName = new TextField();
-        TextField txtDescription = new TextField();
-        ComboBox<Kind> cmbKind = new ComboBox<>();
-        cmbKind.setItems(FXCollections.observableList(campaignVariant.getKinds()));
-        cmbKind.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(Kind kind) {
-                if (kind != null) {
-                    return kind.getName();
-                }
-                return "";
-            }
-            @Override
-            public Kind fromString(String s) {
-                return campaignVariant.getKinds().stream().filter(kind -> kind.getName().equalsIgnoreCase(s)).findFirst().orElse(null);
-            }
-        });
-        IntegerField intfLevel = new IntegerField();
+        TextField txtName = ControlUtility.createTextField("Enter a feature name");
+        TextField txtDescription = ControlUtility.createTextField("Enter a feature description");
+        ComboBox<Kind> cmbKind = ControlUtility.createComboBox("Choose a class", campaignVariant.getKinds());
+        IntegerField intFLevel = ControlUtility.createIntegerField("Enter the minimum required level");
 
         items.put("Name", txtName);
         items.put("Description", txtDescription);
         items.put("Kind", cmbKind);
-        items.put("Level", intfLevel);
+        items.put("Level", intFLevel);
 
         Dialog<String> dialog = createDialog("Create Feature", items);
         dialog.setResultConverter(buttonType -> {
@@ -197,12 +257,74 @@ public class VariantEditorController {
                 String name = txtName.getText();
                 String description = txtDescription.getText();
                 Kind kind = cmbKind.getValue();
-                int level = intfLevel.getValue();
+                int level = intFLevel.getValue();
 
-                campaignVariant.addFeature(new Feature(name, description, kind, level));
+                Feature feature = new Feature(name, description, kind, level);
+                campaignVariant.addFeature(feature);
 
                 renderContent();
-                return String.join(";", name);
+                return feature.toString();
+            }
+            return "None";
+        });
+
+        dialog.show();
+    }
+
+    public void onSpell() {
+        Map<String, Control> items = new LinkedHashMap<>();
+        TextField txtName = ControlUtility.createTextField("Enter a feature name");
+        TextField txtDescription = ControlUtility.createTextField("Enter a feature description");
+
+        items.put("Name", txtName);
+        items.put("Description", txtDescription);
+
+        Dialog<String> dialog = createDialog("Create Spell", items);
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType != null) {
+                String name = txtName.getText();
+                String description = txtDescription.getText();
+
+                Spell spell = new Spell(name, description);
+                campaignVariant.addSpell(spell);
+
+                renderContent();
+                return spell.toString();
+            }
+            return "None";
+        });
+
+        dialog.show();
+    }
+
+    public void onEquipment() {
+        Map<String, Control> items = new LinkedHashMap<>();
+        TextField txtName = ControlUtility.createTextField("Enter a equipment name");
+        TextField txtDescription = ControlUtility.createTextField("Enter a equipment description");
+        IntegerField intFWeight = ControlUtility.createIntegerField("Enter a equipment weight");
+        IntegerField intFValue = ControlUtility.createIntegerField("Enter a price value");
+        ComboBox<PriceUnit> cmbUnits = ControlUtility.createComboBox("Choose a unit", Arrays.asList(PriceUnit.values()));
+
+        items.put("Name", txtName);
+        items.put("Description", txtDescription);
+        items.put("Weight", intFWeight);
+        items.put("Price Value", intFValue);
+        items.put("Price Unit", cmbUnits);
+
+        Dialog<String> dialog = createDialog("Create Equipment", items);
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType != null) {
+                String name = txtName.getText();
+                String description = txtDescription.getText();
+                float weight = intFWeight.getValue();
+                int value = intFValue.getValue();
+                PriceUnit unit = cmbUnits.getValue();
+
+                Equipment equipment = new Equipment(name, description, weight, value, unit);
+                campaignVariant.addEquipment(equipment);
+
+                renderContent();
+                return equipment.toString();
             }
             return "None";
         });
@@ -220,98 +342,33 @@ public class VariantEditorController {
         return dialog;
     }
 
-    private ComboBox<String> getAbilityBox() {
-        ComboBox<String> cmbAbility = new ComboBox<>();
-        cmbAbility.setItems(FXCollections.observableList(Arrays.stream(Ability.values()).map(Enum::name).collect(Collectors.toList())));
-        return cmbAbility;
-    }
-
-    private CheckComboBox<String> getMultiAbilityBox() {
-        CheckComboBox<String> cmbAbility = new CheckComboBox<>();
-        cmbAbility.getItems().addAll(FXCollections.observableList(Arrays.stream(Ability.values()).map(Enum::name).collect(Collectors.toList())));
-        return cmbAbility;
-    }
-
     private void renderContent() {
-        renderProficiency();
-        renderTrait();
-        renderKind();
+        renderPane(proficiencyPane, campaignVariant.getProficiencies());
+        renderPane(traitPane, campaignVariant.getTraits());
+        renderPane(kindPane, campaignVariant.getKinds());
+        renderPane(racePane, campaignVariant.getRaces());
+        renderPane(featurePane, campaignVariant.getFeatures());
+        renderPane(spellPane, campaignVariant.getSpells());
+        renderPane(equipmentPane, campaignVariant.getEquipments());
+        renderPane(skillPane, campaignVariant.getSkills());
     }
 
-    private void renderProficiency() {
-        proficiencyPane.getChildren().clear();
-        proficiencyPane.getChildren().add(lblNoProficiency);
-        campaignVariant.getProficiencies().forEach(proficiency -> {
-            proficiencyPane.getChildren().remove(lblNoProficiency);
-
-            HBox row = new HBox();
-            row.setSpacing(10);
-            Label lblProficiency = new Label();
-            lblProficiency.setFont(new Font(15));
-            lblProficiency.setText(proficiency.getName() + " (" + proficiency.getType() + ")");
-            row.getChildren().add(lblProficiency);
-            proficiencyPane.getChildren().add(row);
-        });
-    }
-
-    private void renderTrait() {
-        traitPane.getChildren().clear();
-        traitPane.getChildren().add(lblNoTraits);
-        campaignVariant.getTraits().forEach(trait -> {
-            traitPane.getChildren().remove(lblNoTraits);
+    private void renderPane(Pane pane, List<?> items) {
+        pane.getChildren().clear();
+        Label lblNoItems = new Label("No Items");
+        pane.getChildren().add(lblNoItems);
+        items.forEach(item -> {
+            pane.getChildren().remove(lblNoItems);
 
             HBox row = new HBox();
             row.setSpacing(10);
 
-            Label lblTrait = new Label();
-            lblTrait.setWrapText(true);
-            lblTrait.setText(trait.getName()
-                    + " | "
-                    + trait.getDescription()
-                    + " | Proficiency: "
-                    + trait.getProficiencies().stream().map(Proficiency::getName).collect(Collectors.toList()));
-            lblTrait.setFont(new Font(15));
+            Label lblLabel = new Label(item.toString());
+            lblLabel.setWrapText(true);
+            lblLabel.setFont(new Font(15));
 
-            row.getChildren().add(lblTrait);
-            traitPane.getChildren().add(row);
-        });
-    }
-
-    private void renderKind() {
-        kindPane.getChildren().clear();
-        kindPane.getChildren().add(lblNoKinds);
-        campaignVariant.getKinds().forEach(kind -> {
-            kindPane.getChildren().remove(lblNoKinds);
-
-            HBox row = new HBox();
-            row.setSpacing(10);
-
-            Label lblKind = new Label();
-            lblKind.setWrapText(true);
-            lblKind.setText(kind.getName() + " | " + kind.getDescription());
-            lblKind.setFont(new Font(15));
-
-            row.getChildren().add(lblKind);
-            kindPane.getChildren().add(row);
-        });
-    }
-
-    private void renderFeature() {
-        featurePane.getChildren().clear();
-        featurePane.getChildren().add(lblNoFeatures);
-        campaignVariant.getFeatures().forEach(feature -> {
-            featurePane.getChildren().remove(lblNoFeatures);
-
-            HBox row = new HBox();
-            row.setSpacing(10);
-
-            Label lblFeature = new Label();
-            lblFeature.setWrapText(true);
-            lblFeature.setText(feature.getName() + " | " + feature.getDescription() + "(" + feature.getKind().getName() + ", Lvl." + feature.getLevel()+ ")");
-            lblFeature.setFont(new Font(15));
-
-            row.getChildren().add(lblFeature);
-            featurePane.getChildren().add(row);
+            row.getChildren().add(lblLabel);
+            pane.getChildren().add(row);
         });
     }
 }
