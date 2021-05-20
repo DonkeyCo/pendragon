@@ -72,6 +72,7 @@ public class LocalDriver implements Driver {
             ObjectNode indices = jsonUtil.getObjectNode(filePath.toFile());
             Path objectPath = Paths.get(DATA_PATH, repository, indices.get(id).textValue());
             indices.remove(id);
+            fileHandler.write2File(filePath, indices.toString());
             if (Files.exists(objectPath)) {
                 try {
                     Files.delete(objectPath);

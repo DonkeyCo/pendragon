@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="dev.donkz.pendragon.controller.VariantEditorController"
+      prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <Label text="Variant Editor">
+            <font>
+                <Font name="System Bold" size="24.0"/>
+            </font>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </Label>
+        <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false" prefHeight="200.0" prefWidth="200.0"
+                    VBox.vgrow="ALWAYS">
+            <content>
+                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                    <children>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="General">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Label alignment="CENTER" text="Name">
+                                            <font>
+                                                <Font size="16.0"/>
+                                            </font>
+                                        </Label>
+                                        <TextField promptText="Enter variant name" HBox.hgrow="ALWAYS">
+                                            <font>
+                                                <Font size="15.0"/>
+                                            </font>
+                                            <HBox.margin>
+                                                <Insets left="25.0"/>
+                                            </HBox.margin>
+                                        </TextField>
+                                        <CheckBox mnemonicParsing="false" text="Public?">
+                                            <font>
+                                                <Font size="15.0"/>
+                                            </font>
+                                            <HBox.margin>
+                                                <Insets left="10.0"/>
+                                            </HBox.margin>
+                                        </CheckBox>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Label alignment="CENTER" text="Description">
+                                            <font>
+                                                <Font size="16.0"/>
+                                            </font>
+                                        </Label>
+                                        <TextField promptText="Enter variant description" HBox.hgrow="ALWAYS">
+                                            <font>
+                                                <Font size="15.0"/>
+                                            </font>
+                                            <HBox.margin>
+                                                <Insets left="25.0"/>
+                                            </HBox.margin>
+                                        </TextField>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="5.0">
+                            <children>
+                                <Label text="Proficiencies">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="proficiencyPane">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <children>
+                                            <Label fx:id="lblNoProficiency" alignment="CENTER" text="No Proficiencies">
+                                                <font>
+                                                    <Font size="16.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Proficiency" onAction="#onProficiencies"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="Traits">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="traitPane" spacing="5">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <children>
+                                            <Label fx:id="lblNoTraits" alignment="CENTER" text="No Traits">
+                                                <font>
+                                                    <Font size="16.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Trait" onAction="#onTraits"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="Classes">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="kindPane">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <children>
+                                            <Label fx:id="lblNoKinds" alignment="CENTER" text="No Classes">
+                                                <font>
+                                                    <Font size="16.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Class" onAction="#onKinds"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="Races">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="racePane">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <children>
+                                            <Label fx:id="lblNoRaces" alignment="CENTER" text="No Races">
+                                                <font>
+                                                    <Font size="16.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Race"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="Skills">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="skillPane">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <children>
+                                            <Label fx:id="lblNoSkills" alignment="CENTER" text="No Skills">
+                                                <font>
+                                                    <Font size="16.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Skill"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="Features">
+                                    <font>
+                                        <Font name="System B old" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="featurePane">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <children>
+                                            <Label fx:id="lblNoFeatures" alignment="CENTER" text="No Features">
+                                                <font>
+                                                    <Font size="16.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Feature" onAction="#onFeature"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="Spells">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="spellPane">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <children>
+                                            <Label  fx:id="lblNoSpells" alignment="CENTER" text="No Spells">
+                                                <font>
+                                                    <Font size="16.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Spell"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="Equipments">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="equipmentPane">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <children>
+                                            <Label fx:id="lblNoEquipments" alignment="CENTER" text="No Equipments">
+                                                <font>
+                                                    <Font size="16.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Equipment"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="NPCs">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="npcPane">
+                                <HBox alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label fx:id="lblNoNpcs" alignment="CENTER" text="No NPCs">
+                                            <font>
+                                                <Font size="16.0"/>
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add NPC"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="Monsters">
+                                    <font>
+                                        <Font name="System Bold" size="18.0"/>
+                                    </font>
+                                </Label>
+                                <VBox fx:id="monsterPane">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <children>
+                                            <Label fx:id="lblNoMonsters" alignment="CENTER" text="No Monsters">
+                                                <font>
+                                                    <Font size="16.0"/>
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                </VBox>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button alignment="CENTER" mnemonicParsing="false" text="Add Monster"/>
+                                    </children>
+                                </HBox>
+                                <Separator prefWidth="200.0"/>
+                            </children>
+                        </VBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+        <ButtonBar prefHeight="40.0" prefWidth="200.0">
+            <buttons>
+                <Button fx:id="btnDelete" mnemonicParsing="false" text="Cancel" onAction="#onCancel"/>
+                <Button fx:id="btnSubmit" mnemonicParsing="false" text="Submit"/>
+            </buttons>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </ButtonBar>
+    </children>
+</VBox>
