@@ -4,29 +4,32 @@
 <?import javafx.scene.control.ButtonType?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<fx:root fx:id="tile" type="DialogPane"
-         xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+
+<fx:root fx:id="tile" type="DialogPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <buttonTypes>
-        <ButtonType fx:id="btnApply" fx:constant="APPLY"/>
+        <ButtonType fx:id="btnApply" fx:constant="APPLY" />
     </buttonTypes>
     <header>
         <HBox alignment="CENTER_LEFT">
             <children>
                 <Label fx:id="lblTitle" text="Custom Title">
                     <font>
-                        <Font name="System Bold" size="16.0"/>
+                        <Font name="System Bold" size="16.0" />
                     </font>
                 </Label>
             </children>
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </HBox>
     </header>
     <content>
-        <VBox fx:id="content" spacing="10"/>
+        <ScrollPane fitToHeight="true" fitToWidth="true">
+            <VBox fx:id="content" spacing="10" />
+        </ScrollPane>
     </content>
 </fx:root>

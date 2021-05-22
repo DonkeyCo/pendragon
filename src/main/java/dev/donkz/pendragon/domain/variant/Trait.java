@@ -4,6 +4,7 @@ import dev.donkz.pendragon.domain.Printable;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,12 @@ public class Trait implements Printable {
     String name;
     String description;
     List<Proficiency> proficiencies;
+
+    public Trait() {
+        this.name = "";
+        this.description = "";
+        this.proficiencies = new ArrayList<>();
+    }
 
     @Override
     public String shortString() {

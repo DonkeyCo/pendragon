@@ -1,24 +1,30 @@
 package dev.donkz.pendragon.controller;
 
-import com.sun.javafx.scene.control.IntegerField;
+import dev.donkz.pendragon.domain.character.Monster;
+import dev.donkz.pendragon.domain.character.Npc;
 import dev.donkz.pendragon.domain.common.Ability;
 import dev.donkz.pendragon.domain.common.PriceUnit;
 import dev.donkz.pendragon.domain.variant.*;
+import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
+import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.service.PlayerManagementService;
+import dev.donkz.pendragon.service.VariantMutationService;
 import dev.donkz.pendragon.ui.CreateDialog;
 import dev.donkz.pendragon.util.ControlUtility;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
-import javafx.util.StringConverter;
+import javafx.stage.Screen;
 import org.controlsfx.control.CheckComboBox;
 
 import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class VariantEditorController {
     @FXML
@@ -37,15 +43,25 @@ public class VariantEditorController {
     private Pane featurePane;
     @FXML
     private Pane skillPane;
+    @FXML
+    private Pane monsterPane;
+    @FXML
+    private TextField txtName;
+    @FXML
+    private TextField txtDescription;
+    @FXML
+    private CheckBox cbPublic;
 
     private CampaignVariant campaignVariant;
     private VariantListController variantListController;
 
     private final PlayerManagementService playerManagementService;
+    private final VariantMutationService variantMutationService;
 
     @Inject
-    public VariantEditorController(PlayerManagementService playerManagementService) {
+    public VariantEditorController(PlayerManagementService playerManagementService, VariantMutationService variantMutationService) {
         this.playerManagementService = playerManagementService;
+        this.variantMutationService = variantMutationService;
     }
 
     @FXML
@@ -62,25 +78,36 @@ public class VariantEditorController {
         this.variantListController.switchMode();
     }
 
+    public void onSubmit() {
+        try {
+            this.variantMutationService.createVariant(campaignVariant, txtName.getText(), txtDescription.getText(), cbPublic.isSelected());
+        } catch (MultiplePlayersException | IndexAlreadyExistsException e) {
+            e.printStackTrace();
+        }
+        this.variantListController.switchMode();
+    }
+
     public void onProficiencies() {
-        SortedMap<String, Control> items = new TreeMap<>();
+        Map<String, Region> items = ControlUtility.createForm(Proficiency.class);
 
-        TextField txtName = ControlUtility.createTextField("Enter a proficiency name");
-        ComboBox<Ability> cmbAbilities = ControlUtility.createComboBox("Choose an ability type", Arrays.asList(Ability.values()));
+        ControlUtility.fillComboBox((ComboBox<Ability>) items.get("type"), Arrays.asList(Ability.values()));
 
-        items.put("Name", txtName);
-        items.put("Ability", cmbAbilities);
         Dialog<String> dialog = createDialog("Create Proficiency", items);
-
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
-                String name = txtName.getText();
-                Ability ability = cmbAbilities.getValue();
-                Proficiency proficiency = new Proficiency(name, ability);
-                campaignVariant.addProficiency(proficiency);
+                Proficiency proficiency = null;
+                try {
+                    proficiency = ControlUtility.controlsToValues(Proficiency.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                renderContent();
-                return proficiency.toString();
+                if (proficiency != null) {
+                    campaignVariant.addProficiency(proficiency);
+
+                    renderContent();
+                    return proficiency.toString();
+                }
             }
             return "None";
         });
@@ -89,28 +116,26 @@ public class VariantEditorController {
     }
 
     public void onTraits() {
-        Map<String, Control> items = new LinkedHashMap<>();
+        Map<String, Region> items = ControlUtility.createForm(Trait.class);
 
-        TextField txtName = ControlUtility.createTextField("Enter a trait name");
-        TextField txtDescription = ControlUtility.createTextField("Enter a trait description");
-        CheckComboBox<Proficiency> cmbProficiency = ControlUtility.createCheckComboBox("Select proficiencies", campaignVariant.getProficiencies());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("proficiencies"), campaignVariant.getProficiencies());
 
-        items.put("Name", txtName);
-        items.put("Description", txtDescription);
-        items.put("Proficiencies", cmbProficiency);
         Dialog<String> dialog = createDialog("Create Trait", items);
-
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
-                String name = txtName.getText();
-                String description = txtDescription.getText();
-                List<Proficiency> proficiencies = cmbProficiency.getCheckModel().getCheckedItems();
+                Trait trait = null;
+                try {
+                    trait = ControlUtility.controlsToValues(Trait.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                Trait trait = new Trait(name, description, proficiencies);
-                campaignVariant.addTrait(trait);
+                if (trait != null) {
+                    campaignVariant.addTrait(trait);
 
-                renderContent();
-                return trait.toString();
+                    renderContent();
+                    return trait.toString();
+                }
             }
             return "None";
         });
@@ -119,36 +144,27 @@ public class VariantEditorController {
     }
 
     public void onKinds() {
-        Map<String, Control> items = new LinkedHashMap<>();
-        TextField txtName = ControlUtility.createTextField("Enter a class name");
-        TextField txtDescription = ControlUtility.createTextField("Enter a class description");
-        TextArea txtNotes = ControlUtility.createTextArea("Enter additional class notes");
-        TextField txtDie = ControlUtility.createTextField("Enter the hit die for the class");
-        CheckComboBox<Proficiency> cmbProficiencies = ControlUtility.createCheckComboBox("Class Proficiencies", campaignVariant.getProficiencies());
-        CheckComboBox<Ability> cmbAbilities = ControlUtility.createCheckComboBox("Abilities", Arrays.asList(Ability.values()));
+        Map<String, Region> items = ControlUtility.createForm(Kind.class);
 
-        items.put("Name", txtName);
-        items.put("Description", txtDescription);
-        items.put("Hit Die", txtDie);
-        items.put("Proficiencies", cmbProficiencies);
-        items.put("Saving Throws", cmbAbilities);
-        items.put("Notes", txtNotes);
+        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("proficiencies"), campaignVariant.getProficiencies());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("savingThrows"), Arrays.asList(Ability.values()));
 
         Dialog<String> dialog = createDialog("Create Class", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
-                String name = txtName.getText();
-                String description = txtDescription.getText();
-                String notes = txtNotes.getText();
-                String hitDie = txtDie.getText();
-                List<Proficiency> proficiencies = cmbProficiencies.getCheckModel().getCheckedItems();
-                List<Ability> savingThrows = new ArrayList<>(cmbAbilities.getCheckModel().getCheckedItems());
+                Kind kind = null;
+                try {
+                    kind = ControlUtility.controlsToValues(Kind.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                Kind kind = new Kind(name, description, notes, hitDie, proficiencies, savingThrows);
-                campaignVariant.addKind(kind);
+                if (kind != null) {
+                    campaignVariant.addKind(kind);
 
-                renderContent();
-                return kind.toString();
+                    renderContent();
+                    return kind.toString();
+                }
             }
             return "None";
         });
@@ -157,52 +173,27 @@ public class VariantEditorController {
     }
 
     public void onRaces() {
-        Map<String, Control> items = new LinkedHashMap<>();
-        TextField txtName = ControlUtility.createTextField("Enter a race name");
-        TextField txtDescription = ControlUtility.createTextField("Enter a race description");
-        TextArea txtArea = ControlUtility.createTextArea("Enter additional race notes");
-        IntegerField intFSpeed = ControlUtility.createIntegerField("Enter a speed");
-        CheckComboBox<Ability> cmbAbility = ControlUtility.createCheckComboBox("Ability", Arrays.asList(Ability.values()));
-        TextField txtAlignment = ControlUtility.createTextField("Enter an alignment");
-        TextField txtAge = ControlUtility.createTextField("Enter an age");
-        TextField txtSize = ControlUtility.createTextField("Enter a size");
-        TextField txtLanguages = ControlUtility.createTextField("Enter languages (separate with comma)");
-        CheckComboBox<Proficiency> cmbProficiencies = ControlUtility.createCheckComboBox("Choose starting proficiencies", campaignVariant.getProficiencies());
-        CheckComboBox<Trait> cmbTraits = ControlUtility.createCheckComboBox("Choose traits", campaignVariant.getTraits());
+        Map<String, Region> items = ControlUtility.createForm(Race.class);
 
-        items.put("Name", txtName);
-        items.put("Description", txtDescription);
-        items.put("Alignment", txtAlignment);
-        items.put("Age", txtAge);
-        items.put("Size", txtSize);
-        items.put("Speed", intFSpeed);
-        items.put("Languages", txtLanguages);
-        items.put("Starting Proficiencies", cmbProficiencies);
-        items.put("Traits", cmbTraits);
-        items.put("Abilities", cmbAbility);
-        items.put("Notes", txtArea);
+        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("startingProficiencies"), campaignVariant.getProficiencies());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Trait>) items.get("traits"), campaignVariant.getTraits());
 
         Dialog<String> dialog = createDialog("Create Race", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
-                String name = txtName.getText();
-                String description = txtDescription.getText();
-                String alignment = txtAlignment.getText();
-                String age = txtAge.getText();
-                String size = txtSize.getText();
-                int speed = intFSpeed.getValue();
-                List<String> languages = Arrays.asList(txtLanguages.getText().split(","));
-                List<Proficiency> proficiencies = cmbProficiencies.getCheckModel().getCheckedItems();
-                List<Trait> traits = cmbTraits.getCheckModel().getCheckedItems();
-                List<Ability> abilities = cmbAbility.getCheckModel().getCheckedItems();
-                List<AbilityBonus> abilityBonuses = abilities.stream().map(ability -> new AbilityBonus(ability, 0)).collect(Collectors.toList());
-                String notes = txtArea.getText();
+                Race race = null;
+                try {
+                    race = ControlUtility.controlsToValues(Race.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                Race race = new Race(name, description, notes, speed, abilityBonuses, alignment, age, size, languages, proficiencies, traits);
-                campaignVariant.addRace(race);
+                if (race != null) {
+                    campaignVariant.addRace(race);
 
-                renderContent();
-                return race.toString();
+                    renderContent();
+                    return race.toString();
+                }
             }
             return "None";
         });
@@ -211,27 +202,26 @@ public class VariantEditorController {
     }
 
     public void onSkills() {
-        Map<String, Control> items = new LinkedHashMap<>();
-        TextField txtName = ControlUtility.createTextField("Enter a feature name");
-        TextField txtDescription = ControlUtility.createTextField("Enter a feature description");
-        ComboBox<Ability> cmbAbilities = ControlUtility.createComboBox("Choose a class", Arrays.asList(Ability.values()));
+        Map<String, Region> items = ControlUtility.createForm(Skill.class);
 
-        items.put("Name", txtName);
-        items.put("Description", txtDescription);
-        items.put("Ability Score", cmbAbilities);
+        ControlUtility.fillComboBox((ComboBox<Ability>) items.get("abilityScore"), Arrays.asList(Ability.values()));
 
         Dialog<String> dialog = createDialog("Create Skill", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
-                String name = txtName.getText();
-                String description = txtDescription.getText();
-                Ability ability = cmbAbilities.getValue();
+                Skill skill = null;
+                try {
+                    skill = ControlUtility.controlsToValues(Skill.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                Skill skill = new Skill(name, description, ability);
-                campaignVariant.addSkill(skill);
+                if (skill != null) {
+                    campaignVariant.addSkill(skill);
 
-                renderContent();
-                return skill.toString();
+                    renderContent();
+                    return skill.toString();
+                }
             }
             return "None";
         });
@@ -240,30 +230,26 @@ public class VariantEditorController {
     }
 
     public void onFeature() {
-        Map<String, Control> items = new LinkedHashMap<>();
-        TextField txtName = ControlUtility.createTextField("Enter a feature name");
-        TextField txtDescription = ControlUtility.createTextField("Enter a feature description");
-        ComboBox<Kind> cmbKind = ControlUtility.createComboBox("Choose a class", campaignVariant.getKinds());
-        IntegerField intFLevel = ControlUtility.createIntegerField("Enter the minimum required level");
+        Map<String, Region> items = ControlUtility.createForm(Feature.class);
 
-        items.put("Name", txtName);
-        items.put("Description", txtDescription);
-        items.put("Kind", cmbKind);
-        items.put("Level", intFLevel);
+        ControlUtility.fillComboBox((ComboBox<Kind>) items.get("kind"), campaignVariant.getKinds());
 
         Dialog<String> dialog = createDialog("Create Feature", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
-                String name = txtName.getText();
-                String description = txtDescription.getText();
-                Kind kind = cmbKind.getValue();
-                int level = intFLevel.getValue();
+                Feature feature = null;
+                try {
+                    feature = ControlUtility.controlsToValues(Feature.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                Feature feature = new Feature(name, description, kind, level);
-                campaignVariant.addFeature(feature);
+                if (feature != null) {
+                    campaignVariant.addFeature(feature);
 
-                renderContent();
-                return feature.toString();
+                    renderContent();
+                    return feature.toString();
+                }
             }
             return "None";
         });
@@ -272,24 +258,24 @@ public class VariantEditorController {
     }
 
     public void onSpell() {
-        Map<String, Control> items = new LinkedHashMap<>();
-        TextField txtName = ControlUtility.createTextField("Enter a feature name");
-        TextField txtDescription = ControlUtility.createTextField("Enter a feature description");
-
-        items.put("Name", txtName);
-        items.put("Description", txtDescription);
+        Map<String, Region> items = ControlUtility.createForm(Spell.class);
 
         Dialog<String> dialog = createDialog("Create Spell", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
-                String name = txtName.getText();
-                String description = txtDescription.getText();
+                Spell spell = null;
+                try {
+                    spell = ControlUtility.controlsToValues(Spell.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                Spell spell = new Spell(name, description);
-                campaignVariant.addSpell(spell);
+                if (spell != null) {
+                    campaignVariant.addSpell(spell);
 
-                renderContent();
-                return spell.toString();
+                    renderContent();
+                    return spell.toString();
+                }
             }
             return "None";
         });
@@ -298,33 +284,26 @@ public class VariantEditorController {
     }
 
     public void onEquipment() {
-        Map<String, Control> items = new LinkedHashMap<>();
-        TextField txtName = ControlUtility.createTextField("Enter a equipment name");
-        TextField txtDescription = ControlUtility.createTextField("Enter a equipment description");
-        IntegerField intFWeight = ControlUtility.createIntegerField("Enter a equipment weight");
-        IntegerField intFValue = ControlUtility.createIntegerField("Enter a price value");
-        ComboBox<PriceUnit> cmbUnits = ControlUtility.createComboBox("Choose a unit", Arrays.asList(PriceUnit.values()));
+        Map<String, Region> items = ControlUtility.createForm(Equipment.class);
 
-        items.put("Name", txtName);
-        items.put("Description", txtDescription);
-        items.put("Weight", intFWeight);
-        items.put("Price Value", intFValue);
-        items.put("Price Unit", cmbUnits);
+        ControlUtility.fillComboBox((ComboBox<PriceUnit>) items.get("unit"), Arrays.asList(PriceUnit.values()));
 
         Dialog<String> dialog = createDialog("Create Equipment", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
-                String name = txtName.getText();
-                String description = txtDescription.getText();
-                float weight = intFWeight.getValue();
-                int value = intFValue.getValue();
-                PriceUnit unit = cmbUnits.getValue();
+                Equipment equipment = null;
+                try {
+                    equipment = ControlUtility.controlsToValues(Equipment.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                Equipment equipment = new Equipment(name, description, weight, value, unit);
-                campaignVariant.addEquipment(equipment);
+                if (equipment != null) {
+                    campaignVariant.addEquipment(equipment);
 
-                renderContent();
-                return equipment.toString();
+                    renderContent();
+                    return equipment.toString();
+                }
             }
             return "None";
         });
@@ -332,8 +311,68 @@ public class VariantEditorController {
         dialog.show();
     }
 
-    private Dialog<String> createDialog(String title, Map<String, Control> items) {
+    public void onNpc() {
+        Map<String, Region> items = ControlUtility.createForm(Npc.class);
+
+        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("savingThrows"), Arrays.asList(Ability.values()));
+
+        Dialog<String> dialog = createDialog("Create NPC", items);
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType != null) {
+                Npc npc = null;
+                try {
+                    npc = ControlUtility.controlsToValues(Npc.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                if (npc != null) {
+                    campaignVariant.addNpc(npc);
+
+                    renderContent();
+                    return npc.toString();
+                }
+            }
+            return "None";
+        });
+
+        dialog.show();
+    }
+
+    public void onMonster() {
+        Map<String, Region> items = ControlUtility.createForm(Monster.class);
+
+        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("savingThrows"), Arrays.asList(Ability.values()));
+
+        Dialog<String> dialog = createDialog("Create Monster", items);
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType != null) {
+                Monster monster = null;
+                try {
+                    monster = ControlUtility.controlsToValues(Monster.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                if (monster != null) {
+                    campaignVariant.addMonsters(monster);
+
+                    renderContent();
+                    return monster.toString();
+                }
+            }
+            return "None";
+        });
+
+        dialog.show();
+    }
+
+    private Dialog<String> createDialog(String title, Map<String, Region> items) {
         CreateDialog dialogPane = new CreateDialog(title, items);
+        dialogPane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 5);
+        dialogPane.setMaxWidth(Screen.getPrimary().getBounds().getWidth() / 5);
+        dialogPane.setPrefHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
+        dialogPane.setMaxHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
 
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle(title);
@@ -351,6 +390,7 @@ public class VariantEditorController {
         renderPane(spellPane, campaignVariant.getSpells());
         renderPane(equipmentPane, campaignVariant.getEquipments());
         renderPane(skillPane, campaignVariant.getSkills());
+        renderPane(monsterPane, campaignVariant.getMonsters());
     }
 
     private void renderPane(Pane pane, List<?> items) {

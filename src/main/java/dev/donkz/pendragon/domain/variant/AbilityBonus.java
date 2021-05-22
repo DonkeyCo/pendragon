@@ -9,6 +9,10 @@ public class AbilityBonus implements Printable {
     Ability type;
     int bonus;
 
+    public AbilityBonus() {
+        this.type = null;
+        this.bonus = 0;
+    }
 
     @Override
     public String shortString() {

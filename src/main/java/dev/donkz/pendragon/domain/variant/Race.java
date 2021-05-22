@@ -3,6 +3,7 @@ package dev.donkz.pendragon.domain.variant;
 import dev.donkz.pendragon.domain.Printable;
 import lombok.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,20 @@ public class Race implements Printable {
     List<String> languages;
     List<Proficiency> startingProficiencies;
     List<Trait> traits;
+
+    public Race() {
+        this.name = "";
+        this.description = "";
+        this.notes = "";
+        this.speed = 0;
+        this.abilityBonuses = new ArrayList<>();
+        this.alignment = "";
+        this.age = "";
+        this.size = "";
+        this.languages = new ArrayList<>();
+        this.startingProficiencies = new ArrayList<>();
+        this.traits = new ArrayList<>();
+    }
 
     @Override
     public String shortString() {

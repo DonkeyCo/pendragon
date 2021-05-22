@@ -8,6 +8,11 @@ public class Spell implements Printable {
     String name;
     String description;
 
+    public Spell() {
+        this.name = "";
+        this.description = "";
+    }
+
     @Override
     public String shortString() {
         return name;

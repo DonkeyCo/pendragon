@@ -12,7 +12,7 @@
 
 <StackPane fx:id="campaignRoot" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.donkz.pendragon.controller.VariantListController">
    <children>
-      <VBox fx:id="overview" maxHeight="Infinity" maxWidth="Infinity" prefHeight="400.0" prefWidth="600.0" visible="true">
+      <VBox fx:id="overview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" visible="true">
          <children>
             <Label text="Available Variants">
                <font>
@@ -24,7 +24,7 @@
             </Label>
             <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                <content>
-                  <TilePane fx:id="tilePane" hgap="10" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" vgap="10">
+                  <TilePane fx:id="tilePane" hgap="10" prefHeight="200.0" prefWidth="200.0" vgap="10">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -33,7 +33,7 @@
             </ScrollPane>
             <ButtonBar prefHeight="40.0" prefWidth="200.0">
                <buttons>
-                  <Button fx:id="btnCreate" mnemonicParsing="false" text="Create" onAction="#onCreate" />
+                  <Button fx:id="btnCreate" mnemonicParsing="false" onAction="#onCreate" text="Create" />
                </buttons>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -41,6 +41,6 @@
             </ButtonBar>
          </children>
       </VBox>
-      <fx:include fx:id="editor" source="variant_editor.fxml" visible="false"/>
+      <fx:include fx:id="editor" source="variant_editor.fxml" visible="false" />
    </children>
 </StackPane>

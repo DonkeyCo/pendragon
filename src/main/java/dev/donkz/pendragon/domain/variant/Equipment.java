@@ -12,6 +12,14 @@ public class Equipment implements Printable {
     int value;
     PriceUnit unit;
 
+    public Equipment() {
+        this.name = "";
+        this.description = "";
+        this.weight = 0;
+        this.value = 0;
+        this.unit = null;
+    }
+
     @Override
     public String shortString() {
         return name;

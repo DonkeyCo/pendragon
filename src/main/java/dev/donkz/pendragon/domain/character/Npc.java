@@ -3,14 +3,21 @@ package dev.donkz.pendragon.domain.character;
 import dev.donkz.pendragon.domain.common.Ability;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class Npc implements Character {
     private String id;
 
     // General Information
-    private CharacterInformation characterInformation;
+    private String name;
+    private String notes;
+    private String alignment;
+    private String background;
+    private String kind;
+    private String race;
     private List<Ability> savingThrows;
     private int maxHp;
     private int curHp;
@@ -47,4 +54,15 @@ public class Npc implements Character {
     private AbilityScore intelligence;
     private AbilityScore wisdom;
     private AbilityScore charisma;
+
+    public Npc() {
+        this.id = UUID.randomUUID().toString();
+        this.savingThrows = new ArrayList<>();
+        this.actions = new ArrayList<>();
+        this.proficiencies = new ArrayList<>();
+        this.attacks = new ArrayList<>();
+        this.features = new ArrayList<>();
+        this.traits = new ArrayList<>();
+        this.equipment = new ArrayList<>();
+    }
 }

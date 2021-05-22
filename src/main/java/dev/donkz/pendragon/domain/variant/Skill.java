@@ -10,6 +10,11 @@ public class Skill implements Printable {
     String description;
     Ability abilityScore;
 
+    public Skill() {
+        this.name = "";
+        this.description = "";
+        this.abilityScore = null;
+    }
 
     @Override
     public String shortString() {

@@ -10,6 +10,13 @@ public class Feature implements Printable {
     Kind kind;
     int level;
 
+    public Feature() {
+        this.name = "";
+        this.description = "";
+        this.kind = null;
+        this.level = 0;
+    }
+
     @Override
     public String shortString() {
         return name;
