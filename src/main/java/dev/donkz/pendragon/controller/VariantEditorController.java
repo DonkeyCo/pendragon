@@ -70,11 +70,15 @@ public class VariantEditorController {
 
     @FXML
     public void initialize() {
-        resetVariant();
+        reset();
     }
 
-    private void resetVariant() {
+    private void reset() {
         campaignVariant = new CampaignVariant("", "", false, playerManagementService.getRegisteredPlayer());
+        txtName.clear();
+        txtDescription.clear();
+        cbPublic.setSelected(false);
+        renderContent();
     }
 
     public void setParentController(VariantListController variantListController) {
@@ -83,7 +87,7 @@ public class VariantEditorController {
 
     @FXML
     public void onCancel() {
-        resetVariant();
+        reset();
         this.variantListController.switchMode();
     }
 
@@ -94,7 +98,7 @@ public class VariantEditorController {
             e.printStackTrace();
         }
 
-        resetVariant();
+        reset();
         this.variantListController.createTiles();
         this.variantListController.switchMode();
     }
@@ -400,6 +404,14 @@ public class VariantEditorController {
     }
 
     public void renderContent() {
+        if (!campaignVariant.getName().equalsIgnoreCase("")) {
+            this.txtName.setText(campaignVariant.getName());
+        }
+        if (!campaignVariant.getDescription().equalsIgnoreCase("")) {
+            this.txtDescription.setText(campaignVariant.getDescription());
+        }
+        this.cbPublic.setSelected(campaignVariant.isVisibility());
+
         renderPane(proficiencyPane, campaignVariant.getProficiencies());
         renderPane(traitPane, campaignVariant.getTraits());
         renderPane(kindPane, campaignVariant.getKinds());

@@ -1,5 +1,6 @@
 package dev.donkz.pendragon.ui;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -17,6 +18,9 @@ public class Tile extends VBox {
     private VBox tile;
     @FXML
     private Button btnDelete;
+    @FXML
+    private Button btnStart;
+    private boolean hasStart;
 
     private final String objectId;
     private final String title;
@@ -27,6 +31,7 @@ public class Tile extends VBox {
         this.objectId = objectId;
         this.title = title;
         this.items = items;
+        this.hasStart = false;
         initTile(title, items);
     }
 
@@ -44,6 +49,7 @@ public class Tile extends VBox {
 
     private void initTile(String title, SortedMap<String, String> items) {
         lblTitle.setText(title);
+        btnStart.setVisible(hasStart);
         items.forEach((label, value) -> {
             HBox row = new HBox();
             row.setSpacing(10);
@@ -72,5 +78,10 @@ public class Tile extends VBox {
 
     public Button getBtnDelete() {
         return btnDelete;
+    }
+
+    public void setHasStart(boolean hasStart) {
+        this.hasStart = hasStart;
+        this.btnStart.setVisible(hasStart);
     }
 }

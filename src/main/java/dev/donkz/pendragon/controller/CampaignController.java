@@ -71,6 +71,9 @@ public class CampaignController implements Initializable {
         for (Campaign campaign : campaigns) {
             SortedMap<String, String> items = getTileItems(campaign, player);
             Tile tile = new Tile(campaign.getId(), campaign.getName(), items);
+            if (campaign.getDm().getId().equalsIgnoreCase(player.getId())) {
+                tile.setHasStart(true);
+            }
             tile.setOnMouseClicked(mouseEvent -> {
                 Tile sourceTile = (Tile) mouseEvent.getSource();
                 onEdit(sourceTile.getObjectId());

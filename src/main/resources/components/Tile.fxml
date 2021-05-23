@@ -15,6 +15,18 @@
     </padding>
    <ButtonBar buttonMinWidth="0.0">
      <buttons>
+         <Button fx:id="btnStart" graphicTextGap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false">
+             <graphic>
+                 <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                         <Image url="@../images/play.png" />
+                     </image>
+                     <viewport>
+                         <Rectangle2D />
+                     </viewport>
+                 </ImageView>
+             </graphic>
+         </Button>
          <Button fx:id="btnDelete" graphicTextGap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false">
             <graphic>
                <ImageView pickOnBounds="true" preserveRatio="true">
