@@ -1,7 +1,9 @@
 package dev.donkz.pendragon.controller;
 
 import dev.donkz.pendragon.domain.variant.CampaignVariant;
+import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.service.VariantListingService;
+import dev.donkz.pendragon.service.VariantMutationService;
 import dev.donkz.pendragon.ui.Tile;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
@@ -23,10 +25,12 @@ public class VariantListController {
     private VariantEditorController editorController;
 
     private final VariantListingService listingService;
+    private final VariantMutationService mutationService;
 
     @Inject
-    public VariantListController(VariantListingService listingService) {
+    public VariantListController(VariantListingService listingService, VariantMutationService mutationService) {
         this.listingService = listingService;
+        this.mutationService = mutationService;
     }
 
     public void initialize() {
@@ -34,11 +38,27 @@ public class VariantListController {
         editorController.setParentController(this);
     }
 
-    private void createTiles() {
+    public void createTiles() {
+        tilePane.getChildren().clear();
         List<CampaignVariant> variants = listingService.getAvailableVariants();
         for (CampaignVariant variant : variants) {
             SortedMap<String, String> items = getTileItems(variant);
             Tile tile = new Tile(variant.getId(), variant.getName(), items);
+
+            tile.setOnMouseClicked(mouseEvent -> {
+                editorController.setCampaignVariant(variant);
+                editorController.renderContent();
+                this.switchMode();
+            });
+            tile.getBtnDelete().setOnAction(actionEvent -> {
+                try {
+                    mutationService.deleteVariant(tile.getObjectId());
+                } catch (EntityNotFoundException e) {
+                    e.printStackTrace();
+                }
+                this.createTiles();
+            });
+
             tilePane.getChildren().add(tile);
         }
     }

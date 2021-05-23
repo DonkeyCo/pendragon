@@ -13,6 +13,7 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -129,6 +130,22 @@ public class CampaignVariant implements Printable {
     @Override
     public String shortString() {
         return name;
+    }
+
+    public String longString() {
+        return name + ": " + description + " | "
+                + "Visibility: " + (visibility ? "Public" : "Private") + " | "
+                + "Creator: " + creator.getUsername() + " | "
+                + "Spells: " + spells.stream().map(Spell::getName).collect(Collectors.joining(",")) + " | "
+                + "Features: " + features.stream().map(Feature::getName).collect(Collectors.joining(",")) + " | "
+                + "Kinds: " + kinds.stream().map(Kind::getName).collect(Collectors.joining(",")) + " | "
+                + "Races: " + races.stream().map(Race::getName).collect(Collectors.joining(",")) + " | "
+                + "Proficiencies: " + proficiencies.stream().map(Proficiency::getName).collect(Collectors.joining(",")) + " | "
+                + "Equipment: " + equipments.stream().map(Equipment::getName).collect(Collectors.joining(",")) + " | "
+                + "Traits: " + traits.stream().map(Trait::getName).collect(Collectors.joining(",")) + " | "
+                + "Skills: " + skills.stream().map(Skill::getName).collect(Collectors.joining(",")) + " | "
+                + "NPCs: " + npcs.stream().map(Npc::getName).collect(Collectors.joining(",")) + " | "
+                + "Monsters: " + monsters.stream().map(Monster::getName).collect(Collectors.joining(","));
     }
 
     public String toString() {

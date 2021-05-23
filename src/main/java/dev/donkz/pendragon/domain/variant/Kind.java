@@ -32,6 +32,10 @@ public class Kind implements Printable {
     }
 
     public String toString() {
+        return name;
+    }
+
+    public String longString() {
         return name + " | "
                 + description + " | "
                 + "Hit Die: " + hitDie + " | "

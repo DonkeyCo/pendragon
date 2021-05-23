@@ -37,10 +37,14 @@ public class Race implements Printable {
 
     @Override
     public String shortString() {
-        return null;
+        return name;
     }
 
     public String toString() {
+        return name;
+    }
+
+    public String longString() {
         return name + ": " + description + " | "
                 + "Speed: " + speed + " | "
                 + "Ability Bonuses :" + abilityBonuses.stream().map(AbilityBonus::shortString).collect(Collectors.joining(",")) + " | "

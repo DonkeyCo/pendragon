@@ -1,14 +1,17 @@
 package dev.donkz.pendragon.domain.character;
 
+import dev.donkz.pendragon.domain.Printable;
 import dev.donkz.pendragon.domain.common.Ability;
+import dev.donkz.pendragon.domain.variant.*;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
-public class Npc implements Character {
+public class Npc implements Character, Printable {
     private String id;
 
     // General Information
@@ -16,8 +19,8 @@ public class Npc implements Character {
     private String notes;
     private String alignment;
     private String background;
-    private String kind;
-    private String race;
+    private Kind kind;
+    private Race race;
     private List<Ability> savingThrows;
     private int maxHp;
     private int curHp;
@@ -31,11 +34,11 @@ public class Npc implements Character {
 
     // Character Abilities/Traits
     private List<String> actions;
-    private List<String> proficiencies;
+    private List<Proficiency> proficiencies;
     private List<String> attacks;
-    private List<String> features;
-    private List<String> traits;
-    private List<String> equipment;
+    private List<Feature> features;
+    private List<Trait> traits;
+    private List<Equipment> equipment;
 
     // Currency
     private int cp;
@@ -64,5 +67,30 @@ public class Npc implements Character {
         this.features = new ArrayList<>();
         this.traits = new ArrayList<>();
         this.equipment = new ArrayList<>();
+    }
+
+    @Override
+    public String shortString() {
+        return name;
+    }
+
+    @Override
+    public String longString() {
+        return name + " | Alignment: " + alignment + " | Background: " + background + " | "
+                + "Kind: " + kind.getName() + " | "
+                + "Race: " + race.getName() + " | "
+                + "Saving Throws: " + savingThrows.stream().map(Enum::name).collect(Collectors.joining(",")) + " | "
+                + "Max. HP: " + maxHp + " | "
+                + "Armor Class: " + ac + " | "
+                + "Initiative: " + initiative + " | "
+                + "Speed: " + speed + " | "
+                + "Hit Dice: " + String.join(",", hitDice) + " | "
+                + "Languages: " + String.join(",", languages) + " | "
+                + "Actions: " + String.join(",", actions) + " | "
+                + "Proficiencies: " + proficiencies.stream().map(Proficiency::getName).collect(Collectors.joining(",")) + " | "
+                + "Attacks: " + String.join(",", attacks) + " | "
+                + "Features: " + features.stream().map(Feature::getName).collect(Collectors.joining(",")) + " | "
+                + "Traits: " + traits.stream().map(Trait::getName).collect(Collectors.joining(",")) + " | "
+                + "Equipment: " + equipment.stream().map(Equipment::getName).collect(Collectors.joining(","));
     }
 }

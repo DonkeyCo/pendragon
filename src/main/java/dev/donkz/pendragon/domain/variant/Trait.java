@@ -26,6 +26,10 @@ public class Trait implements Printable {
     }
 
     public String toString() {
+        return name;
+    }
+
+    public String longString() {
         return name + ": " + description + " | "
                 + "Proficiencies: " + proficiencies.stream().map(Proficiency::getName).collect(Collectors.joining(","));
     }

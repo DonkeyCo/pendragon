@@ -1,11 +1,10 @@
 package dev.donkz.pendragon.util;
 
-import com.sun.javafx.reflect.ReflectUtil;
 import com.sun.javafx.scene.control.IntegerField;
 import dev.donkz.pendragon.domain.Printable;
 import dev.donkz.pendragon.domain.character.AbilityScore;
 import dev.donkz.pendragon.domain.common.Ability;
-import impl.org.controlsfx.ReflectionUtils;
+import dev.donkz.pendragon.domain.common.PriceUnit;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -14,14 +13,12 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,6 +64,20 @@ public class ControlUtility {
         HBox.setHgrow(cmbBox, Priority.ALWAYS);
         cmbBox.setTitle(title);
         cmbBox.setId(id);
+        cmbBox.setConverter(new StringConverter<T>() {
+            @Override
+            public String toString(T t) {
+                if (t instanceof Printable) {
+                    return ((Printable) t).shortString();
+                }
+                return t.toString();
+            }
+
+            @Override
+            public T fromString(String s) {
+                return null;
+            }
+        });
 
         return cmbBox;
     }
@@ -86,16 +97,27 @@ public class ControlUtility {
             String fieldName = field.getName();
             String labelName = capitalize(fieldName);
 
+            if (labelName.equalsIgnoreCase("Id")) {
+                continue;
+            }
+
             if ((field.getType().toString().contains("List"))) {
-                elements.put(fieldName, createCheckComboBox("Choose " + labelName, "cmb" + labelName));
+                String type = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getTypeName();
+                if (type.contains("String")) {
+                    elements.put(labelName, createTextField("Provide " + labelName + " (separate by comma)", "txt" + labelName));
+                } else {
+                    elements.put(labelName, createCheckComboBox("Choose " + labelName, "cmb" + labelName));
+                }
             } else if (field.getType().toString().contains("float") || field.getType().toString().contains("int")) {
-                elements.put(fieldName, createIntegerField("", "int" + labelName));
+                elements.put(labelName, createIntegerField("", "int" + labelName));
             } else if ((field.getType().toString().contains("String"))) {
-                elements.put(fieldName, createTextField("", "txt" + labelName));
+                elements.put(labelName, createTextField("", "txt" + labelName));
             } else if (field.getType().toString().contains("AbilityScore")) {
-                elements.put(fieldName, createIntegerField("", "int" + labelName));
+                elements.put(labelName, createIntegerField("", "int" + labelName));
+            } else if (field.getType().toString().contains("PriceUnit")) {
+                elements.put(labelName, createComboBox("", "cmb" + labelName));
             } else {
-                elements.put(fieldName, createComboBox("", "cmb" + labelName));
+                elements.put(labelName, createComboBox("", "cmb" + labelName));
             }
             field.setAccessible(false);
         }
@@ -108,24 +130,38 @@ public class ControlUtility {
         T object = tClass.getDeclaredConstructor().newInstance();
         for (Field field : fields) {
             field.setAccessible(true);
+            String labelName = capitalize(field.getName());
+
+            if (labelName.equalsIgnoreCase("Id")) {
+                continue;
+            }
 
             if ((field.getType().toString().contains("List"))) {
                 String type = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getTypeName();
-                List<Object> cmbBox = ((CheckComboBox<Object>) items.get(field.getName())).getCheckModel().getCheckedItems();
-                Class<?> classType = Class.forName(type);
-                field.set(object, cmbBox.stream().map(classType::cast).collect(Collectors.toList()));
+                if (type.contains("String")) {
+                    List<String> value = Arrays.asList(((TextField) items.get(labelName)).getText().split(","));
+                    field.set(object, value);
+                } else {
+                    List<Object> cmbBox = ((CheckComboBox<Object>) items.get(labelName)).getCheckModel().getCheckedItems();
+                    Class<?> classType = Class.forName(type);
+                    field.set(object, cmbBox.stream().map(classType::cast).collect(Collectors.toList()));
+                }
+
             } else if (field.getType().toString().contains("float") || field.getType().toString().contains("int")) {
-                int value = ((IntegerField) items.get(field.getName())).getValue();
+                int value = ((IntegerField) items.get(labelName)).getValue();
                 field.set(object, value);
             } else if ((field.getType().toString().contains("String"))) {
-                String value = ((TextField) items.get(field.getName())).getText();
+                String value = ((TextField) items.get(labelName)).getText();
                 field.set(object, value);
-            } else if (field.getType().toString().contains("AbilityScore") || field.getType().toString().contains("PriceUnit")) {
-                int value = ((IntegerField) items.get(field.getName())).getValue();
+            } else if (field.getType().toString().contains("AbilityScore")) {
+                int value = ((IntegerField) items.get(labelName)).getValue();
                 field.set(object, new AbilityScore(value));
+            } else if (field.getType().toString().contains("PriceUnit")) {
+                PriceUnit value = ((ComboBox<PriceUnit>) items.get(labelName)).getValue();
+                field.set(object, value);
             } else {
                 Class<?> objectClass = field.getType();
-                Object value = ((ComboBox<Object>) items.get(field.getName())).getValue();
+                Object value = ((ComboBox<Object>) items.get(labelName)).getValue();
                 field.set(object, objectClass.cast(value));
             }
 

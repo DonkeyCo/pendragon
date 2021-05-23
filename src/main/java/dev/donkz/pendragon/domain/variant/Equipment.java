@@ -26,6 +26,10 @@ public class Equipment implements Printable {
     }
 
     public String toString() {
+        return name;
+    }
+
+    public String longString() {
         return name + ": " + description + " | "
                 + "Weight: " + weight + " | "
                 + "Price: " + value + unit.getName();

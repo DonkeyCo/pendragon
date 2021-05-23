@@ -19,6 +19,10 @@ public class Spell implements Printable {
     }
 
     public String toString() {
+        return name;
+    }
+
+    public String longString() {
         return name + ": " + description;
     }
 }

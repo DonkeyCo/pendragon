@@ -22,6 +22,10 @@ public class Skill implements Printable {
     }
 
     public String toString() {
+        return name;
+    }
+
+    public String longString() {
         return name + " (" + abilityScore + ")" + ": " + description;
     }
 }

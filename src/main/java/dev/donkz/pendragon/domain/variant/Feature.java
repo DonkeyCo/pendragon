@@ -23,6 +23,10 @@ public class Feature implements Printable {
     }
 
     public String toString() {
+        return name;
+    }
+
+    public String longString() {
         return name + ": " + description + " | "
                 + "Class: " + kind.getName() + " | "
                 + "Level: " + level;

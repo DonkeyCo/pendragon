@@ -21,6 +21,10 @@ public class Proficiency implements Printable {
     }
 
     public String toString() {
+        return name + "(" + type + ")";
+    }
+
+    public String longString() {
         return name + ": " + type;
     }
 }

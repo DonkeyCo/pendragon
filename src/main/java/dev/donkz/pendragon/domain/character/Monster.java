@@ -65,6 +65,10 @@ public class Monster implements Character, Printable {
     }
 
     public String toString() {
+        return name;
+    }
+
+    public String longString() {
         return name + ": " + description + " | "
                 + "Size: " + size + " | "
                 + "Max. HP: " + maxHp + " | "

@@ -22,4 +22,8 @@ public class AbilityBonus implements Printable {
     public String toString() {
         return type + ": " + bonus;
     }
+
+    public String longString() {
+        return type + ": " + bonus;
+    }
 }

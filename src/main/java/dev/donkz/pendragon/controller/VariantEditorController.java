@@ -1,10 +1,12 @@
 package dev.donkz.pendragon.controller;
 
+import dev.donkz.pendragon.domain.Printable;
 import dev.donkz.pendragon.domain.character.Monster;
 import dev.donkz.pendragon.domain.character.Npc;
 import dev.donkz.pendragon.domain.common.Ability;
 import dev.donkz.pendragon.domain.common.PriceUnit;
 import dev.donkz.pendragon.domain.variant.*;
+import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.service.PlayerManagementService;
@@ -46,6 +48,8 @@ public class VariantEditorController {
     @FXML
     private Pane monsterPane;
     @FXML
+    private Pane npcPane;
+    @FXML
     private TextField txtName;
     @FXML
     private TextField txtDescription;
@@ -66,6 +70,10 @@ public class VariantEditorController {
 
     @FXML
     public void initialize() {
+        resetVariant();
+    }
+
+    private void resetVariant() {
         campaignVariant = new CampaignVariant("", "", false, playerManagementService.getRegisteredPlayer());
     }
 
@@ -75,22 +83,26 @@ public class VariantEditorController {
 
     @FXML
     public void onCancel() {
+        resetVariant();
         this.variantListController.switchMode();
     }
 
     public void onSubmit() {
         try {
-            this.variantMutationService.createVariant(campaignVariant, txtName.getText(), txtDescription.getText(), cbPublic.isSelected());
-        } catch (MultiplePlayersException | IndexAlreadyExistsException e) {
+            this.variantMutationService.mutateVariant(campaignVariant, txtName.getText(), txtDescription.getText(), cbPublic.isSelected());
+        } catch (MultiplePlayersException | EntityNotFoundException | IndexAlreadyExistsException e) {
             e.printStackTrace();
         }
+
+        resetVariant();
+        this.variantListController.createTiles();
         this.variantListController.switchMode();
     }
 
     public void onProficiencies() {
         Map<String, Region> items = ControlUtility.createForm(Proficiency.class);
 
-        ControlUtility.fillComboBox((ComboBox<Ability>) items.get("type"), Arrays.asList(Ability.values()));
+        ControlUtility.fillComboBox((ComboBox<Ability>) items.get("Type"), Arrays.asList(Ability.values()));
 
         Dialog<String> dialog = createDialog("Create Proficiency", items);
         dialog.setResultConverter(buttonType -> {
@@ -118,7 +130,7 @@ public class VariantEditorController {
     public void onTraits() {
         Map<String, Region> items = ControlUtility.createForm(Trait.class);
 
-        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("proficiencies"), campaignVariant.getProficiencies());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("Proficiencies"), campaignVariant.getProficiencies());
 
         Dialog<String> dialog = createDialog("Create Trait", items);
         dialog.setResultConverter(buttonType -> {
@@ -146,8 +158,8 @@ public class VariantEditorController {
     public void onKinds() {
         Map<String, Region> items = ControlUtility.createForm(Kind.class);
 
-        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("proficiencies"), campaignVariant.getProficiencies());
-        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("savingThrows"), Arrays.asList(Ability.values()));
+        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("Proficiencies"), campaignVariant.getProficiencies());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("SavingThrows"), Arrays.asList(Ability.values()));
 
         Dialog<String> dialog = createDialog("Create Class", items);
         dialog.setResultConverter(buttonType -> {
@@ -175,8 +187,8 @@ public class VariantEditorController {
     public void onRaces() {
         Map<String, Region> items = ControlUtility.createForm(Race.class);
 
-        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("startingProficiencies"), campaignVariant.getProficiencies());
-        ControlUtility.fillCheckComboBox((CheckComboBox<Trait>) items.get("traits"), campaignVariant.getTraits());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("StartingProficiencies"), campaignVariant.getProficiencies());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Trait>) items.get("Traits"), campaignVariant.getTraits());
 
         Dialog<String> dialog = createDialog("Create Race", items);
         dialog.setResultConverter(buttonType -> {
@@ -204,7 +216,7 @@ public class VariantEditorController {
     public void onSkills() {
         Map<String, Region> items = ControlUtility.createForm(Skill.class);
 
-        ControlUtility.fillComboBox((ComboBox<Ability>) items.get("abilityScore"), Arrays.asList(Ability.values()));
+        ControlUtility.fillComboBox((ComboBox<Ability>) items.get("AbilityScore"), Arrays.asList(Ability.values()));
 
         Dialog<String> dialog = createDialog("Create Skill", items);
         dialog.setResultConverter(buttonType -> {
@@ -232,7 +244,7 @@ public class VariantEditorController {
     public void onFeature() {
         Map<String, Region> items = ControlUtility.createForm(Feature.class);
 
-        ControlUtility.fillComboBox((ComboBox<Kind>) items.get("kind"), campaignVariant.getKinds());
+        ControlUtility.fillComboBox((ComboBox<Kind>) items.get("Kind"), campaignVariant.getKinds());
 
         Dialog<String> dialog = createDialog("Create Feature", items);
         dialog.setResultConverter(buttonType -> {
@@ -286,7 +298,7 @@ public class VariantEditorController {
     public void onEquipment() {
         Map<String, Region> items = ControlUtility.createForm(Equipment.class);
 
-        ControlUtility.fillComboBox((ComboBox<PriceUnit>) items.get("unit"), Arrays.asList(PriceUnit.values()));
+        ControlUtility.fillComboBox((ComboBox<PriceUnit>) items.get("Unit"), Arrays.asList(PriceUnit.values()));
 
         Dialog<String> dialog = createDialog("Create Equipment", items);
         dialog.setResultConverter(buttonType -> {
@@ -314,7 +326,13 @@ public class VariantEditorController {
     public void onNpc() {
         Map<String, Region> items = ControlUtility.createForm(Npc.class);
 
-        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("savingThrows"), Arrays.asList(Ability.values()));
+        ControlUtility.fillComboBox((ComboBox<Kind>) items.get("Kind"), campaignVariant.getKinds());
+        ControlUtility.fillComboBox((ComboBox<Race>) items.get("Race"), campaignVariant.getRaces());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("SavingThrows"), Arrays.asList(Ability.values()));
+        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("Proficiencies"), campaignVariant.getProficiencies());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Feature>) items.get("Features"), campaignVariant.getFeatures());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Trait>) items.get("Traits"), campaignVariant.getTraits());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Equipment>) items.get("Equipment"), campaignVariant.getEquipments());
 
         Dialog<String> dialog = createDialog("Create NPC", items);
         dialog.setResultConverter(buttonType -> {
@@ -342,7 +360,7 @@ public class VariantEditorController {
     public void onMonster() {
         Map<String, Region> items = ControlUtility.createForm(Monster.class);
 
-        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("savingThrows"), Arrays.asList(Ability.values()));
+        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("SavingThrows"), Arrays.asList(Ability.values()));
 
         Dialog<String> dialog = createDialog("Create Monster", items);
         dialog.setResultConverter(buttonType -> {
@@ -381,7 +399,7 @@ public class VariantEditorController {
         return dialog;
     }
 
-    private void renderContent() {
+    public void renderContent() {
         renderPane(proficiencyPane, campaignVariant.getProficiencies());
         renderPane(traitPane, campaignVariant.getTraits());
         renderPane(kindPane, campaignVariant.getKinds());
@@ -391,24 +409,32 @@ public class VariantEditorController {
         renderPane(equipmentPane, campaignVariant.getEquipments());
         renderPane(skillPane, campaignVariant.getSkills());
         renderPane(monsterPane, campaignVariant.getMonsters());
+        renderPane(npcPane, campaignVariant.getNpcs());
     }
 
     private void renderPane(Pane pane, List<?> items) {
         pane.getChildren().clear();
+
         Label lblNoItems = new Label("No Items");
         pane.getChildren().add(lblNoItems);
-        items.forEach(item -> {
-            pane.getChildren().remove(lblNoItems);
+        if (items != null) {
+            items.forEach(item -> {
+                pane.getChildren().remove(lblNoItems);
 
-            HBox row = new HBox();
-            row.setSpacing(10);
+                HBox row = new HBox();
+                row.setSpacing(10);
 
-            Label lblLabel = new Label(item.toString());
-            lblLabel.setWrapText(true);
-            lblLabel.setFont(new Font(15));
+                Label lblLabel = new Label(((Printable) item).longString());
+                lblLabel.setWrapText(true);
+                lblLabel.setFont(new Font(15));
 
-            row.getChildren().add(lblLabel);
-            pane.getChildren().add(row);
-        });
+                row.getChildren().add(lblLabel);
+                pane.getChildren().add(row);
+            });
+        }
+    }
+
+    public void setCampaignVariant(CampaignVariant campaignVariant) {
+        this.campaignVariant = campaignVariant;
     }
 }
