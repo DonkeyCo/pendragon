@@ -1,5 +1,6 @@
 package dev.donkz.pendragon.controller;
 
+import dev.donkz.pendragon.domain.campaign.Campaign;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 
@@ -44,9 +45,9 @@ public class MainController implements Controller {
     public void setParentController(Controller parentController) {
     }
 
-    public void activateLobby() {
+    public void activateLobby(Campaign campaign) {
         managementView.setVisible(!managementView.isVisible());
         sessionView.setVisible(!sessionView.isVisible());
-        sessionViewController.showLobby();
+        sessionViewController.showLobby(campaign);
     }
 }

@@ -1,5 +1,6 @@
 package dev.donkz.pendragon.domain.variant;
 
+import dev.donkz.pendragon.domain.Entity;
 import dev.donkz.pendragon.domain.Printable;
 import dev.donkz.pendragon.domain.character.Monster;
 import dev.donkz.pendragon.domain.character.Npc;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 @NoArgsConstructor
-public class CampaignVariant implements Printable {
+public class CampaignVariant implements Printable, Entity {
     private String id;
 
     private String name;

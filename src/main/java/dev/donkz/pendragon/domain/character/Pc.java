@@ -1,5 +1,6 @@
 package dev.donkz.pendragon.domain.character;
 
+import dev.donkz.pendragon.domain.Entity;
 import dev.donkz.pendragon.domain.common.Ability;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class Pc implements Character {
+public class Pc implements Character, Entity {
     private String id;
 
     // General Information

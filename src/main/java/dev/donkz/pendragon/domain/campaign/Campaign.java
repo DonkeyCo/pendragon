@@ -2,6 +2,7 @@ package dev.donkz.pendragon.domain.campaign;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import dev.donkz.pendragon.domain.Entity;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.variant.CampaignVariant;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class Campaign {
+public class Campaign implements Entity {
     @JsonProperty private String id;
 
     @JsonProperty private String name;

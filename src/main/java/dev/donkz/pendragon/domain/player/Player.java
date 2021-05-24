@@ -2,6 +2,7 @@ package dev.donkz.pendragon.domain.player;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import dev.donkz.pendragon.domain.Entity;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.exception.model.RequiredAttributeMissingException;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Builder
-public class Player {
+public class Player implements Entity {
     private String id;
     private String username;
     private String profileIconUrl;

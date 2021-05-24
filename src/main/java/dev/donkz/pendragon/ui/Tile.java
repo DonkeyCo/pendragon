@@ -80,6 +80,10 @@ public class Tile extends VBox {
         return btnDelete;
     }
 
+    public Button getBtnStart() {
+        return btnStart;
+    }
+
     public void setHasStart(boolean hasStart) {
         this.hasStart = hasStart;
         this.btnStart.setVisible(hasStart);

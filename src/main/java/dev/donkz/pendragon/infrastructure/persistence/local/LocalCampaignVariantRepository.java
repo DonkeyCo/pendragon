@@ -1,5 +1,6 @@
 package dev.donkz.pendragon.infrastructure.persistence.local;
 
+import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.variant.CampaignVariant;
 import dev.donkz.pendragon.domain.variant.CampaignVariantRepository;

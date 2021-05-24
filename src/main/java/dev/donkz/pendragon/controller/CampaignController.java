@@ -79,7 +79,7 @@ public class CampaignController implements Initializable, Controller {
                     while (rootController.getParentController() != null) {
                         rootController = parentController.getParentController();
                     }
-                    rootController.switchView();
+                    ((MainController) rootController).activateLobby(campaign);
                 });
             }
             tile.setOnMouseClicked(mouseEvent -> {

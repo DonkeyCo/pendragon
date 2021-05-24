@@ -43,5 +43,6 @@
            xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.donkz.pendragon.controller.MainController">
     <children>
         <fx:include fx:id="managementView" source="management/management_scene.fxml" />
+        <fx:include fx:id="sessionView" source="session/session_main.fxml" />
     </children>
 </StackPane>
