@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 /**
  * Controller for Management view
  */
-public class ManagementController implements Initializable {
+public class ManagementController implements Initializable, Controller {
     @FXML private Pane campaignLayer;
     @FXML private Pane characterLayer;
     @FXML private StackPane contentPane;
@@ -23,6 +23,13 @@ public class ManagementController implements Initializable {
     @FXML private ToggleGroup toggleMenu;
     @FXML private Pane variantLayer;
 
+    // Child Controllers
+    @FXML private Controller campaignLayerController;
+    @FXML private Controller characterLayerController;
+    @FXML private Controller variantLayerController;
+    @FXML private Controller playerLayerController;
+
+    private Controller parentController;
     private Pane currentPane;
     private final HashMap<String, Pane> panes;
 
@@ -38,6 +45,11 @@ public class ManagementController implements Initializable {
         loadPanes();
         initToggle();
         initVisibility();
+
+        campaignLayerController.setParentController(this);
+        characterLayerController.setParentController(this);
+        variantLayerController.setParentController(this);
+        // playerLayerController.setParentController(this);
     }
 
     /**
@@ -121,5 +133,18 @@ public class ManagementController implements Initializable {
         currentPane.setVisible(false);
         currentPane = panes.get(paneName);
         currentPane.setVisible(true);
+    }
+
+    @Override
+    public Controller getParentController() {
+        return parentController;
+    }
+
+    @Override
+    public void setParentController(Controller parentController) {
+        this.parentController = parentController;
+    }
+
+    public void switchView() {
     }
 }

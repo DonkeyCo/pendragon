@@ -3,6 +3,7 @@ package dev.donkz.pendragon.controller;
 import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
+import dev.donkz.pendragon.domain.session.HostService;
 import dev.donkz.pendragon.domain.variant.CampaignVariant;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
@@ -28,7 +29,7 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.*;
 
-public class CampaignController implements Initializable {
+public class CampaignController implements Initializable, Controller {
     @FXML private Button btnSave;
     @FXML private StackPane campaignRoot;
     @FXML private Pane editor;
@@ -39,17 +40,20 @@ public class CampaignController implements Initializable {
     @FXML private TextArea txtNotes;
     @FXML private Pane overview;
 
+    private Controller parentController;
     private final CampaignListingService listingService;
     private final CampaignManipulationService manipulationService;
     private final PlayerManagementService playerManagementService;
     private final VariantListingService variantListingService;
+    private final HostService hostService;
 
     @Inject
-    public CampaignController(CampaignListingService listingService, CampaignManipulationService manipulationService, PlayerManagementService playerManagementService, VariantListingService variantListingService) {
+    public CampaignController(CampaignListingService listingService, CampaignManipulationService manipulationService, PlayerManagementService playerManagementService, VariantListingService variantListingService, HostService hostService) {
         this.listingService = listingService;
         this.manipulationService = manipulationService;
         this.playerManagementService = playerManagementService;
         this.variantListingService = variantListingService;
+        this.hostService = hostService;
     }
 
     @Override
@@ -73,6 +77,14 @@ public class CampaignController implements Initializable {
             Tile tile = new Tile(campaign.getId(), campaign.getName(), items);
             if (campaign.getDm().getId().equalsIgnoreCase(player.getId())) {
                 tile.setHasStart(true);
+                tile.getBtnStart().setOnAction(actionEvent -> {
+                    Controller rootController = parentController;
+                    while (rootController.getParentController() != null) {
+                        rootController = parentController.getParentController();
+                    }
+                    hostService.open();
+                    rootController.switchView();
+                });
             }
             tile.setOnMouseClicked(mouseEvent -> {
                 Tile sourceTile = (Tile) mouseEvent.getSource();
@@ -124,9 +136,7 @@ public class CampaignController implements Initializable {
         if (isFilled()) {
             try {
                 manipulationService.createCampaign(name, description, variant, notes);
-            } catch (IndexAlreadyExistsException e) {
-                e.printStackTrace();
-            } catch (MultiplePlayersException e) {
+            } catch (IndexAlreadyExistsException | MultiplePlayersException e) {
                 e.printStackTrace();
             }
             switchMode();
@@ -178,9 +188,7 @@ public class CampaignController implements Initializable {
         if (isFilled()) {
             try {
                 manipulationService.updateCampaign(campaignId, name, description, variant, notes);
-            } catch (MultiplePlayersException e) {
-                e.printStackTrace();
-            } catch (EntityNotFoundException e) {
+            } catch (MultiplePlayersException | EntityNotFoundException e) {
                 e.printStackTrace();
             }
             switchMode();
@@ -231,5 +239,19 @@ public class CampaignController implements Initializable {
                         variant.getName().equalsIgnoreCase(s)).findFirst().orElse(null);
             }
         });
+    }
+
+    @Override
+    public Controller getParentController() {
+        return parentController;
+    }
+
+    @Override
+    public void setParentController(Controller parentController) {
+        this.parentController = parentController;
+    }
+
+    @Override
+    public void switchView() {
     }
 }

@@ -14,6 +14,7 @@ import dev.donkz.pendragon.service.VariantMutationService;
 import dev.donkz.pendragon.ui.CreateDialog;
 import dev.donkz.pendragon.util.ControlUtility;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -24,11 +25,13 @@ import org.controlsfx.control.CheckComboBox;
 
 import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
-public class VariantEditorController {
+public class VariantEditorController implements Initializable, Controller {
     @FXML
     private Pane proficiencyPane;
     @FXML
@@ -57,7 +60,7 @@ public class VariantEditorController {
     private CheckBox cbPublic;
 
     private CampaignVariant campaignVariant;
-    private VariantListController variantListController;
+    private VariantListController parentController;
 
     private final PlayerManagementService playerManagementService;
     private final VariantMutationService variantMutationService;
@@ -69,7 +72,7 @@ public class VariantEditorController {
     }
 
     @FXML
-    public void initialize() {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         reset();
     }
 
@@ -81,14 +84,10 @@ public class VariantEditorController {
         renderContent();
     }
 
-    public void setParentController(VariantListController variantListController) {
-        this.variantListController = variantListController;
-    }
-
     @FXML
     public void onCancel() {
         reset();
-        this.variantListController.switchMode();
+        this.parentController.switchView();
     }
 
     public void onSubmit() {
@@ -99,8 +98,8 @@ public class VariantEditorController {
         }
 
         reset();
-        this.variantListController.createTiles();
-        this.variantListController.switchMode();
+        this.parentController.createTiles();
+        this.parentController.switchView();
     }
 
     public void onProficiencies() {
@@ -448,5 +447,18 @@ public class VariantEditorController {
 
     public void setCampaignVariant(CampaignVariant campaignVariant) {
         this.campaignVariant = campaignVariant;
+    }
+
+    @Override
+    public Controller getParentController() {
+        return parentController;
+    }
+
+    @Override
+    public void setParentController(Controller parentController) {
+        this.parentController = (VariantListController) parentController;
+    }
+
+    public void switchView() {
     }
 }

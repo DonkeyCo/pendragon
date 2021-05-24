@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class VariantListController {
+public class VariantListController implements Controller {
     @FXML
     private TilePane tilePane;
     @FXML
@@ -24,6 +24,7 @@ public class VariantListController {
     @FXML
     private VariantEditorController editorController;
 
+    private Controller parentController;
     private final VariantListingService listingService;
     private final VariantMutationService mutationService;
 
@@ -48,7 +49,7 @@ public class VariantListController {
             tile.setOnMouseClicked(mouseEvent -> {
                 editorController.setCampaignVariant(variant);
                 editorController.renderContent();
-                this.switchMode();
+                this.switchView();
             });
             tile.getBtnDelete().setOnAction(actionEvent -> {
                 try {
@@ -79,11 +80,21 @@ public class VariantListController {
 
     @FXML
     public void onCreate() {
-        switchMode();
+        switchView();
     }
 
-    public void switchMode() {
+    public void switchView() {
         overview.setVisible(!overview.isVisible());
         editor.setVisible(!editor.isVisible());
+    }
+
+    @Override
+    public Controller getParentController() {
+        return parentController;
+    }
+
+    @Override
+    public void setParentController(Controller parentController) {
+        this.parentController = parentController;
     }
 }

@@ -1,25 +1,22 @@
 package dev.donkz.pendragon.controller;
 
-import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
-import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
-import dev.donkz.pendragon.infrastructure.persistence.local.LocalPcRepository;
-import dev.donkz.pendragon.infrastructure.persistence.local.LocalPlayerRepository;
 import dev.donkz.pendragon.service.CharacterListingService;
 import dev.donkz.pendragon.ui.Tile;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.layout.TilePane;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.net.URL;
+import java.util.*;
 
-public class CharacterListController {
-    @FXML private TilePane tilePane;
+public class CharacterListController implements Initializable, Controller {
+    @FXML
+    private TilePane tilePane;
 
+    private Controller parentController;
     private final CharacterListingService listingService;
 
     @Inject
@@ -27,12 +24,12 @@ public class CharacterListController {
         this.listingService = listingService;
     }
 
-    public void initialize() {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         createTiles();
     }
 
     private void createTiles() {
-        List<Pc> characters = new ArrayList<>();
+        List<Pc> characters;
         try {
             characters = listingService.getPlayerCharacters();
         } catch (MultiplePlayersException e) {
@@ -62,5 +59,18 @@ public class CharacterListController {
         items.put("Race", pc.getRace());
         items.put("Level", String.valueOf(pc.getLevel()));
         return items;
+    }
+
+    @Override
+    public Controller getParentController() {
+        return parentController;
+    }
+
+    @Override
+    public void setParentController(Controller parentController) {
+        this.parentController = parentController;
+    }
+
+    public void switchView() {
     }
 }
