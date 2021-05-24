@@ -3,7 +3,6 @@ package dev.donkz.pendragon.controller;
 import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
-import dev.donkz.pendragon.domain.session.HostService;
 import dev.donkz.pendragon.domain.variant.CampaignVariant;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
@@ -45,15 +44,13 @@ public class CampaignController implements Initializable, Controller {
     private final CampaignManipulationService manipulationService;
     private final PlayerManagementService playerManagementService;
     private final VariantListingService variantListingService;
-    private final HostService hostService;
 
     @Inject
-    public CampaignController(CampaignListingService listingService, CampaignManipulationService manipulationService, PlayerManagementService playerManagementService, VariantListingService variantListingService, HostService hostService) {
+    public CampaignController(CampaignListingService listingService, CampaignManipulationService manipulationService, PlayerManagementService playerManagementService, VariantListingService variantListingService) {
         this.listingService = listingService;
         this.manipulationService = manipulationService;
         this.playerManagementService = playerManagementService;
         this.variantListingService = variantListingService;
-        this.hostService = hostService;
     }
 
     @Override
@@ -82,7 +79,6 @@ public class CampaignController implements Initializable, Controller {
                     while (rootController.getParentController() != null) {
                         rootController = parentController.getParentController();
                     }
-                    hostService.open();
                     rootController.switchView();
                 });
             }
