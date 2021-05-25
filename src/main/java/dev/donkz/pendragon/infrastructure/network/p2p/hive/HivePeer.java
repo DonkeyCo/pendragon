@@ -63,7 +63,8 @@ public class HivePeer implements Peer {
             return;
         }
         peerNode = H2HNode.createNode(fileConfig);
-        peerNode.connect(netConfig);
+        boolean connected = peerNode.connect(netConfig);
+        System.out.println(connected);
     }
 
     @Override
@@ -76,7 +77,8 @@ public class HivePeer implements Peer {
             return;
         }
         peerNode = H2HNode.createNode(fileConfig);
-        peerNode.connect(netConfig);
+        boolean connected = peerNode.connect(netConfig);
+        System.out.println("Connected: " + connected);
     }
 
     @Override

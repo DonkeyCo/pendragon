@@ -38,4 +38,14 @@ public class SessionManagementService {
 
         return session;
     }
+
+    public Session joinSession(String host) throws UnknownHostException, NoPeerConnectionException, ProcessExecutionException, InvalidProcessStateException {
+        Player player = playerManagementService.getRegisteredPlayer();
+
+        String playerId = player.getId();
+        peer.connect(host, playerId);
+        peer.register(playerId);
+
+        return null;
+    }
 }

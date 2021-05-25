@@ -71,6 +71,14 @@ public class LobbyController implements Controller, Initializable {
         lblCode.setText(session.getHostAddress());
     }
 
+    public void joinSession(String host) {
+        try {
+            session = sessionManagementService.joinSession(host);
+        } catch (UnknownHostException | NoPeerConnectionException | ProcessExecutionException | InvalidProcessStateException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void render() {
         lblLobbyName.setText("Lobby - " + session.getCampaign().getName());
         Player host = playerManagementService.getRegisteredPlayer();

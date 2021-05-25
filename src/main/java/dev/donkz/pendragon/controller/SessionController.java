@@ -54,6 +54,11 @@ public class SessionController implements Initializable, Controller {
         lobbyViewController.render();
     }
 
+    public void joinLobby(String host) {
+        lobbyView.setVisible(true);
+        lobbyViewController.joinSession(host);
+    }
+
     public Controller getLobbyController() {
         return lobbyViewController;
     }

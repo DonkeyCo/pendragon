@@ -50,4 +50,10 @@ public class MainController implements Controller {
         sessionView.setVisible(!sessionView.isVisible());
         sessionViewController.showLobby(campaign);
     }
+
+    public void joinLobby(String host) {
+        managementView.setVisible(!managementView.isVisible());
+        sessionView.setVisible(!sessionView.isVisible());
+        sessionViewController.joinLobby(host);
+    }
 }

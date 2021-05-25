@@ -15,10 +15,7 @@ import dev.donkz.pendragon.ui.Tile;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -113,6 +110,19 @@ public class CampaignController implements Initializable, Controller {
         }
         items.put("Character", characterName);
         return items;
+    }
+
+    @FXML
+    public void onJoin() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setHeaderText("Enter Host Address");
+        dialog.showAndWait().ifPresent(response -> {
+            Controller rootController = parentController;
+            while (rootController.getParentController() != null) {
+                rootController = parentController.getParentController();
+            }
+            ((MainController) rootController).joinLobby(response);
+        });
     }
 
     @FXML
