@@ -6,12 +6,12 @@ import dev.donkz.pendragon.domain.player.PlayerRepository;
 import dev.donkz.pendragon.domain.session.SessionRepository;
 import dev.donkz.pendragon.domain.variant.CampaignVariantRepository;
 import dev.donkz.pendragon.infrastructure.network.p2p.Peer;
+import dev.donkz.pendragon.util.FileHandler;
 import org.hive2hive.core.api.H2HNode;
 import org.hive2hive.core.api.configs.FileConfiguration;
 import org.hive2hive.core.api.configs.NetworkConfiguration;
 import org.hive2hive.core.api.interfaces.IFileConfiguration;
 import org.hive2hive.core.api.interfaces.IH2HNode;
-import org.hive2hive.core.api.interfaces.INetworkConfiguration;
 import org.hive2hive.core.api.interfaces.IUserManager;
 import org.hive2hive.core.exceptions.NoPeerConnectionException;
 import org.hive2hive.core.exceptions.NoSessionException;
@@ -28,12 +28,12 @@ import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 public class HivePeer implements Peer {
     private final IFileConfiguration fileConfig;
     private IH2HNode peerNode;
     private final IFileAgent fileAgent;
+    private final FileHandler fileHandler;
 
     private final CampaignRepository campaignRepository;
     private final PcRepository pcRepository;
@@ -46,6 +46,7 @@ public class HivePeer implements Peer {
         this.fileConfig = FileConfiguration.createDefault();
         this.peerNode = null;
         fileAgent = new HiveFileAgent();
+        fileHandler = new FileHandler();
         this.campaignRepository = campaignRepository;
         this.pcRepository = pcRepository;
         this.playerRepository = playerRepository;
@@ -55,42 +56,24 @@ public class HivePeer implements Peer {
 
     @Override
     public void start(String nodeId) {
-        INetworkConfiguration netConfig = NetworkConfiguration.createInitial(nodeId);
-
-        if (peerNode != null) {
-            // TODO: error handling
-            System.out.println("Error: Node already exists.");
-            return;
-        }
         peerNode = H2HNode.createNode(fileConfig);
-        boolean connected = peerNode.connect(netConfig);
-        System.out.println(connected);
+        peerNode.connect(NetworkConfiguration.createInitial());
     }
 
     @Override
     public void connect(String host, String nodeId) throws UnknownHostException {
-        INetworkConfiguration netConfig = NetworkConfiguration.create(nodeId, InetAddress.getByName(host));
-
-        if (peerNode != null) {
-            // TODO: error handling
-            System.out.println("Error: Node already exists.");
-            return;
-        }
         peerNode = H2HNode.createNode(fileConfig);
-        boolean connected = peerNode.connect(netConfig);
-        System.out.println("Connected: " + connected);
+        peerNode.connect(NetworkConfiguration.create(InetAddress.getByName(host)));
     }
 
     @Override
     public void register(String playerId) throws NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException {
         IUserManager userManager = peerNode.getUserManager();
 
-        UserCredentials credentials = new UserCredentials(playerId, "password", "pin");
+        UserCredentials credentials = new UserCredentials("Alice", "password", "pin");
 
-        if (!userManager.isRegistered(credentials.getUserId())) {
-            userManager.createRegisterProcess(credentials).execute();
-        }
-        System.out.println(playerId + " is registered: " + userManager.isRegistered(playerId));
+        userManager.createRegisterProcess(credentials).execute();
+        System.out.println(playerId + " is registered: " + userManager.isRegistered("Alice"));
         userManager.createLoginProcess(credentials, fileAgent).execute();
         peerNode.getFileManager().subscribeFileEvents(new HiveEventListener(peerNode.getFileManager(), campaignRepository, pcRepository, playerRepository, variantRepository, sessionRepository));
 
@@ -103,22 +86,17 @@ public class HivePeer implements Peer {
     }
 
     @Override
-    public void exchange(String path, String repository, String id) throws NoSessionException, NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException {
-        Path target = Paths.get(fileAgent.getRoot().getPath(), repository, repository + "_" + id);
-        try {
-            Files.copy(Paths.get(path), target, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Copy was not successful.");
-            return;
-        }
-        File file = new File(target.toUri());
+    public void exchange(String content, String repository, String id) throws NoSessionException, NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException {
+        Path path = Paths.get(fileAgent.getRoot().getPath(), repository + "_" + id + ".json");
+        fileHandler.write2File(path, content);
+        File file = new File(path.toUri());
+
         peerNode.getFileManager().createAddProcess(file).execute();
     }
 
     @Override
-    public void remove(String repository, String filename) throws NoSessionException, NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException {
-        Path target = Paths.get(fileAgent.getRoot().getPath(), repository, filename);
+    public void remove(String repository, String id) throws NoSessionException, NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException {
+        Path target = Paths.get(fileAgent.getRoot().getPath(), repository, repository + "_" + id + ".json");
         try {
             Files.delete(target);
         } catch (IOException e) {

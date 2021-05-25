@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
 import org.hive2hive.core.exceptions.NoPeerConnectionException;
+import org.hive2hive.core.exceptions.NoSessionException;
 import org.hive2hive.processframework.exceptions.InvalidProcessStateException;
 import org.hive2hive.processframework.exceptions.ProcessExecutionException;
 
@@ -65,7 +66,7 @@ public class LobbyController implements Controller, Initializable {
     public void openSession(Campaign campaign) {
         try {
             session = sessionManagementService.createSession(campaign);
-        } catch (NoPeerConnectionException | ProcessExecutionException | InvalidProcessStateException | UnknownHostException e) {
+        } catch (NoPeerConnectionException | ProcessExecutionException | InvalidProcessStateException | UnknownHostException | NoSessionException e) {
             e.printStackTrace();
         }
         lblCode.setText(session.getHostAddress());
@@ -74,7 +75,7 @@ public class LobbyController implements Controller, Initializable {
     public void joinSession(String host) {
         try {
             session = sessionManagementService.joinSession(host);
-        } catch (UnknownHostException | NoPeerConnectionException | ProcessExecutionException | InvalidProcessStateException e) {
+        } catch (UnknownHostException | NoPeerConnectionException | ProcessExecutionException | InvalidProcessStateException | NoSessionException e) {
             e.printStackTrace();
         }
     }

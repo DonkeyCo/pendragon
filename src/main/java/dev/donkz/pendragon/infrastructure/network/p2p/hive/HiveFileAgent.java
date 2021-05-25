@@ -5,6 +5,7 @@ import org.hive2hive.core.file.IFileAgent;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 public class HiveFileAgent implements IFileAgent {
@@ -12,7 +13,7 @@ public class HiveFileAgent implements IFileAgent {
     private final File root;
 
     public HiveFileAgent() {
-        root = new File(FileUtils.getTempDirectory(), UUID.randomUUID().toString());
+        root = new File(Paths.get("temp", UUID.randomUUID().toString()).toUri());
         root.mkdirs();
     }
 

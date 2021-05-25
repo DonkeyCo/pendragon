@@ -10,8 +10,8 @@ import java.net.UnknownHostException;
 public interface Peer {
     void start(String nodeId);
     void connect(String host, String nodeId) throws UnknownHostException;
-    void register(String playerId) throws NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException;
+    void register(String playerId) throws NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException, NoSessionException;
     void disconnect();
-    void exchange(String path, String repository, String id) throws NoSessionException, NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException;
+    void exchange(String content, String repository, String id) throws NoSessionException, NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException;
     void remove(String repository, String filename) throws NoSessionException, NoPeerConnectionException, InvalidProcessStateException, ProcessExecutionException;
 }

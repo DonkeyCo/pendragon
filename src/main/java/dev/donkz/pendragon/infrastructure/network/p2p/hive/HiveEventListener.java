@@ -109,7 +109,7 @@ public class HiveEventListener implements IFileEventListener {
         } else if (repository.equalsIgnoreCase("pcs")) {
             Pc pc = jsonUtility.json2Object(file, Pc.class);
             pcRepository.save(pc);
-        } else if (repository.equalsIgnoreCase("player")) {
+        } else if (repository.equalsIgnoreCase("players")) {
             Player player = jsonUtility.json2Object(file, Player.class);
             playerRepository.save(player);
         } else if (repository.equalsIgnoreCase("session")) {
@@ -128,7 +128,7 @@ public class HiveEventListener implements IFileEventListener {
         } else if (repository.equalsIgnoreCase("pcs")) {
             Pc pc = jsonUtility.json2Object(file, Pc.class);
             pcRepository.update(id, pc);
-        } else if (repository.equalsIgnoreCase("player")) {
+        } else if (repository.equalsIgnoreCase("players")) {
             Player player = jsonUtility.json2Object(file, Player.class);
             playerRepository.update(id, player);
         } else if (repository.equalsIgnoreCase("session")) {
@@ -144,7 +144,7 @@ public class HiveEventListener implements IFileEventListener {
             variantRepository.delete(id);
         } else if (repository.equalsIgnoreCase("pcs")) {
             pcRepository.delete(id);
-        } else if (repository.equalsIgnoreCase("player")) {
+        } else if (repository.equalsIgnoreCase("players")) {
             playerRepository.delete(id);
         } else if (repository.equalsIgnoreCase("session")) {
             sessionRepository.delete(id);
