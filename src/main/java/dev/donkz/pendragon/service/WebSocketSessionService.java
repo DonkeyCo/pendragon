@@ -59,7 +59,8 @@ public class WebSocketSessionService {
                 e.printStackTrace();
             }
 
-            communicator.send("updateSession", jsonUtility.object2Json(session));
+            System.out.println(session.getRoom());
+            communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
         });
         communicator.getSocket().on("leftLobby", objects -> {
             Session session = jsonUtility.json2Object((String) objects[1], Session.class);
