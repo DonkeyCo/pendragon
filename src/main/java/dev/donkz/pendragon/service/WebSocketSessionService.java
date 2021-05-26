@@ -1,5 +1,6 @@
 package dev.donkz.pendragon.service;
 
+import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
 import dev.donkz.pendragon.domain.session.Session;
@@ -29,12 +30,13 @@ public class WebSocketSessionService {
         System.out.println(connected);
     }
 
-    public void createLobby() throws MultiplePlayersException, IndexAlreadyExistsException, SessionAlreadyExists {
+    public void createLobby(Campaign campaign) throws MultiplePlayersException, IndexAlreadyExistsException, SessionAlreadyExists {
         Player player = playerRepository.findRegisteredPlayer();
         Session lobbySession = new Session();
 
-        lobbySession.setHost(player);
         lobbySession.setId(player.getId());
+        lobbySession.setHost(player);
+        lobbySession.setCampaign(campaign);
         sessionRepository.save(lobbySession);
 
         communicator.send("createLobby", player.getId(), jsonUtility.object2Json(player));

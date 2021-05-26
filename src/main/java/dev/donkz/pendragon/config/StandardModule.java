@@ -75,4 +75,9 @@ public class StandardModule extends AbstractModule {
         return new WebSocketCommunicator();
     }
 
+    @Provides
+    static WebSocketSessionService webSocketSessionService() {
+        return new WebSocketSessionService(communicator(), playerRepository(), sessionRepository());
+    }
+
 }

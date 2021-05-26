@@ -11,15 +11,15 @@ import javafx.application.Application;
 public class App {
     public static void main(String[] args) throws Exception {
         System.out.println("Hello World");
-//        Application.launch(MainWindow.class, args);
-
-        WebSocketSessionService sessionService = new WebSocketSessionService(
-                new WebSocketCommunicator(),
-                new LocalPlayerRepository(),
-                new LocalSessionRepository(new LocalDriver())
-        );
-        sessionService.connect();
-        sessionService.createLobby();
+        Application.launch(MainWindow.class, args);
+//
+//        WebSocketSessionService sessionService = new WebSocketSessionService(
+//                new WebSocketCommunicator(),
+//                new LocalPlayerRepository(),
+//                new LocalSessionRepository(new LocalDriver())
+//        );
+//        sessionService.connect();
+//        sessionService.createLobby();
 
 //        CampaignRepository repo = new LocalCampaignRepository();
 //        PlayerRepository pRepo = new LocalPlayerRepository();

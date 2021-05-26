@@ -6,9 +6,14 @@ import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.session.Session;
+import dev.donkz.pendragon.exception.infrastructure.ConnectionException;
+import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
+import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
 import dev.donkz.pendragon.service.CharacterListingService;
 import dev.donkz.pendragon.service.PlayerManagementService;
+import dev.donkz.pendragon.service.SessionService;
+import dev.donkz.pendragon.service.WebSocketSessionService;
 import dev.donkz.pendragon.util.ControlUtility;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,12 +40,16 @@ public class LobbyController implements Controller, Initializable {
     private Controller parentController;
     private final PlayerManagementService playerManagementService;
     private final CharacterListingService characterListingService;
+    private final WebSocketSessionService webSocketSessionService;
+    private final SessionService sessionService;
     private Session session;
 
     @Inject
-    public LobbyController(PlayerManagementService playerManagementService, CharacterListingService characterListingService) {
+    public LobbyController(PlayerManagementService playerManagementService, CharacterListingService characterListingService, WebSocketSessionService webSocketSessionService, SessionService sessionService) {
         this.playerManagementService = playerManagementService;
         this.characterListingService = characterListingService;
+        this.webSocketSessionService = webSocketSessionService;
+        this.sessionService = sessionService;
     }
 
     @Override
@@ -61,12 +70,35 @@ public class LobbyController implements Controller, Initializable {
     }
 
     public void openSession(Campaign campaign) {
+        try {
+            webSocketSessionService.connect();
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+        }
+        try {
+            webSocketSessionService.createLobby(campaign);
+        } catch (MultiplePlayersException | IndexAlreadyExistsException | SessionAlreadyExists e) {
+            e.printStackTrace();
+        }
+        fillCode();
     }
 
-    public void joinSession(String host) {
+    public void joinSession(String room) {
+        try {
+            webSocketSessionService.connect();
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+        }
+        try {
+            webSocketSessionService.joinLobby(room);
+        } catch (MultiplePlayersException e) {
+            e.printStackTrace();
+        }
+        fillCode();
     }
 
     public void render() {
+        Session session = sessionService.getCurrentSession();
         lblLobbyName.setText("Lobby - " + session.getCampaign().getName());
         Player host = playerManagementService.getRegisteredPlayer();
         lblDm.setText(host.getUsername());
@@ -102,5 +134,20 @@ public class LobbyController implements Controller, Initializable {
 
     public void setSession(Session session) {
         this.session = session;
+    }
+
+    private void fillCode() {
+        Session session = null;
+        int tries = 0;
+        do {
+            session = sessionService.getCurrentSession();
+            tries++;
+            try {
+                Thread.sleep(1000*tries);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } while(session.getRoom() == null && tries < 5);
+        lblCode.setText(session.getRoom());
     }
 }
