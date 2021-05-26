@@ -3,10 +3,12 @@ package dev.donkz.pendragon.controller;
 import com.sun.javafx.tk.TKClipboard;
 import com.sun.javafx.tk.Toolkit;
 import dev.donkz.pendragon.domain.campaign.Campaign;
+import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.session.Session;
+import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
+import dev.donkz.pendragon.service.CharacterListingService;
 import dev.donkz.pendragon.service.PlayerManagementService;
-import dev.donkz.pendragon.service.SessionManagementService;
 import dev.donkz.pendragon.util.ControlUtility;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,14 +17,9 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
-import org.hive2hive.core.exceptions.NoPeerConnectionException;
-import org.hive2hive.core.exceptions.NoSessionException;
-import org.hive2hive.processframework.exceptions.InvalidProcessStateException;
-import org.hive2hive.processframework.exceptions.ProcessExecutionException;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 
 public class LobbyController implements Controller, Initializable {
@@ -36,14 +33,14 @@ public class LobbyController implements Controller, Initializable {
     private Label lblLobbyName;
 
     private Controller parentController;
-    private final SessionManagementService sessionManagementService;
     private final PlayerManagementService playerManagementService;
+    private final CharacterListingService characterListingService;
     private Session session;
 
     @Inject
-    public LobbyController(SessionManagementService sessionManagementService, PlayerManagementService playerManagementService) {
-        this.sessionManagementService = sessionManagementService;
+    public LobbyController(PlayerManagementService playerManagementService, CharacterListingService characterListingService) {
         this.playerManagementService = playerManagementService;
+        this.characterListingService = characterListingService;
     }
 
     @Override
@@ -64,20 +61,9 @@ public class LobbyController implements Controller, Initializable {
     }
 
     public void openSession(Campaign campaign) {
-        try {
-            session = sessionManagementService.createSession(campaign);
-        } catch (NoPeerConnectionException | ProcessExecutionException | InvalidProcessStateException | UnknownHostException | NoSessionException e) {
-            e.printStackTrace();
-        }
-        lblCode.setText(session.getHostAddress());
     }
 
     public void joinSession(String host) {
-        try {
-            session = sessionManagementService.joinSession(host);
-        } catch (UnknownHostException | NoPeerConnectionException | ProcessExecutionException | InvalidProcessStateException | NoSessionException e) {
-            e.printStackTrace();
-        }
     }
 
     public void render() {
@@ -86,8 +72,16 @@ public class LobbyController implements Controller, Initializable {
         lblDm.setText(host.getUsername());
 
         if (session.getParticipants() != null) {
-            session.getParticipants().forEach((player, pc) -> {
-                Label lblPlayer = new Label(player.getUsername());
+            session.getParticipants().forEach((playerId, pcId) -> {
+                Player participant = playerManagementService.findPlayerById(playerId);
+                Pc pc = null;
+                try {
+                    pc = characterListingService.getPlayerCharacters().stream().filter(p -> p.getId().equalsIgnoreCase(pcId)).findFirst().orElse(null);
+                } catch (MultiplePlayersException e) {
+                    e.printStackTrace();
+                }
+
+                Label lblPlayer = new Label(participant.getUsername());
                 Label lblPc = new Label("None");
                 if (pc != null) {
                     lblPc.setText(pc.getName());
@@ -101,6 +95,9 @@ public class LobbyController implements Controller, Initializable {
     public void onCopy() {
         TKClipboard clipboard = Toolkit.getToolkit().getSystemClipboard();
         clipboard.putContent(new Pair<>(DataFormat.PLAIN_TEXT, lblCode.getText()));
+    }
+
+    public void onStart() {
     }
 
     public void setSession(Session session) {

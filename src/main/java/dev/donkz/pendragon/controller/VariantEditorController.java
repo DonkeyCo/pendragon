@@ -9,6 +9,7 @@ import dev.donkz.pendragon.domain.variant.*;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
+import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
 import dev.donkz.pendragon.service.PlayerManagementService;
 import dev.donkz.pendragon.service.VariantMutationService;
 import dev.donkz.pendragon.ui.CreateDialog;
@@ -93,7 +94,7 @@ public class VariantEditorController implements Initializable, Controller {
     public void onSubmit() {
         try {
             this.variantMutationService.mutateVariant(campaignVariant, txtName.getText(), txtDescription.getText(), cbPublic.isSelected());
-        } catch (MultiplePlayersException | EntityNotFoundException | IndexAlreadyExistsException e) {
+        } catch (MultiplePlayersException | EntityNotFoundException | IndexAlreadyExistsException | SessionAlreadyExists e) {
             e.printStackTrace();
         }
 

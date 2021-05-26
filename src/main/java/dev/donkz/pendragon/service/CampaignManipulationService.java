@@ -9,6 +9,7 @@ import dev.donkz.pendragon.domain.variant.CampaignVariantRepository;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
+import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class CampaignManipulationService {
         this.playerRepository = playerRepository;
     }
 
-    public void createCampaign(String name, String description, CampaignVariant variant, String notes) throws IndexAlreadyExistsException, MultiplePlayersException {
+    public void createCampaign(String name, String description, CampaignVariant variant, String notes) throws IndexAlreadyExistsException, MultiplePlayersException, SessionAlreadyExists {
         Player player = playerRepository.findRegisteredPlayer();
 
         Campaign campaign = new Campaign(name, variant, player);

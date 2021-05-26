@@ -36,6 +36,16 @@ public class JSONUtility {
         return object;
     }
 
+    public <T> T json2Object(String content, Class<T> classType) {
+        T object = null;
+        try {
+            object = this.mapper.readValue(content, classType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
     public String object2Json(Object object) {
         String content = "";
         try {

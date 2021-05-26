@@ -7,6 +7,7 @@ import dev.donkz.pendragon.domain.variant.CampaignVariantRepository;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
+import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
 
 import javax.inject.Inject;
 
@@ -20,7 +21,7 @@ public class VariantMutationService {
         this.playerRepository = playerRepository;
     }
 
-    public void mutateVariant(CampaignVariant variant, String name, String description, boolean isPublic) throws MultiplePlayersException, EntityNotFoundException, IndexAlreadyExistsException {
+    public void mutateVariant(CampaignVariant variant, String name, String description, boolean isPublic) throws MultiplePlayersException, EntityNotFoundException, IndexAlreadyExistsException, SessionAlreadyExists {
         boolean isNew = false;
         try {
             variantRepository.findById(variant.getId());

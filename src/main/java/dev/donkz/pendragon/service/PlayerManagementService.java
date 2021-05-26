@@ -2,6 +2,7 @@ package dev.donkz.pendragon.service;
 
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
+import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.exception.model.RequiredAttributeMissingException;
@@ -38,5 +39,14 @@ public class PlayerManagementService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public Player findPlayerById(String id) {
+        try {
+            return repository.findById(id);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

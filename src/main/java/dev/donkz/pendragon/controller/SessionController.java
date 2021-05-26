@@ -1,17 +1,12 @@
 package dev.donkz.pendragon.controller;
 
 import dev.donkz.pendragon.domain.campaign.Campaign;
-import dev.donkz.pendragon.service.SessionManagementService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
-import org.hive2hive.core.exceptions.NoPeerConnectionException;
-import org.hive2hive.processframework.exceptions.InvalidProcessStateException;
-import org.hive2hive.processframework.exceptions.ProcessExecutionException;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 
 public class SessionController implements Initializable, Controller {
@@ -21,11 +16,9 @@ public class SessionController implements Initializable, Controller {
     private LobbyController lobbyViewController; // injected via FXML
 
     private Controller parentController;
-    private final SessionManagementService sessionManagementService;
 
     @Inject
-    public SessionController(SessionManagementService sessionManagementService) {
-        this.sessionManagementService = sessionManagementService;
+    public SessionController() {
     }
 
     @Override

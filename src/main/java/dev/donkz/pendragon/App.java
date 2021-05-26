@@ -1,33 +1,43 @@
 package dev.donkz.pendragon;
 
-import dev.donkz.pendragon.domain.character.Pc;
-import dev.donkz.pendragon.domain.character.PcRepository;
-import dev.donkz.pendragon.domain.player.Player;
-import dev.donkz.pendragon.domain.player.PlayerRepository;
-import dev.donkz.pendragon.domain.variant.CampaignVariant;
-import dev.donkz.pendragon.domain.variant.CampaignVariantRepository;
-import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
-import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
-import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
-import dev.donkz.pendragon.exception.model.RequiredAttributeMissingException;
-import dev.donkz.pendragon.infrastructure.persistence.local.LocalCampaignVariantRepository;
-import dev.donkz.pendragon.infrastructure.persistence.local.LocalPcRepository;
+import dev.donkz.pendragon.infrastructure.database.local.LocalDriver;
+import dev.donkz.pendragon.infrastructure.network.socket.WebSocketCommunicator;
 import dev.donkz.pendragon.infrastructure.persistence.local.LocalPlayerRepository;
+import dev.donkz.pendragon.infrastructure.persistence.local.LocalSessionRepository;
+import dev.donkz.pendragon.service.WebSocketSessionService;
 import dev.donkz.pendragon.ui.MainWindow;
 import javafx.application.Application;
 
 public class App {
-    public static void main(String[] args) throws RequiredAttributeMissingException, IndexAlreadyExistsException, MultiplePlayersException, EntityNotFoundException {
+    public static void main(String[] args) throws Exception {
         System.out.println("Hello World");
-        Application.launch(MainWindow.class, args);
+//        Application.launch(MainWindow.class, args);
+
+        WebSocketSessionService sessionService = new WebSocketSessionService(
+                new WebSocketCommunicator(),
+                new LocalPlayerRepository(),
+                new LocalSessionRepository(new LocalDriver())
+        );
+        sessionService.connect();
+        sessionService.createLobby();
 
 //        CampaignRepository repo = new LocalCampaignRepository();
-        PlayerRepository pRepo = new LocalPlayerRepository();
+//        PlayerRepository pRepo = new LocalPlayerRepository();
 //        CampaignVariantRepository cvRepo = new LocalCampaignVariantRepository();
 //        PcRepository pcRepo = new LocalPcRepository();
 //
-        Pc pc = new Pc();
-        pc.setName("Character B");
+//        Pc pc = new Pc();
+//        pc.setName("Character B");
+//
+//        WebSocketCommunication socket = new WebSocketCommunication();
+//        socket.connect();
+//
+//        Session session = new Session();
+//        socket.startLobby(session, pRepo.findRegisteredPlayer());
+//        while (session.getChannelId() == null) {
+//            Thread.sleep(1000);
+//        }
+//        System.out.println(session.getChannelId());
 //        pcRepo.save(pc);
 
 //        Player pl = Player.builder().username("Donkey").character(pc).build();

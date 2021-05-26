@@ -4,6 +4,7 @@ import dev.donkz.pendragon.domain.session.Session;
 import dev.donkz.pendragon.domain.session.SessionRepository;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
+import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
 import dev.donkz.pendragon.infrastructure.database.local.Driver;
 
 import javax.inject.Inject;
@@ -20,9 +21,9 @@ public class LocalSessionRepository implements SessionRepository {
     }
 
     @Override
-    public void save(Session entity) throws IndexAlreadyExistsException {
+    public void save(Session entity) throws IndexAlreadyExistsException, SessionAlreadyExists {
         if (driver.select(REPOSITORY, Session.class).size() > 1) {
-            throw new IndexAlreadyExistsException();
+            throw new SessionAlreadyExists();
         }
         driver.save(REPOSITORY, entity.getId(), entity);
     }

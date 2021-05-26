@@ -5,13 +5,12 @@ import com.google.inject.Provides;
 import dev.donkz.pendragon.domain.campaign.CampaignRepository;
 import dev.donkz.pendragon.domain.character.PcRepository;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
-import dev.donkz.pendragon.domain.session.Session;
 import dev.donkz.pendragon.domain.session.SessionRepository;
 import dev.donkz.pendragon.domain.variant.CampaignVariantRepository;
 import dev.donkz.pendragon.infrastructure.database.local.Driver;
 import dev.donkz.pendragon.infrastructure.database.local.LocalDriver;
-import dev.donkz.pendragon.infrastructure.network.p2p.Peer;
-import dev.donkz.pendragon.infrastructure.network.p2p.hive.HivePeer;
+import dev.donkz.pendragon.infrastructure.network.Communicator;
+import dev.donkz.pendragon.infrastructure.network.socket.WebSocketCommunicator;
 import dev.donkz.pendragon.infrastructure.persistence.local.*;
 import dev.donkz.pendragon.service.*;
 
@@ -62,11 +61,6 @@ public class StandardModule extends AbstractModule {
     }
 
     @Provides
-    static SessionManagementService sessionManagementService() {
-        return new SessionManagementService(peer(), playerManagementService());
-    }
-
-    @Provides
     static SessionRepository sessionRepository() {
         return new LocalSessionRepository(driver());
     }
@@ -77,7 +71,8 @@ public class StandardModule extends AbstractModule {
     }
 
     @Provides
-    static Peer peer() {
-        return new HivePeer(campaignRepository(), pcRepository(), playerRepository(), campaignVariantRepository(), sessionRepository());
+    static Communicator communicator() {
+        return new WebSocketCommunicator();
     }
+
 }

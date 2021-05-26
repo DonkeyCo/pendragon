@@ -7,6 +7,7 @@ import dev.donkz.pendragon.domain.variant.CampaignVariant;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
+import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
 import dev.donkz.pendragon.service.CampaignManipulationService;
 import dev.donkz.pendragon.service.CampaignListingService;
 import dev.donkz.pendragon.service.PlayerManagementService;
@@ -142,7 +143,7 @@ public class CampaignController implements Initializable, Controller {
         if (isFilled()) {
             try {
                 manipulationService.createCampaign(name, description, variant, notes);
-            } catch (IndexAlreadyExistsException | MultiplePlayersException e) {
+            } catch (IndexAlreadyExistsException | MultiplePlayersException | SessionAlreadyExists e) {
                 e.printStackTrace();
             }
             switchMode();
