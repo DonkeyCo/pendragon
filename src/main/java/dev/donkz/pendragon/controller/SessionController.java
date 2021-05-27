@@ -6,9 +6,11 @@ import dev.donkz.pendragon.domain.session.Session;
 import dev.donkz.pendragon.exception.infrastructure.*;
 import dev.donkz.pendragon.service.SessionService;
 import dev.donkz.pendragon.service.WebSocketSessionService;
+import dev.donkz.pendragon.util.ControlUtility;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 import javax.inject.Inject;
@@ -24,6 +26,8 @@ public class SessionController implements Initializable, Controller, Controllabl
     private LobbyController lobbyViewController; // injected via FXML
     @FXML
     private CharacterSessionController selectionViewController;
+    @FXML
+    private Pane chatBox;
 
     private Controller parentController;
     private final WebSocketSessionService webSocketSessionService;
@@ -135,5 +139,12 @@ public class SessionController implements Initializable, Controller, Controllabl
     @Override
     public void left(String id) {
         lobbyViewController.playerLeft(id);
+    }
+
+    @Override
+    public void message(String playerName, String message) {
+        Label lblSender = ControlUtility.createLabel(playerName + ":", true);
+        Label lblMessage = ControlUtility.createLabel(message, false);
+        lobbyViewController.getChatBox().getChildren().add(ControlUtility.createRow(lblSender, lblMessage));
     }
 }

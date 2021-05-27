@@ -174,6 +174,12 @@ public class WebSocketSessionService {
                 e.printStackTrace();
             }
         });
+        communicator.getSocket().on("messageSent", objects -> {
+            String playerName = (String) objects[0];
+            String message =  (String) objects[1];
+
+            controllableSession.message(playerName, message);
+        });
     }
 
     public void leaveLobby(String room, String playerId, Session session) throws EntityNotFoundException {
@@ -195,5 +201,15 @@ public class WebSocketSessionService {
 
     public void setControllableSession(ControllableSession controllableSession) {
         this.controllableSession = controllableSession;
+    }
+
+    public void sendMessage(String message, Session session) {
+        Player player = null;
+        try {
+            player = playerRepository.findRegisteredPlayer();
+        } catch (MultiplePlayersException e) {
+            e.printStackTrace();
+        }
+        communicator.send("sendMessage", session.getRoom(), player.getUsername(), message);
     }
 }

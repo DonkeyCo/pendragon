@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -36,6 +37,10 @@ public class LobbyController implements Controller, Initializable {
     private Pane membersPane;
     @FXML
     private Label lblLobbyName;
+    @FXML
+    private TextField txtMessage;
+    @FXML
+    private Pane chatBox;
 
     private SessionController parentController;
     private final PlayerManagementService playerManagementService;
@@ -130,6 +135,12 @@ public class LobbyController implements Controller, Initializable {
         parentController.getParentController().switchView();
     }
 
+    public void onSend() {
+        Player player = playerManagementService.getRegisteredPlayer();
+
+        parentController.message(player.getUsername(), txtMessage.getText());
+    }
+
     public void setSession(Session session) {
         this.session = session;
     }
@@ -161,5 +172,9 @@ public class LobbyController implements Controller, Initializable {
         if (player != null) {
             System.out.println(String.format("%s left the lobby", player.getUsername()));
         }
+    }
+
+    public Pane getChatBox() {
+        return chatBox;
     }
 }
