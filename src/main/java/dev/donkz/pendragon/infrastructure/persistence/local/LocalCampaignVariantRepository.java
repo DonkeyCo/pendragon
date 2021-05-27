@@ -9,6 +9,7 @@ import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.infrastructure.database.local.Driver;
 import dev.donkz.pendragon.infrastructure.database.local.LocalDriver;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,8 +18,9 @@ public class LocalCampaignVariantRepository implements CampaignVariantRepository
 
     private final Driver driver;
 
-    public LocalCampaignVariantRepository() {
-        this.driver = new LocalDriver();
+    @Inject
+    public LocalCampaignVariantRepository(Driver driver) {
+        this.driver = driver;
     }
 
     @Override
@@ -61,5 +63,14 @@ public class LocalCampaignVariantRepository implements CampaignVariantRepository
     @Override
     public CampaignVariant findById(String id) throws EntityNotFoundException {
         return driver.selectByIndex(REPOSITORY, id, CampaignVariant.class);
+    }
+
+    @Override
+    public void saveOrUpdate(CampaignVariant entity) throws IndexAlreadyExistsException, EntityNotFoundException {
+        if (driver.select(REPOSITORY, CampaignVariant.class).size() == 0) {
+            this.save(entity);
+        } else {
+            this.update(entity.getId(), entity);
+        }
     }
 }

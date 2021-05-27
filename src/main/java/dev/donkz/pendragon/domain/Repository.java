@@ -12,4 +12,5 @@ public interface Repository<T> {
     void update(String id, T entity) throws EntityNotFoundException;
     List<T> findAll();
     T findById(String id) throws EntityNotFoundException;
+    void saveOrUpdate(T entity) throws IndexAlreadyExistsException, EntityNotFoundException, SessionAlreadyExists;
 }

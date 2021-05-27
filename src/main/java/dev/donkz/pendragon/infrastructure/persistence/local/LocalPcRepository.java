@@ -7,6 +7,7 @@ import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.infrastructure.database.local.Driver;
 import dev.donkz.pendragon.infrastructure.database.local.LocalDriver;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,8 +16,9 @@ public class LocalPcRepository implements PcRepository {
 
     private final Driver driver;
 
-    public LocalPcRepository() {
-        this.driver = new LocalDriver();
+    @Inject
+    public LocalPcRepository(Driver driver) {
+        this.driver = driver;
     }
 
     @Override
@@ -48,5 +50,14 @@ public class LocalPcRepository implements PcRepository {
     @Override
     public Pc findById(String id) throws EntityNotFoundException {
         return driver.selectByIndex(REPOSITORY, id, Pc.class);
+    }
+
+    @Override
+    public void saveOrUpdate(Pc entity) throws IndexAlreadyExistsException, EntityNotFoundException {
+        if (driver.select(REPOSITORY, Pc.class).size() == 0) {
+            this.save(entity);
+        } else {
+            this.update(entity.getId(), entity);
+        }
     }
 }

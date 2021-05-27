@@ -47,4 +47,13 @@ public class LocalSessionRepository implements SessionRepository {
     public Session findById(String id) throws EntityNotFoundException {
         return driver.selectByIndex(REPOSITORY, id, Session.class);
     }
+
+    @Override
+    public void saveOrUpdate(Session entity) throws IndexAlreadyExistsException, EntityNotFoundException, SessionAlreadyExists {
+        if (driver.select(REPOSITORY, Session.class).size() == 0) {
+            this.save(entity);
+        } else {
+            this.update(entity.getId(), entity);
+        }
+    }
 }

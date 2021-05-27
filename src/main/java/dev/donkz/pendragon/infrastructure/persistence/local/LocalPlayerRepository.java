@@ -8,6 +8,7 @@ import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.infrastructure.database.local.Driver;
 import dev.donkz.pendragon.infrastructure.database.local.LocalDriver;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,8 +18,9 @@ public class LocalPlayerRepository implements PlayerRepository {
 
     private final Driver driver;
 
-    public LocalPlayerRepository() {
-        this.driver = new LocalDriver();
+    @Inject
+    public LocalPlayerRepository(Driver driver) {
+        this.driver = driver;
     }
 
     @Override
@@ -68,5 +70,14 @@ public class LocalPlayerRepository implements PlayerRepository {
     @Override
     public Player findById(String id) throws EntityNotFoundException {
         return driver.selectByIndex(REPOSITORY, id, Player.class);
+    }
+
+    @Override
+    public void saveOrUpdate(Player entity) throws IndexAlreadyExistsException, EntityNotFoundException {
+        if (driver.select(REPOSITORY, Player.class).size() == 0) {
+            this.save(entity);
+        } else {
+            this.update(entity.getId(), entity);
+        }
     }
 }
