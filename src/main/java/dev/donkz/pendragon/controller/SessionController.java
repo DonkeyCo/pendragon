@@ -131,4 +131,9 @@ public class SessionController implements Initializable, Controller, Controllabl
     public void sync() {
         lobbyViewController.render();
     }
+
+    @Override
+    public void left(String id) {
+        lobbyViewController.playerLeft(id);
+    }
 }

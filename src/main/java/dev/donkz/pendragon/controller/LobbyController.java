@@ -23,6 +23,8 @@ import javafx.util.Pair;
 
 import javax.inject.Inject;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class LobbyController implements Controller, Initializable {
@@ -93,8 +95,9 @@ public class LobbyController implements Controller, Initializable {
                 Player participant = playerManagementService.findPlayerById(playerId);
                 Pc pc = null;
                 try {
-                    pc = playableCharacterService.getPlayerCharacters().stream().filter(p -> p.getId().equalsIgnoreCase(pcId)).findFirst().orElse(null);
-                } catch (MultiplePlayersException e) {
+                    List<Pc> pcs = playableCharacterService.getPlayerCharacters(playerId);
+                    pc = pcs.stream().filter(p -> p.getId().equalsIgnoreCase(pcId)).findFirst().orElse(null);
+                } catch (EntityNotFoundException e) {
                     e.printStackTrace();
                 }
 
@@ -150,6 +153,13 @@ public class LobbyController implements Controller, Initializable {
             lblCode.setText(session.getRoom());
             lblDm.setText(session.getHost().getUsername());
             render();
+        }
+    }
+
+    public void playerLeft(String playerId) {
+        Player player = playerManagementService.findPlayerById(playerId);
+        if (player != null) {
+            System.out.println(String.format("%s left the lobby", player.getUsername()));
         }
     }
 }

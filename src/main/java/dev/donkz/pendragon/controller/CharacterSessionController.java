@@ -117,6 +117,10 @@ public class CharacterSessionController implements Initializable, Controller {
         });
     }
 
+    public void onCancel() {
+        parentController.switchView();
+    }
+
     public void createTiles() {
         Session session = sessionService.getCurrentSession();
         Campaign campaign = session.getCampaign();

@@ -80,24 +80,28 @@ public class WebSocketSessionService {
             } catch (EntityNotFoundException | IndexAlreadyExistsException | SessionAlreadyExists e) {
                 e.printStackTrace();
             }
-            communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
+            communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session), jsonUtility.object2Json(player));
             Platform.runLater(() -> controllableSession.sync());
         });
         communicator.getSocket().on("leftLobby", objects -> {
+            System.out.println("Left lobby");
             Session session = jsonUtility.json2Object((String) objects[1], Session.class);
+            String leftPlayer = (String) objects[0];
             try {
-                sessionRepository.update(session.getId(), session);
-            } catch (EntityNotFoundException e) {
+                sessionRepository.saveOrUpdate(session);
+            } catch (EntityNotFoundException | IndexAlreadyExistsException | SessionAlreadyExists e) {
                 e.printStackTrace();
             }
-
-            communicator.send("updateSession", jsonUtility.object2Json(session));
-            Platform.runLater(() -> controllableSession.sync());
+            Platform.runLater(() -> {
+                controllableSession.sync();
+                controllableSession.left(leftPlayer);
+            });
         });
         communicator.getSocket().on("sessionUpdated", objects -> {
             System.out.println("Session update");
             Session session = jsonUtility.json2Object((String) objects[0], Session.class);
             try {
+                playerRepository.saveOrUpdate(jsonUtility.json2Object((String) objects[1], Player.class));
                 sessionRepository.saveOrUpdate(session);
                 campaignRepository.saveOrUpdate(session.getCampaign());
                 variantRepository.saveOrUpdate(session.getCampaign().getCampaignVariant());
@@ -119,6 +123,7 @@ public class WebSocketSessionService {
             System.out.println("Session update");
             Session session = jsonUtility.json2Object((String) objects[0], Session.class);
             try {
+                playerRepository.saveOrUpdate(jsonUtility.json2Object((String) objects[1], Player.class));
                 sessionRepository.saveOrUpdate(session);
                 campaignRepository.saveOrUpdate(session.getCampaign());
                 variantRepository.saveOrUpdate(session.getCampaign().getCampaignVariant());
@@ -141,8 +146,22 @@ public class WebSocketSessionService {
             } catch (EntityNotFoundException | IndexAlreadyExistsException | SessionAlreadyExists e) {
                 e.printStackTrace();
             }
-            communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
+            communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session), jsonUtility.object2Json(player));
             Platform.runLater(() -> controllableSession.sync());
+        });
+        communicator.getSocket().on("leftLobby", objects -> {
+            System.out.println("Left lobby");
+            Session session = jsonUtility.json2Object((String) objects[1], Session.class);
+            String leftPlayer = (String) objects[0];
+            try {
+                sessionRepository.saveOrUpdate(session);
+            } catch (EntityNotFoundException | IndexAlreadyExistsException | SessionAlreadyExists e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(() -> {
+                controllableSession.sync();
+                controllableSession.left(leftPlayer);
+            });
         });
         communicator.getSocket().on("hostLeft", objects -> {
             Session session = jsonUtility.json2Object((String) objects[1], Session.class);
@@ -165,7 +184,13 @@ public class WebSocketSessionService {
     }
 
     public void updateSession(Session session) {
-        communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
+        Player player = null;
+        try {
+            player = playerRepository.findRegisteredPlayer();
+        } catch (MultiplePlayersException e) {
+            e.printStackTrace();
+        }
+        communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session), jsonUtility.object2Json(player));
     }
 
     public void setControllableSession(ControllableSession controllableSession) {
