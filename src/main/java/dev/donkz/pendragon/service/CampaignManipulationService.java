@@ -34,6 +34,10 @@ public class CampaignManipulationService {
         campaignRepository.save(campaign);
     }
 
+    public void createCampaign(Campaign campaign) throws SessionAlreadyExists, IndexAlreadyExistsException {
+        campaignRepository.save(campaign);
+    }
+
     public void updateCampaign(Campaign campaign) throws MultiplePlayersException, EntityNotFoundException {
         Player player = playerRepository.findRegisteredPlayer();
         campaignRepository.update(campaign.getId(), campaign);

@@ -1,15 +1,21 @@
 package dev.donkz.pendragon.controller;
 
 import dev.donkz.pendragon.domain.campaign.Campaign;
+import dev.donkz.pendragon.domain.player.Player;
+import dev.donkz.pendragon.domain.session.Session;
+import dev.donkz.pendragon.exception.infrastructure.*;
+import dev.donkz.pendragon.service.SessionService;
+import dev.donkz.pendragon.service.WebSocketSessionService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SessionController implements Initializable, Controller {
+public class SessionController implements Initializable, Controller, ControllableSession {
     @FXML
     private Pane lobbyView;
     @FXML
@@ -20,9 +26,14 @@ public class SessionController implements Initializable, Controller {
     private CharacterSessionController selectionViewController;
 
     private Controller parentController;
+    private final WebSocketSessionService webSocketSessionService;
+    private final SessionService sessionService;
 
     @Inject
-    public SessionController() {
+    public SessionController(WebSocketSessionService webSocketSessionService, SessionService sessionService) {
+        this.webSocketSessionService = webSocketSessionService;
+        this.webSocketSessionService.setControllableSession(this);
+        this.sessionService = sessionService;
     }
 
     @Override
@@ -55,19 +66,69 @@ public class SessionController implements Initializable, Controller {
         }
     }
 
-    public void showLobby(Campaign campaign) {
+    public void showHostLobby(Campaign campaign) {
         lobbyView.setVisible(true);
         lobbyViewController.openSession(campaign);
         lobbyViewController.render();
     }
 
-    public void joinLobby(String host) {
+    public void showJoinLobby(String host) {
         lobbyView.setVisible(true);
         lobbyViewController.joinSession(host);
         lobbyViewController.render();
     }
 
+    public void connect() {
+        try {
+            webSocketSessionService.connect();
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+            parentController.getParentController().switchView();
+            sessionService.clear();
+            new Alert(Alert.AlertType.ERROR, "Could not connect to communication server!").show();
+        }
+    }
+
+    public void createLobby(Campaign campaign) {
+        try {
+            webSocketSessionService.createLobby(campaign);
+        } catch (MultiplePlayersException | IndexAlreadyExistsException | SessionAlreadyExists e) {
+            e.printStackTrace();
+            parentController.getParentController().switchView();
+            sessionService.clear();
+            new Alert(Alert.AlertType.ERROR, "Could not create lobby!").show();
+        }
+    }
+
+    public void joinLobby(String room) {
+        try {
+            webSocketSessionService.joinLobby(room);
+        } catch (MultiplePlayersException e) {
+            parentController.getParentController().switchView();
+            sessionService.clear();
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Could not join lobby!").show();
+        }
+    }
+
+    public void updateSession(Session session) {
+        webSocketSessionService.updateSession(session);
+    }
+
+    public void leaveLobby(Session session, Player player) {
+        try {
+            webSocketSessionService.leaveLobby(session.getRoom(), player.getId(), session);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Controller getLobbyController() {
         return lobbyViewController;
+    }
+
+    @Override
+    public void sync() {
+        lobbyViewController.render();
     }
 }

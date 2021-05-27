@@ -48,12 +48,12 @@ public class MainController implements Controller {
     public void activateLobby(Campaign campaign) {
         managementView.setVisible(!managementView.isVisible());
         sessionView.setVisible(!sessionView.isVisible());
-        sessionViewController.showLobby(campaign);
+        sessionViewController.showHostLobby(campaign);
     }
 
     public void joinLobby(String host) {
         managementView.setVisible(!managementView.isVisible());
         sessionView.setVisible(!sessionView.isVisible());
-        sessionViewController.joinLobby(host);
+        sessionViewController.showJoinLobby(host);
     }
 }

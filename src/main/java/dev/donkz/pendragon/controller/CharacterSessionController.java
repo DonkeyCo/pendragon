@@ -8,10 +8,7 @@ import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
-import dev.donkz.pendragon.service.CampaignManipulationService;
-import dev.donkz.pendragon.service.PlayableCharacterService;
-import dev.donkz.pendragon.service.PlayerManagementService;
-import dev.donkz.pendragon.service.SessionService;
+import dev.donkz.pendragon.service.*;
 import dev.donkz.pendragon.ui.CreateDialog;
 import dev.donkz.pendragon.ui.Tile;
 import dev.donkz.pendragon.util.ControlUtility;
@@ -32,18 +29,20 @@ public class CharacterSessionController implements Initializable, Controller {
     @FXML
     private TilePane tilePane;
 
-    private Controller parentController;
+    private SessionController parentController;
     private final PlayableCharacterService characterService;
     private final CampaignManipulationService manipulationService;
     private final SessionService sessionService;
     private final PlayerManagementService playerManagementService;
+    private final CampaignListingService campaignListingService;
 
     @Inject
-    public CharacterSessionController(PlayableCharacterService characterService, CampaignManipulationService manipulationService, SessionService sessionService, PlayerManagementService playerManagementService) {
+    public CharacterSessionController(PlayableCharacterService characterService, CampaignManipulationService manipulationService, SessionService sessionService, PlayerManagementService playerManagementService, CampaignListingService campaignListingService) {
         this.characterService = characterService;
         this.manipulationService = manipulationService;
         this.sessionService = sessionService;
         this.playerManagementService = playerManagementService;
+        this.campaignListingService = campaignListingService;
     }
 
     @Override
@@ -53,7 +52,7 @@ public class CharacterSessionController implements Initializable, Controller {
 
     @Override
     public void setParentController(Controller parentController) {
-        this.parentController = parentController;
+        this.parentController = (SessionController) parentController;
     }
 
     @Override
@@ -70,6 +69,7 @@ public class CharacterSessionController implements Initializable, Controller {
         // ControlUtility.fillComboBox((ComboBox<Ability>) items.get("Type"), Arrays.asList(Ability.values()));
         Session session = sessionService.getCurrentSession();
         Campaign campaign = session.getCampaign();
+
 
         Dialog<String> dialog = createDialog("Create Proficiency", items);
         dialog.show();
@@ -90,8 +90,12 @@ public class CharacterSessionController implements Initializable, Controller {
                     }
                     campaign.addCharacter(pc);
                     try {
-                        manipulationService.updateCampaign(campaign);
-                    } catch (MultiplePlayersException | EntityNotFoundException e) {
+                        if (campaignListingService.campaignExists(campaign.getId())) {
+                            manipulationService.updateCampaign(campaign);
+                        } else {
+                            manipulationService.createCampaign(campaign);
+                        }
+                    } catch (MultiplePlayersException | EntityNotFoundException | SessionAlreadyExists | IndexAlreadyExistsException e) {
                         e.printStackTrace();
                     }
                     try {
@@ -139,6 +143,7 @@ public class CharacterSessionController implements Initializable, Controller {
                     } catch (EntityNotFoundException e) {
                         e.printStackTrace();
                     }
+                    parentController.updateSession(sessionService.getCurrentSession());
                     parentController.switchView();
                 });
                 tilePane.getChildren().add(tile);

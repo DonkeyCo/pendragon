@@ -1,5 +1,6 @@
 package dev.donkz.pendragon.service;
 
+import dev.donkz.pendragon.controller.ControllableSession;
 import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
@@ -8,6 +9,7 @@ import dev.donkz.pendragon.domain.session.SessionRepository;
 import dev.donkz.pendragon.exception.infrastructure.*;
 import dev.donkz.pendragon.infrastructure.network.Communicator;
 import dev.donkz.pendragon.util.JSONUtility;
+import javafx.application.Platform;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -17,6 +19,7 @@ public class WebSocketSessionService {
     private final PlayerRepository playerRepository;
     private SessionRepository sessionRepository;
     private final JSONUtility jsonUtility;
+    private ControllableSession controllableSession;
 
     @Inject
     public WebSocketSessionService(Communicator communicator, PlayerRepository playerRepository, SessionRepository sessionRepository) {
@@ -52,7 +55,7 @@ public class WebSocketSessionService {
                     e.printStackTrace();
                 }
             }
-
+            Platform.runLater(() -> controllableSession.sync());
         });
         communicator.getSocket().on("joinedLobby", objects -> {
             System.out.println("Joined lobby");
@@ -65,6 +68,7 @@ public class WebSocketSessionService {
                 e.printStackTrace();
             }
             communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
+            Platform.runLater(() -> controllableSession.sync());
         });
         communicator.getSocket().on("leftLobby", objects -> {
             Session session = jsonUtility.json2Object((String) objects[1], Session.class);
@@ -75,6 +79,21 @@ public class WebSocketSessionService {
             }
 
             communicator.send("updateSession", jsonUtility.object2Json(session));
+            Platform.runLater(() -> controllableSession.sync());
+        });
+        communicator.getSocket().on("sessionUpdated", objects -> {
+            System.out.println("Session update");
+            Session session = jsonUtility.json2Object((String) objects[0], Session.class);
+            try {
+                if (sessionRepository.findAll().size() == 0) {
+                    sessionRepository.save(session);
+                } else {
+                    sessionRepository.update(session.getId(), session);
+                }
+            } catch (IndexAlreadyExistsException | SessionAlreadyExists | EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(() -> controllableSession.sync());
         });
     }
 
@@ -94,6 +113,7 @@ public class WebSocketSessionService {
             } catch (IndexAlreadyExistsException | SessionAlreadyExists | EntityNotFoundException e) {
                 e.printStackTrace();
             }
+            Platform.runLater(() -> controllableSession.sync());
         });
         communicator.getSocket().on("hostLeft", objects -> {
             Session session = jsonUtility.json2Object((String) objects[1], Session.class);
@@ -117,5 +137,9 @@ public class WebSocketSessionService {
 
     public void updateSession(Session session) {
         communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
+    }
+
+    public void setControllableSession(ControllableSession controllableSession) {
+        this.controllableSession = controllableSession;
     }
 }

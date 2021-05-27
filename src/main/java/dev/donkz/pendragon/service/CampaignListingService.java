@@ -43,4 +43,13 @@ public class CampaignListingService {
     public Campaign getCampaign(String id) throws EntityNotFoundException {
         return campaignRepository.findById(id);
     }
+
+    public boolean campaignExists(String id) {
+        try {
+            campaignRepository.findById(id);
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
+    }
 }

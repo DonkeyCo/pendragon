@@ -35,7 +35,7 @@ public class LobbyController implements Controller, Initializable {
     @FXML
     private Label lblLobbyName;
 
-    private Controller parentController;
+    private SessionController parentController;
     private final PlayerManagementService playerManagementService;
     private final PlayableCharacterService playableCharacterService;
     private final WebSocketSessionService webSocketSessionService;
@@ -61,56 +61,23 @@ public class LobbyController implements Controller, Initializable {
 
     @Override
     public void setParentController(Controller parentController) {
-        this.parentController = parentController;
+        this.parentController = (SessionController) parentController;
     }
 
     public void switchView() {
-
     }
 
     public void openSession(Campaign campaign) {
         sessionService.clear();
-        try {
-            webSocketSessionService.connect();
-        } catch (ConnectionException e) {
-            e.printStackTrace();
-            parentController.getParentController().switchView();
-            sessionService.clear();
-            new Alert(Alert.AlertType.ERROR, "Could not connect to communication server!").show();
-            return;
-        }
-        try {
-            webSocketSessionService.createLobby(campaign);
-        } catch (MultiplePlayersException | IndexAlreadyExistsException | SessionAlreadyExists e) {
-            e.printStackTrace();
-            parentController.getParentController().switchView();
-            sessionService.clear();
-            new Alert(Alert.AlertType.ERROR, "Could not create lobby!").show();
-            return;
-        }
+        parentController.connect();
+        parentController.createLobby(campaign);
         fillCode();
     }
 
     public void joinSession(String room) {
         sessionService.clear();
-        try {
-            webSocketSessionService.connect();
-        } catch (ConnectionException e) {
-            parentController.getParentController().switchView();
-            sessionService.clear();
-            e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Could not connect to communication server!").show();
-            return;
-        }
-        try {
-            webSocketSessionService.joinLobby(room);
-        } catch (MultiplePlayersException e) {
-            parentController.getParentController().switchView();
-            sessionService.clear();
-            e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Could not join lobby!").show();
-            return;
-        }
+        parentController.connect();
+        parentController.joinLobby(room);
         fillCode();
     }
 
@@ -155,11 +122,8 @@ public class LobbyController implements Controller, Initializable {
     public void onExit() {
         Session session = sessionService.getCurrentSession();
         Player player = playerManagementService.getRegisteredPlayer();
-        try {
-            webSocketSessionService.leaveLobby(session.getRoom(), player.getId(), session);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
+
+        parentController.leaveLobby(session, player);
         parentController.getParentController().switchView();
     }
 
