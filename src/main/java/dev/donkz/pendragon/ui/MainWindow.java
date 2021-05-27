@@ -29,6 +29,9 @@ public class MainWindow extends Application {
         stage.setTitle("pendragon");
         stage.setIconified(true);
         stage.getIcons().add(new Image("images/pendragon_icon.png"));
+        stage.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
 
         stage.show();
     }

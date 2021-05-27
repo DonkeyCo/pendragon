@@ -92,6 +92,7 @@ public class ControlUtility {
     public static HBox createRow(Region... regions) {
         HBox row = new HBox();
         row.getChildren().addAll(regions);
+        row.setSpacing(10);
 
         return row;
     }

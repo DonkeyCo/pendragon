@@ -113,6 +113,12 @@ public class WebSocketSessionService {
             }
             Platform.runLater(() -> controllableSession.sync());
         });
+        communicator.getSocket().on("messageSent", objects -> {
+            String playerName = (String) objects[0];
+            String message =  (String) objects[1];
+
+            Platform.runLater(() -> controllableSession.message(playerName, message));
+        });
     }
 
     public void joinLobby(String channel) throws MultiplePlayersException {
@@ -178,7 +184,7 @@ public class WebSocketSessionService {
             String playerName = (String) objects[0];
             String message =  (String) objects[1];
 
-            controllableSession.message(playerName, message);
+            Platform.runLater(() -> controllableSession.message(playerName, message));
         });
     }
 
