@@ -194,7 +194,12 @@ public class CampaignController implements Initializable, Controller {
 
         if (isFilled()) {
             try {
-                manipulationService.updateCampaign(campaignId, name, description, variant, notes);
+                Campaign campaign = listingService.getCampaign(campaignId);
+                campaign.setName(name);
+                campaign.setDescription(description);
+                campaign.setCampaignVariant(variant);
+                campaign.setNotes(notes);
+                manipulationService.updateCampaign(campaign);
             } catch (MultiplePlayersException | EntityNotFoundException e) {
                 e.printStackTrace();
             }

@@ -2,7 +2,7 @@ package dev.donkz.pendragon.controller;
 
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
-import dev.donkz.pendragon.service.CharacterListingService;
+import dev.donkz.pendragon.service.PlayableCharacterService;
 import dev.donkz.pendragon.ui.Tile;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,10 +17,10 @@ public class CharacterListController implements Initializable, Controller {
     private TilePane tilePane;
 
     private Controller parentController;
-    private final CharacterListingService listingService;
+    private final PlayableCharacterService listingService;
 
     @Inject
-    public CharacterListController(CharacterListingService listingService) {
+    public CharacterListController(PlayableCharacterService listingService) {
         this.listingService = listingService;
     }
 

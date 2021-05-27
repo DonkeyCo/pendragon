@@ -5,6 +5,7 @@ import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.player.Player;
 import lombok.Data;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Data
@@ -16,6 +17,10 @@ public class Session implements Entity {
     private Map<String, String> participants;
 
     private Campaign campaign;
+
+    public Session() {
+        participants = new LinkedHashMap<>();
+    }
 
     public void addParticipant(String playerId, String pcId) {
         participants.put(playerId, pcId);

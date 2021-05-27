@@ -10,6 +10,7 @@ import dev.donkz.pendragon.infrastructure.network.Communicator;
 import dev.donkz.pendragon.util.JSONUtility;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class WebSocketSessionService {
     private final Communicator communicator;
@@ -41,15 +42,20 @@ public class WebSocketSessionService {
 
         communicator.send("createLobby", player.getId(), jsonUtility.object2Json(player));
         communicator.getSocket().on("createdLobby", objects -> {
-            Session session = sessionRepository.findAll().get(0);
-            session.setRoom((String) objects[0]);
-            try {
-                sessionRepository.update(session.getId(), session);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
+            List<Session> sessions = sessionRepository.findAll();
+            if (sessions.size() > 0) {
+                Session session = sessions.get(0);
+                session.setRoom((String) objects[0]);
+                try {
+                    sessionRepository.update(session.getId(), session);
+                } catch (EntityNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
+
         });
         communicator.getSocket().on("joinedLobby", objects -> {
+            System.out.println("Joined lobby");
             Session session = sessionRepository.findAll().get(0);
             Player joinedPlayer = jsonUtility.json2Object((String) objects[0], Player.class);
             session.addParticipant(joinedPlayer.getId(), null);
@@ -59,7 +65,7 @@ public class WebSocketSessionService {
                 e.printStackTrace();
             }
 
-            communicator.send("updateSession", jsonUtility.object2Json(session));
+            communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
         });
         communicator.getSocket().on("leftLobby", objects -> {
             Session session = jsonUtility.json2Object((String) objects[1], Session.class);
@@ -78,10 +84,15 @@ public class WebSocketSessionService {
 
         communicator.send("joinLobby", channel, jsonUtility.object2Json(player));
         communicator.getSocket().on("sessionUpdated", objects -> {
+            System.out.println("Session update");
             Session session = jsonUtility.json2Object((String) objects[0], Session.class);
             try {
-                sessionRepository.save(session);
-            } catch (IndexAlreadyExistsException | SessionAlreadyExists e) {
+                if (sessionRepository.findAll().size() == 0) {
+                    sessionRepository.save(session);
+                } else {
+                    sessionRepository.update(session.getId(), session);
+                }
+            } catch (IndexAlreadyExistsException | SessionAlreadyExists | EntityNotFoundException e) {
                 e.printStackTrace();
             }
         });

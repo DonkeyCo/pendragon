@@ -46,8 +46,8 @@ public class StandardModule extends AbstractModule {
     }
 
     @Provides
-    static CharacterListingService characterListingService() {
-        return new CharacterListingService(pcRepository(), playerRepository());
+    static PlayableCharacterService characterListingService() {
+        return new PlayableCharacterService(pcRepository(), playerRepository());
     }
 
     @Provides

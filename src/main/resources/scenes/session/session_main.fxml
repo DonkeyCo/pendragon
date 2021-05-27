@@ -5,5 +5,6 @@
 <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.donkz.pendragon.controller.SessionController">
     <children>
         <fx:include fx:id="lobbyView" source="lobby.fxml" />
+        <fx:include fx:id="selectionView" source="selection/character_selection.fxml" />
     </children>
 </StackPane>

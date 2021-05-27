@@ -34,15 +34,9 @@ public class CampaignManipulationService {
         campaignRepository.save(campaign);
     }
 
-    public void updateCampaign(String id, String name, String description, CampaignVariant variant, String notes) throws MultiplePlayersException, EntityNotFoundException {
+    public void updateCampaign(Campaign campaign) throws MultiplePlayersException, EntityNotFoundException {
         Player player = playerRepository.findRegisteredPlayer();
-
-        Campaign campaign = new Campaign(name, variant, player);
-        campaign.setId(id);
-        campaign.setDescription(description);
-        campaign.setNotes(notes);
-
-        campaignRepository.update(id, campaign);
+        campaignRepository.update(campaign.getId(), campaign);
     }
 
     public void deleteCampaign(String id) throws EntityNotFoundException {

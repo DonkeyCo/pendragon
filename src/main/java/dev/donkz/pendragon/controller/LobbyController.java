@@ -6,17 +6,15 @@ import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.session.Session;
-import dev.donkz.pendragon.exception.infrastructure.ConnectionException;
-import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
-import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
-import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
-import dev.donkz.pendragon.service.CharacterListingService;
+import dev.donkz.pendragon.exception.infrastructure.*;
+import dev.donkz.pendragon.service.PlayableCharacterService;
 import dev.donkz.pendragon.service.PlayerManagementService;
 import dev.donkz.pendragon.service.SessionService;
 import dev.donkz.pendragon.service.WebSocketSessionService;
 import dev.donkz.pendragon.util.ControlUtility;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
@@ -39,15 +37,15 @@ public class LobbyController implements Controller, Initializable {
 
     private Controller parentController;
     private final PlayerManagementService playerManagementService;
-    private final CharacterListingService characterListingService;
+    private final PlayableCharacterService playableCharacterService;
     private final WebSocketSessionService webSocketSessionService;
     private final SessionService sessionService;
     private Session session;
 
     @Inject
-    public LobbyController(PlayerManagementService playerManagementService, CharacterListingService characterListingService, WebSocketSessionService webSocketSessionService, SessionService sessionService) {
+    public LobbyController(PlayerManagementService playerManagementService, PlayableCharacterService playableCharacterService, WebSocketSessionService webSocketSessionService, SessionService sessionService) {
         this.playerManagementService = playerManagementService;
-        this.characterListingService = characterListingService;
+        this.playableCharacterService = playableCharacterService;
         this.webSocketSessionService = webSocketSessionService;
         this.sessionService = sessionService;
     }
@@ -67,32 +65,51 @@ public class LobbyController implements Controller, Initializable {
     }
 
     public void switchView() {
+
     }
 
     public void openSession(Campaign campaign) {
+        sessionService.clear();
         try {
             webSocketSessionService.connect();
         } catch (ConnectionException e) {
             e.printStackTrace();
+            parentController.getParentController().switchView();
+            sessionService.clear();
+            new Alert(Alert.AlertType.ERROR, "Could not connect to communication server!").show();
+            return;
         }
         try {
             webSocketSessionService.createLobby(campaign);
         } catch (MultiplePlayersException | IndexAlreadyExistsException | SessionAlreadyExists e) {
             e.printStackTrace();
+            parentController.getParentController().switchView();
+            sessionService.clear();
+            new Alert(Alert.AlertType.ERROR, "Could not create lobby!").show();
+            return;
         }
         fillCode();
     }
 
     public void joinSession(String room) {
+        sessionService.clear();
         try {
             webSocketSessionService.connect();
         } catch (ConnectionException e) {
+            parentController.getParentController().switchView();
+            sessionService.clear();
             e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Could not connect to communication server!").show();
+            return;
         }
         try {
             webSocketSessionService.joinLobby(room);
         } catch (MultiplePlayersException e) {
+            parentController.getParentController().switchView();
+            sessionService.clear();
             e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Could not join lobby!").show();
+            return;
         }
         fillCode();
     }
@@ -100,25 +117,27 @@ public class LobbyController implements Controller, Initializable {
     public void render() {
         Session session = sessionService.getCurrentSession();
         lblLobbyName.setText("Lobby - " + session.getCampaign().getName());
-        Player host = playerManagementService.getRegisteredPlayer();
+        Player host = session.getHost();
         lblDm.setText(host.getUsername());
 
+        membersPane.getChildren().clear();
         if (session.getParticipants() != null) {
             session.getParticipants().forEach((playerId, pcId) -> {
                 Player participant = playerManagementService.findPlayerById(playerId);
                 Pc pc = null;
                 try {
-                    pc = characterListingService.getPlayerCharacters().stream().filter(p -> p.getId().equalsIgnoreCase(pcId)).findFirst().orElse(null);
+                    pc = playableCharacterService.getPlayerCharacters().stream().filter(p -> p.getId().equalsIgnoreCase(pcId)).findFirst().orElse(null);
                 } catch (MultiplePlayersException e) {
                     e.printStackTrace();
                 }
 
                 Label lblPlayer = new Label(participant.getUsername());
-                Label lblPc = new Label("None");
+                Label lblPc = new Label("No Character");
                 if (pc != null) {
                     lblPc.setText(pc.getName());
                 }
                 HBox row = ControlUtility.createRow(lblPlayer, lblPc);
+                row.setSpacing(15);
                 membersPane.getChildren().addAll(row);
             });
         }
@@ -129,7 +148,19 @@ public class LobbyController implements Controller, Initializable {
         clipboard.putContent(new Pair<>(DataFormat.PLAIN_TEXT, lblCode.getText()));
     }
 
-    public void onStart() {
+    public void onChoose() {
+        parentController.switchView();
+    }
+
+    public void onExit() {
+        Session session = sessionService.getCurrentSession();
+        Player player = playerManagementService.getRegisteredPlayer();
+        try {
+            webSocketSessionService.leaveLobby(session.getRoom(), player.getId(), session);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        parentController.getParentController().switchView();
     }
 
     public void setSession(Session session) {
@@ -140,14 +171,21 @@ public class LobbyController implements Controller, Initializable {
         Session session = null;
         int tries = 0;
         do {
-            session = sessionService.getCurrentSession();
             tries++;
+            session = sessionService.getCurrentSession();
             try {
                 Thread.sleep(1000*tries);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } while(session.getRoom() == null && tries < 5);
-        lblCode.setText(session.getRoom());
+        } while((session == null || session.getRoom() == null) && tries <= 10);
+
+        if (session == null || session.getRoom() == null) {
+            parentController.getParentController().switchView();
+        } else {
+            lblCode.setText(session.getRoom());
+            lblDm.setText(session.getHost().getUsername());
+            render();
+        }
     }
 }

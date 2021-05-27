@@ -13,7 +13,11 @@ public class SessionController implements Initializable, Controller {
     @FXML
     private Pane lobbyView;
     @FXML
+    private Pane selectionView;
+    @FXML
     private LobbyController lobbyViewController; // injected via FXML
+    @FXML
+    private CharacterSessionController selectionViewController;
 
     private Controller parentController;
 
@@ -24,6 +28,9 @@ public class SessionController implements Initializable, Controller {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         lobbyView.setVisible(true);
+        selectionView.setVisible(false);
+        lobbyViewController.setParentController(this);
+        selectionViewController.setParentController(this);
     }
 
     @Override
@@ -39,6 +46,13 @@ public class SessionController implements Initializable, Controller {
     @Override
     public void switchView() {
         lobbyView.setVisible(!lobbyView.isVisible());
+        selectionView.setVisible(!selectionView.isVisible());
+
+        if (lobbyView.isVisible()) {
+            lobbyViewController.render();
+        } else {
+            selectionViewController.createTiles();
+        }
     }
 
     public void showLobby(Campaign campaign) {
@@ -50,6 +64,7 @@ public class SessionController implements Initializable, Controller {
     public void joinLobby(String host) {
         lobbyView.setVisible(true);
         lobbyViewController.joinSession(host);
+        lobbyViewController.render();
     }
 
     public Controller getLobbyController() {
