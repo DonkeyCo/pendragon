@@ -70,7 +70,6 @@ public class CharacterSessionController implements Initializable, Controller {
         Session session = sessionService.getCurrentSession();
         Campaign campaign = session.getCampaign();
 
-
         Dialog<String> dialog = createDialog("Create Proficiency", items);
         dialog.show();
 

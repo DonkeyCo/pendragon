@@ -6,13 +6,12 @@ import dev.donkz.pendragon.domain.character.AbilityScore;
 import dev.donkz.pendragon.domain.common.Ability;
 import dev.donkz.pendragon.domain.common.PriceUnit;
 import javafx.collections.FXCollections;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
 
@@ -23,6 +22,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ControlUtility {
+    public static Label createLabel(String text, boolean isBold) {
+        Label label = new Label(text);
+        FontWeight weight = isBold ? FontWeight.BOLD : FontWeight.NORMAL;
+        label.setFont(Font.font("System", weight, 15));
+
+        return label;
+    }
+
     public static TextField createTextField(String promptText, String id) {
         TextField field = new TextField();
         HBox.setHgrow(field, Priority.ALWAYS);
