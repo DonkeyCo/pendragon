@@ -64,7 +64,6 @@ public class WebSocketSessionService {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             }
-
             communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
         });
         communicator.getSocket().on("leftLobby", objects -> {
