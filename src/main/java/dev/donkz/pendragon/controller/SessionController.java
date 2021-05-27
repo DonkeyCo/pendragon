@@ -145,6 +145,6 @@ public class SessionController implements Initializable, Controller, Controllabl
     public void message(String playerName, String message) {
         Label lblSender = ControlUtility.createLabel(playerName + ":", true);
         Label lblMessage = ControlUtility.createLabel(message, false);
-        chatBox.getChildren().add(ControlUtility.createRow(lblSender, lblMessage));
+        lobbyViewController.getChatBox().getChildren().add(ControlUtility.createRow(lblSender, lblMessage));
     }
 }

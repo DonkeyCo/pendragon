@@ -39,6 +39,8 @@ public class LobbyController implements Controller, Initializable {
     private Label lblLobbyName;
     @FXML
     private TextField txtMessage;
+    @FXML
+    private Pane chatBox;
 
     private SessionController parentController;
     private final PlayerManagementService playerManagementService;
@@ -170,5 +172,9 @@ public class LobbyController implements Controller, Initializable {
         if (player != null) {
             System.out.println(String.format("%s left the lobby", player.getUsername()));
         }
+    }
+
+    public Pane getChatBox() {
+        return chatBox;
     }
 }
