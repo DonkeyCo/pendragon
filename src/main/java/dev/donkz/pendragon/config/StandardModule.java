@@ -17,22 +17,22 @@ import dev.donkz.pendragon.service.*;
 public class StandardModule extends AbstractModule {
     @Provides
     static CampaignRepository campaignRepository() {
-        return new LocalCampaignRepository();
+        return new LocalCampaignRepository(driver());
     }
 
     @Provides
     static CampaignVariantRepository campaignVariantRepository() {
-        return new LocalCampaignVariantRepository();
+        return new LocalCampaignVariantRepository(driver());
     }
 
     @Provides
     static PcRepository pcRepository() {
-        return new LocalPcRepository();
+        return new LocalPcRepository(driver());
     }
 
     @Provides
     static PlayerRepository playerRepository() {
-        return new LocalPlayerRepository();
+        return new LocalPlayerRepository(driver());
     }
 
     @Provides
@@ -77,7 +77,7 @@ public class StandardModule extends AbstractModule {
 
     @Provides
     static WebSocketSessionService webSocketSessionService() {
-        return new WebSocketSessionService(communicator(), playerRepository(), sessionRepository());
+        return new WebSocketSessionService(communicator(), playerRepository(), sessionRepository(), campaignVariantRepository(), campaignRepository(), pcRepository());
     }
 
 }

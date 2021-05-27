@@ -1,11 +1,17 @@
 package dev.donkz.pendragon.service;
 
+import com.google.inject.internal.asm.$RecordComponentVisitor;
 import dev.donkz.pendragon.controller.ControllableSession;
 import dev.donkz.pendragon.domain.campaign.Campaign;
+import dev.donkz.pendragon.domain.campaign.CampaignRepository;
+import dev.donkz.pendragon.domain.character.Pc;
+import dev.donkz.pendragon.domain.character.PcRepository;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
 import dev.donkz.pendragon.domain.session.Session;
 import dev.donkz.pendragon.domain.session.SessionRepository;
+import dev.donkz.pendragon.domain.variant.CampaignVariant;
+import dev.donkz.pendragon.domain.variant.CampaignVariantRepository;
 import dev.donkz.pendragon.exception.infrastructure.*;
 import dev.donkz.pendragon.infrastructure.network.Communicator;
 import dev.donkz.pendragon.util.JSONUtility;
@@ -20,13 +26,19 @@ public class WebSocketSessionService {
     private SessionRepository sessionRepository;
     private final JSONUtility jsonUtility;
     private ControllableSession controllableSession;
+    private final CampaignVariantRepository variantRepository;
+    private final CampaignRepository campaignRepository;
+    private final PcRepository pcRepository;
 
     @Inject
-    public WebSocketSessionService(Communicator communicator, PlayerRepository playerRepository, SessionRepository sessionRepository) {
+    public WebSocketSessionService(Communicator communicator, PlayerRepository playerRepository, SessionRepository sessionRepository, CampaignVariantRepository variantRepository, CampaignRepository campaignRepository, PcRepository pcRepository) {
         this.communicator = communicator;
         this.playerRepository = playerRepository;
         this.sessionRepository = sessionRepository;
         this.jsonUtility = new JSONUtility();
+        this.variantRepository = variantRepository;
+        this.campaignRepository = campaignRepository;
+        this.pcRepository = pcRepository;
     }
 
     public void connect() throws ConnectionException {
@@ -64,7 +76,8 @@ public class WebSocketSessionService {
             session.addParticipant(joinedPlayer.getId(), null);
             try {
                 sessionRepository.update(session.getId(), session);
-            } catch (EntityNotFoundException e) {
+                playerRepository.save(joinedPlayer);
+            } catch (EntityNotFoundException | IndexAlreadyExistsException | SessionAlreadyExists e) {
                 e.printStackTrace();
             }
             communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
@@ -85,10 +98,11 @@ public class WebSocketSessionService {
             System.out.println("Session update");
             Session session = jsonUtility.json2Object((String) objects[0], Session.class);
             try {
-                if (sessionRepository.findAll().size() == 0) {
-                    sessionRepository.save(session);
-                } else {
-                    sessionRepository.update(session.getId(), session);
+                sessionRepository.saveOrUpdate(session);
+                campaignRepository.saveOrUpdate(session.getCampaign());
+                variantRepository.saveOrUpdate(session.getCampaign().getCampaignVariant());
+                for (Pc pc : session.getCampaign().getPcs()) {
+                    pcRepository.saveOrUpdate(pc);
                 }
             } catch (IndexAlreadyExistsException | SessionAlreadyExists | EntityNotFoundException e) {
                 e.printStackTrace();
@@ -105,14 +119,29 @@ public class WebSocketSessionService {
             System.out.println("Session update");
             Session session = jsonUtility.json2Object((String) objects[0], Session.class);
             try {
-                if (sessionRepository.findAll().size() == 0) {
-                    sessionRepository.save(session);
-                } else {
-                    sessionRepository.update(session.getId(), session);
+                sessionRepository.saveOrUpdate(session);
+                campaignRepository.saveOrUpdate(session.getCampaign());
+                variantRepository.saveOrUpdate(session.getCampaign().getCampaignVariant());
+                for (Pc pc : session.getCampaign().getPcs()) {
+                    pcRepository.saveOrUpdate(pc);
                 }
             } catch (IndexAlreadyExistsException | SessionAlreadyExists | EntityNotFoundException e) {
                 e.printStackTrace();
             }
+            Platform.runLater(() -> controllableSession.sync());
+        });
+        communicator.getSocket().on("joinedLobby", objects -> {
+            System.out.println("Joined lobby");
+            Session session = sessionRepository.findAll().get(0);
+            Player joinedPlayer = jsonUtility.json2Object((String) objects[0], Player.class);
+            session.addParticipant(joinedPlayer.getId(), null);
+            try {
+                sessionRepository.saveOrUpdate(session);
+                playerRepository.saveOrUpdate(joinedPlayer);
+            } catch (EntityNotFoundException | IndexAlreadyExistsException | SessionAlreadyExists e) {
+                e.printStackTrace();
+            }
+            communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session));
             Platform.runLater(() -> controllableSession.sync());
         });
         communicator.getSocket().on("hostLeft", objects -> {

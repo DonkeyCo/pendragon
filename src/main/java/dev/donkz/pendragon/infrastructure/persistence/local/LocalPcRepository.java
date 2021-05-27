@@ -54,10 +54,10 @@ public class LocalPcRepository implements PcRepository {
 
     @Override
     public void saveOrUpdate(Pc entity) throws IndexAlreadyExistsException, EntityNotFoundException {
-        if (driver.select(REPOSITORY, Pc.class).size() == 0) {
-            this.save(entity);
-        } else {
+        if (driver.select(REPOSITORY, Pc.class).stream().anyMatch(pc -> pc.getId().equalsIgnoreCase(entity.getId()))) {
             this.update(entity.getId(), entity);
+        } else {
+            this.save(entity);
         }
     }
 }

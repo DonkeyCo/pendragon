@@ -67,10 +67,10 @@ public class LocalCampaignVariantRepository implements CampaignVariantRepository
 
     @Override
     public void saveOrUpdate(CampaignVariant entity) throws IndexAlreadyExistsException, EntityNotFoundException {
-        if (driver.select(REPOSITORY, CampaignVariant.class).size() == 0) {
-            this.save(entity);
-        } else {
+        if (driver.select(REPOSITORY, CampaignVariant.class).stream().anyMatch(variant -> variant.getId().equalsIgnoreCase(entity.getId()))) {
             this.update(entity.getId(), entity);
+        } else {
+            this.save(entity);
         }
     }
 }

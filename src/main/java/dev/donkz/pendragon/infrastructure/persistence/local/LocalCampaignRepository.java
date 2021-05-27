@@ -80,10 +80,10 @@ public class LocalCampaignRepository implements CampaignRepository {
 
     @Override
     public void saveOrUpdate(Campaign entity) throws IndexAlreadyExistsException, EntityNotFoundException {
-        if (driver.select(REPOSITORY, Campaign.class).size() == 0) {
-            this.save(entity);
-        } else {
+        if (driver.select(REPOSITORY, Campaign.class).stream().anyMatch(campaign -> campaign.getId().equalsIgnoreCase(entity.getId()))) {
             this.update(entity.getId(), entity);
+        } else {
+            this.save(entity);
         }
     }
 }

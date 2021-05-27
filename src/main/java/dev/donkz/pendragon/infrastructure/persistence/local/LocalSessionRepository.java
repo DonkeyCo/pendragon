@@ -50,10 +50,10 @@ public class LocalSessionRepository implements SessionRepository {
 
     @Override
     public void saveOrUpdate(Session entity) throws IndexAlreadyExistsException, EntityNotFoundException, SessionAlreadyExists {
-        if (driver.select(REPOSITORY, Session.class).size() == 0) {
-            this.save(entity);
-        } else {
+        if (driver.select(REPOSITORY, Session.class).stream().anyMatch(session -> session.getId().equalsIgnoreCase(entity.getId()))) {
             this.update(entity.getId(), entity);
+        } else {
+            this.save(entity);
         }
     }
 }

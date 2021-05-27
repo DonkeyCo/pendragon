@@ -74,10 +74,10 @@ public class LocalPlayerRepository implements PlayerRepository {
 
     @Override
     public void saveOrUpdate(Player entity) throws IndexAlreadyExistsException, EntityNotFoundException {
-        if (driver.select(REPOSITORY, Player.class).size() == 0) {
-            this.save(entity);
-        } else {
+        if (driver.select(REPOSITORY, Player.class).stream().anyMatch(player -> player.getId().equalsIgnoreCase(entity.getId()))) {
             this.update(entity.getId(), entity);
+        } else {
+            this.save(entity);
         }
     }
 }
