@@ -145,8 +145,6 @@ public class LobbyController implements Controller, Initializable {
         String pcId = sessionService.getCurrentSession().getParticipants().get(playerManagementService.getRegisteredPlayer().getUsername());
         Map<String, Region> items = new LinkedHashMap<>();
 
-
-
         try {
             Pc pc = playableCharacterService.getPlayerCharacter(pcId);
             items = ControlUtility.createForm(Pc.class, pc);
