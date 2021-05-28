@@ -81,7 +81,10 @@ public class WebSocketSessionService {
                 e.printStackTrace();
             }
             communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session), jsonUtility.object2Json(player));
-            Platform.runLater(() -> controllableSession.sync());
+            Platform.runLater(() -> {
+                controllableSession.sync();
+                controllableSession.joined(joinedPlayer);
+            });
         });
         communicator.getSocket().on("leftLobby", objects -> {
             System.out.println("Left lobby");
@@ -153,7 +156,10 @@ public class WebSocketSessionService {
                 e.printStackTrace();
             }
             communicator.send("updateSession", session.getRoom(), jsonUtility.object2Json(session), jsonUtility.object2Json(player));
-            Platform.runLater(() -> controllableSession.sync());
+            Platform.runLater(() -> {
+                controllableSession.sync();
+                controllableSession.joined(joinedPlayer);
+            });
         });
         communicator.getSocket().on("leftLobby", objects -> {
             System.out.println("Left lobby");

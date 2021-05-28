@@ -254,8 +254,12 @@ public class LobbyController implements Controller, Initializable {
     public void playerLeft(String playerId) {
         Player player = playerManagementService.findPlayerById(playerId);
         if (player != null) {
-            System.out.println(String.format("%s left the lobby", player.getUsername()));
+            chatBox.getChildren().add(ControlUtility.createLabel(String.format("%s left the lobby.", player.getUsername()), true));
         }
+    }
+
+    public void playerJoined(String playerName) {
+        chatBox.getChildren().add(ControlUtility.createLabel(String.format("%s joined the lobby.", playerName), true));
     }
 
     public Pane getChatBox() {

@@ -140,6 +140,7 @@ public class SessionController implements Initializable, Controller, Controllabl
     @Override
     public void left(String id) {
         lobbyViewController.playerLeft(id);
+        sync();
     }
 
     @Override
@@ -151,5 +152,9 @@ public class SessionController implements Initializable, Controller, Controllabl
 
     public void sendMessage(String message, Session session) {
         webSocketSessionService.sendMessage(message, session);
+    }
+
+    public void joined(Player player) {
+        lobbyViewController.playerJoined(player.getUsername());
     }
 }
