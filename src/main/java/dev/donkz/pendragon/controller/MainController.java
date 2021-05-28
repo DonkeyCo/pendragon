@@ -17,6 +17,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 
 import javax.inject.Inject;
@@ -35,7 +36,7 @@ public class MainController implements Controller {
     @FXML
     private Pane sessionView;
     @FXML
-    private Pane playerCreationView;
+    private VBox playerCreationView;
     @FXML
     private SessionController sessionViewController;
     @FXML

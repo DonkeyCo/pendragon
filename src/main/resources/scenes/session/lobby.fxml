@@ -98,7 +98,7 @@
         </VBox>
         <ButtonBar>
             <buttons>
-                <Button mnemonicParsing="false" onAction="#onChange" text="Edit Character Sheet"/>
+                <Button fx:id="btnEdit" mnemonicParsing="false" onAction="#onChange" text="Edit Character Sheet"/>
                 <Button fx:id="btnChoose" mnemonicParsing="false" onAction="#onChoose" text="Choose Character"/>
                 <MenuButton mnemonicParsing="false" text="Roll a dice">
                     <items>

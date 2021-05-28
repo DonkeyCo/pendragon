@@ -133,6 +133,7 @@ public class ManagementController implements Initializable, Controller {
         currentPane.setVisible(false);
         currentPane = panes.get(paneName);
         currentPane.setVisible(true);
+        render();
     }
 
     @Override

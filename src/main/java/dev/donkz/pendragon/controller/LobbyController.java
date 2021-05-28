@@ -45,6 +45,10 @@ public class LobbyController implements Controller, Initializable {
     private TextField txtMessage;
     @FXML
     private Pane chatBox;
+    @FXML
+    private Button btnEdit;
+    @FXML
+    private Button btnChoose;
 
     private SessionController parentController;
     private final PlayerManagementService playerManagementService;
@@ -85,14 +89,18 @@ public class LobbyController implements Controller, Initializable {
         sessionService.clear();
         parentController.connect();
         parentController.createLobby(campaign);
-        fillCode();
+        btnEdit.setVisible(false);
+        btnChoose.setVisible(false);
+        render();
     }
 
     public void joinSession(String room) {
         sessionService.clear();
         parentController.connect();
         parentController.joinLobby(room);
-        fillCode();
+        btnEdit.setVisible(true);
+        btnChoose.setVisible(true);
+        render();
     }
 
     public void render() {
@@ -212,7 +220,6 @@ public class LobbyController implements Controller, Initializable {
                     }
 
                     render();
-                    fillCode();
                     parentController.updateSession(sessionService.getCurrentSession());
                     return pc.toString();
                 }
@@ -257,14 +264,13 @@ public class LobbyController implements Controller, Initializable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } while((session == null || session.getRoom() == null) && tries <= 10);
+        } while((session == null || session.getRoom() == null) && tries <= 5);
 
         if (session == null || session.getRoom() == null) {
             parentController.getParentController().switchView();
         } else {
             lblCode.setText(session.getRoom());
             lblDm.setText(session.getHost().getUsername());
-            render();
         }
     }
 
