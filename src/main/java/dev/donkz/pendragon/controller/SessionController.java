@@ -68,6 +68,10 @@ public class SessionController implements Initializable, Controller, Controllabl
         }
     }
 
+    @Override
+    public void render() {
+    }
+
     public void showHostLobby(Campaign campaign) {
         lobbyView.setVisible(true);
         lobbyViewController.openSession(campaign);
@@ -132,7 +136,6 @@ public class SessionController implements Initializable, Controller, Controllabl
     @Override
     public void sync() {
         lobbyViewController.render();
-        lobbyViewController.fillCode();
     }
 
     @Override

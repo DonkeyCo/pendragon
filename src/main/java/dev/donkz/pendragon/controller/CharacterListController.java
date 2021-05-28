@@ -25,7 +25,6 @@ public class CharacterListController implements Initializable, Controller {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        createTiles();
     }
 
     private void createTiles() {
@@ -76,5 +75,10 @@ public class CharacterListController implements Initializable, Controller {
     }
 
     public void switchView() {
+    }
+
+    @Override
+    public void render() {
+        createTiles();
     }
 }

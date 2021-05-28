@@ -82,7 +82,7 @@ public class VariantEditorController implements Initializable, Controller {
         txtName.clear();
         txtDescription.clear();
         cbPublic.setSelected(false);
-        renderContent();
+        render();
     }
 
     @FXML
@@ -121,7 +121,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (proficiency != null) {
                     campaignVariant.addProficiency(proficiency);
 
-                    renderContent();
+                    render();
                     return proficiency.toString();
                 }
             }
@@ -149,7 +149,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (trait != null) {
                     campaignVariant.addTrait(trait);
 
-                    renderContent();
+                    render();
                     return trait.toString();
                 }
             }
@@ -178,7 +178,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (kind != null) {
                     campaignVariant.addKind(kind);
 
-                    renderContent();
+                    render();
                     return kind.toString();
                 }
             }
@@ -207,7 +207,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (race != null) {
                     campaignVariant.addRace(race);
 
-                    renderContent();
+                    render();
                     return race.toString();
                 }
             }
@@ -235,7 +235,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (skill != null) {
                     campaignVariant.addSkill(skill);
 
-                    renderContent();
+                    render();
                     return skill.toString();
                 }
             }
@@ -263,7 +263,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (feature != null) {
                     campaignVariant.addFeature(feature);
 
-                    renderContent();
+                    render();
                     return feature.toString();
                 }
             }
@@ -289,7 +289,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (spell != null) {
                     campaignVariant.addSpell(spell);
 
-                    renderContent();
+                    render();
                     return spell.toString();
                 }
             }
@@ -317,7 +317,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (equipment != null) {
                     campaignVariant.addEquipment(equipment);
 
-                    renderContent();
+                    render();
                     return equipment.toString();
                 }
             }
@@ -351,7 +351,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (npc != null) {
                     campaignVariant.addNpc(npc);
 
-                    renderContent();
+                    render();
                     return npc.toString();
                 }
             }
@@ -379,7 +379,7 @@ public class VariantEditorController implements Initializable, Controller {
                 if (monster != null) {
                     campaignVariant.addMonsters(monster);
 
-                    renderContent();
+                    render();
                     return monster.toString();
                 }
             }
@@ -403,7 +403,7 @@ public class VariantEditorController implements Initializable, Controller {
         return dialog;
     }
 
-    public void renderContent() {
+    public void render() {
         if (!campaignVariant.getName().equalsIgnoreCase("")) {
             this.txtName.setText(campaignVariant.getName());
         }

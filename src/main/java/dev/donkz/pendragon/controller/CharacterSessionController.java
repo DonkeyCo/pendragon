@@ -65,6 +65,11 @@ public class CharacterSessionController implements Initializable, Controller {
     }
 
     @Override
+    public void render() {
+        createTiles();
+    }
+
+    @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 

@@ -266,4 +266,9 @@ public class CampaignController implements Initializable, Controller {
     @Override
     public void switchView() {
     }
+
+    @Override
+    public void render() {
+        createTiles();
+    }
 }

@@ -147,4 +147,17 @@ public class ManagementController implements Initializable, Controller {
 
     public void switchView() {
     }
+
+    @Override
+    public void render() {
+        if (campaignLayer.isVisible()) {
+            campaignLayerController.render();
+        } else if (characterLayer.isVisible()) {
+            characterLayerController.render();
+        } else if (variantLayer.isVisible()) {
+            variantLayerController.render();
+        } else {
+            playerLayerController.render();
+        }
+    }
 }

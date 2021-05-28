@@ -44,5 +44,6 @@
     <children>
         <fx:include fx:id="managementView" source="management/management_scene.fxml" />
         <fx:include fx:id="sessionView" source="session/session_main.fxml" />
+        <fx:include fx:id="playerCreationView" source="management/player_creation.fxml" />
     </children>
 </StackPane>

@@ -96,6 +96,7 @@ public class LobbyController implements Controller, Initializable {
     }
 
     public void render() {
+        fillCode();
         Session session = sessionService.getCurrentSession();
         lblLobbyName.setText("Lobby - " + session.getCampaign().getName());
         Player host = session.getHost();
@@ -245,7 +246,7 @@ public class LobbyController implements Controller, Initializable {
         return dialog;
     }
 
-    public void fillCode() {
+    private void fillCode() {
         Session session = null;
         int tries = 0;
         do {

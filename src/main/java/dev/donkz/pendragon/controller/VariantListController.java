@@ -35,7 +35,6 @@ public class VariantListController implements Controller {
     }
 
     public void initialize() {
-        createTiles();
         editorController.setParentController(this);
     }
 
@@ -48,7 +47,7 @@ public class VariantListController implements Controller {
 
             tile.setOnMouseClicked(mouseEvent -> {
                 editorController.setCampaignVariant(variant);
-                editorController.renderContent();
+                editorController.render();
                 this.switchView();
             });
             tile.getBtnDelete().setOnAction(actionEvent -> {
@@ -86,6 +85,11 @@ public class VariantListController implements Controller {
     public void switchView() {
         overview.setVisible(!overview.isVisible());
         editor.setVisible(!editor.isVisible());
+    }
+
+    @Override
+    public void render() {
+        createTiles();
     }
 
     @Override
