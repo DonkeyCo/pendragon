@@ -152,7 +152,7 @@ public class ControlUtility {
                     elements.put(labelName, textField);
                 } else {
                     CheckComboBox<Object> comboBox = createCheckComboBox("Choose " + labelName, "cmb" + labelName);
-                    comboBox.getItems().addAll((List<Object>) field.get(object));
+                    comboBox.getCheckModel().getCheckedItems().addAll((List<Object>) field.get(object));
                     elements.put(labelName, comboBox);
                 }
             } else if (field.getType().toString().contains("float") || field.getType().toString().contains("int")) {

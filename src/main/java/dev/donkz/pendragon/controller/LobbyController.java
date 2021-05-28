@@ -7,10 +7,7 @@ import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.session.Session;
 import dev.donkz.pendragon.exception.infrastructure.*;
-import dev.donkz.pendragon.service.PlayableCharacterService;
-import dev.donkz.pendragon.service.PlayerManagementService;
-import dev.donkz.pendragon.service.SessionService;
-import dev.donkz.pendragon.service.WebSocketSessionService;
+import dev.donkz.pendragon.service.*;
 import dev.donkz.pendragon.ui.CreateDialog;
 import dev.donkz.pendragon.util.ControlUtility;
 import javafx.fxml.FXML;
@@ -24,6 +21,7 @@ import javafx.stage.Screen;
 import javafx.util.Pair;
 
 import javax.inject.Inject;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.AttributedCharacterIterator;
 import java.util.*;
@@ -45,16 +43,17 @@ public class LobbyController implements Controller, Initializable {
     private SessionController parentController;
     private final PlayerManagementService playerManagementService;
     private final PlayableCharacterService playableCharacterService;
-    private final WebSocketSessionService webSocketSessionService;
+    private final CampaignListingService campaignListingService;
     private final SessionService sessionService;
-    private Session session;
+    private final CampaignManipulationService manipulationService;
 
     @Inject
-    public LobbyController(PlayerManagementService playerManagementService, PlayableCharacterService playableCharacterService, WebSocketSessionService webSocketSessionService, SessionService sessionService) {
+    public LobbyController(PlayerManagementService playerManagementService, PlayableCharacterService playableCharacterService, SessionService sessionService, CampaignListingService campaignListingService, CampaignManipulationService manipulationService) {
         this.playerManagementService = playerManagementService;
         this.playableCharacterService = playableCharacterService;
-        this.webSocketSessionService = webSocketSessionService;
         this.sessionService = sessionService;
+        this.campaignListingService = campaignListingService;
+        this.manipulationService = manipulationService;
     }
 
     @Override
@@ -143,8 +142,9 @@ public class LobbyController implements Controller, Initializable {
     }
 
     public void onChange() {
-        String pcId = sessionService.getCurrentSession().getParticipants().get(playerManagementService.getRegisteredPlayer().getId());
-        Map<String, Region> items = new LinkedHashMap<>();
+        Session session = sessionService.getCurrentSession();
+        String pcId = session.getParticipants().get(playerManagementService.getRegisteredPlayer().getId());
+        Map<String, Region> items;
         try {
             Pc pc = playableCharacterService.getPlayerCharacter(pcId);
             items = ControlUtility.createForm(Pc.class, pc);
@@ -153,6 +153,52 @@ public class LobbyController implements Controller, Initializable {
         }
         Dialog<String> dialog = createDialog("Edit Character Sheet", items);
         dialog.show();
+
+        Campaign campaign = session.getCampaign();
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType != null) {
+                Pc pc = null;
+                try {
+                    pc = ControlUtility.controlsToValues(Pc.class, items);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                if (pc != null) {
+                    try {
+                        playableCharacterService.createPlayerCharacter(pc);
+                    } catch (SessionAlreadyExists | IndexAlreadyExistsException sessionAlreadyExists) {
+                        sessionAlreadyExists.printStackTrace();
+                    }
+                    campaign.addCharacter(pc);
+                    try {
+                        if (campaignListingService.campaignExists(campaign.getId())) {
+                            manipulationService.updateCampaign(campaign);
+                        } else {
+                            manipulationService.createCampaign(campaign);
+                        }
+                    } catch (MultiplePlayersException | EntityNotFoundException | SessionAlreadyExists | IndexAlreadyExistsException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        playerManagementService.addPcForRegisteredPlayer(pc);
+                    } catch (MultiplePlayersException | EntityNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        sessionService.updateParticipant(playerManagementService.getRegisteredPlayer().getId(), pc.getId());
+                        sessionService.updateCampaign(campaign);
+                    } catch (EntityNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    render();
+                    fillCode();
+                    parentController.updateSession(session);
+                    return pc.toString();
+                }
+            }
+            return null;
+        });
     }
 
     private Dialog<String> createDialog(String title, Map<String, Region> items) {
@@ -167,10 +213,6 @@ public class LobbyController implements Controller, Initializable {
         dialog.setDialogPane(dialogPane);
 
         return dialog;
-    }
-
-    public void setSession(Session session) {
-        this.session = session;
     }
 
     private void fillCode() {
