@@ -138,7 +138,7 @@ public class LobbyController implements Controller, Initializable {
     public void onSend() {
         Player player = playerManagementService.getRegisteredPlayer();
 
-        webSocketSessionService.sendMessage(txtMessage.getText(), sessionService.getCurrentSession());
+        parentController.sendMessage(txtMessage.getText(), sessionService.getCurrentSession());
         parentController.message(player.getUsername(), txtMessage.getText());
     }
 
