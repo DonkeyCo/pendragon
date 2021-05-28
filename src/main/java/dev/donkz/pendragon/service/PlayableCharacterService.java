@@ -33,4 +33,8 @@ public class PlayableCharacterService {
     public void createPlayerCharacter(Pc pc) throws SessionAlreadyExists, IndexAlreadyExistsException {
         pcRepository.save(pc);
     }
+
+    public Pc getPlayerCharacter(String id) throws EntityNotFoundException {
+        return pcRepository.findById(id);
+    }
 }

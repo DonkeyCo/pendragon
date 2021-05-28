@@ -11,22 +11,22 @@ import dev.donkz.pendragon.service.PlayableCharacterService;
 import dev.donkz.pendragon.service.PlayerManagementService;
 import dev.donkz.pendragon.service.SessionService;
 import dev.donkz.pendragon.service.WebSocketSessionService;
+import dev.donkz.pendragon.ui.CreateDialog;
 import dev.donkz.pendragon.util.ControlUtility;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.stage.Screen;
 import javafx.util.Pair;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.text.AttributedCharacterIterator;
+import java.util.*;
 
 public class LobbyController implements Controller, Initializable {
     @FXML
@@ -139,6 +139,36 @@ public class LobbyController implements Controller, Initializable {
         Player player = playerManagementService.getRegisteredPlayer();
 
         parentController.message(player.getUsername(), txtMessage.getText());
+    }
+
+    public void onChange() {
+        String pcId = sessionService.getCurrentSession().getParticipants().get(playerManagementService.getRegisteredPlayer().getUsername());
+        Map<String, Region> items = new LinkedHashMap<>();
+
+
+
+        try {
+            Pc pc = playableCharacterService.getPlayerCharacter(pcId);
+            items = ControlUtility.createForm(Pc.class, pc);
+        } catch (EntityNotFoundException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        Dialog<String> dialog = createDialog("Edit Character Sheet", items);
+        dialog.show();
+    }
+
+    private Dialog<String> createDialog(String title, Map<String, Region> items) {
+        CreateDialog dialogPane = new CreateDialog(title, items);
+        dialogPane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 5);
+        dialogPane.setMaxWidth(Screen.getPrimary().getBounds().getWidth() / 5);
+        dialogPane.setPrefHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
+        dialogPane.setMaxHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
+
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle(title);
+        dialog.setDialogPane(dialogPane);
+
+        return dialog;
     }
 
     public void setSession(Session session) {

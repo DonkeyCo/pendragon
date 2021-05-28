@@ -87,7 +87,7 @@
                                 <HBox>
                                     <children>
                                         <TextField fx:id="txtMessage" HBox.hgrow="ALWAYS"/>
-                                        <Button fx:id="btnSend" mnemonicParsing="false" text="Send" onAction="#onSend"/>
+                                        <Button fx:id="btnSend" mnemonicParsing="false" onAction="#onSend" text="Send"/>
                                     </children>
                                 </HBox>
                             </children>
@@ -98,6 +98,7 @@
         </VBox>
         <ButtonBar>
             <buttons>
+                <Button mnemonicParsing="false" text="Edit Character Sheet" onAction="#onChange"/>
                 <Button fx:id="btnChoose" mnemonicParsing="false" onAction="#onChoose" text="Choose Character"/>
                 <Button fx:id="btnExit" cancelButton="true" mnemonicParsing="false" onAction="#onExit" text="Exit"/>
             </buttons>

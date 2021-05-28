@@ -132,6 +132,57 @@ public class ControlUtility {
         return elements;
     }
 
+    public static <T> Map<String, Region> createForm(Class<T> tClass, T object) throws IllegalAccessException {
+        Map<String, Region> elements = new LinkedHashMap<>();
+        Field[] fields = tClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String fieldName = field.getName();
+            String labelName = capitalize(fieldName);
+
+            if (labelName.equalsIgnoreCase("Id")) {
+                continue;
+            }
+
+            if ((field.getType().toString().contains("List"))) {
+                String type = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getTypeName();
+                if (type.contains("String")) {
+                    TextField textField = createTextField("Provide " + labelName + " (separate by comma)", "txt" + labelName);
+                    textField.setText(String.join(",", (List<String>) object));
+                    elements.put(labelName, textField);
+                } else {
+                    CheckComboBox<Object> comboBox = createCheckComboBox("Choose " + labelName, "cmb" + labelName);
+                    comboBox.getItems().addAll((List<Object>) object);
+                    elements.put(labelName, comboBox);
+                }
+            } else if (field.getType().toString().contains("float") || field.getType().toString().contains("int")) {
+                IntegerField integerField = createIntegerField("", "int" + labelName);
+                integerField.setValue((int) object);
+                elements.put(labelName, integerField);
+            } else if ((field.getType().toString().contains("String"))) {
+                TextField textField = createTextField("", "txt" + labelName);
+                textField.setText((String) field.get(object));
+                elements.put(labelName, textField);
+            } else if (field.getType().toString().contains("AbilityScore")) {
+                IntegerField integerField = createIntegerField("", "int" + labelName);
+                AbilityScore score = ((AbilityScore) object);
+                integerField.setValue(score.getScore());
+                elements.put(labelName, integerField);
+            } else if (field.getType().toString().contains("PriceUnit")) {
+                ComboBox<PriceUnit> comboBox = createComboBox("", "cmb" + labelName);
+                comboBox.setItems(FXCollections.observableList(Arrays.asList(PriceUnit.values())));
+                comboBox.setValue((PriceUnit) field.get(object));
+                elements.put(labelName, comboBox);
+            } else {
+                ComboBox<Object> comboBox = createComboBox("", "cmb" + labelName);
+                comboBox.setValue(field.get(object));
+                elements.put(labelName, comboBox);
+            }
+            field.setAccessible(false);
+        }
+        return elements;
+    }
+
     public static <T> T controlsToValues(Class<T> tClass, Map<String, Region> items) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
         Field[] fields = tClass.getDeclaredFields();
 

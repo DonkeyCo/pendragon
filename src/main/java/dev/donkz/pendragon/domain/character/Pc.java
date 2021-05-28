@@ -2,6 +2,10 @@ package dev.donkz.pendragon.domain.character;
 
 import dev.donkz.pendragon.domain.Entity;
 import dev.donkz.pendragon.domain.common.Ability;
+import dev.donkz.pendragon.domain.variant.Equipment;
+import dev.donkz.pendragon.domain.variant.Feature;
+import dev.donkz.pendragon.domain.variant.Proficiency;
+import dev.donkz.pendragon.domain.variant.Trait;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -36,11 +40,11 @@ public class Pc implements Character, Entity {
 
     // Character Abilities/Traits
     private List<String> actions;
-    private List<String> proficiencies;
+    private List<Proficiency> proficiencies;
     private List<String> attacks;
-    private List<String> features;
-    private List<String> traits;
-    private List<String> equipment;
+    private List<Feature> features;
+    private List<Trait> traits;
+    private List<Equipment> equipment;
 
     // Currency
     private int cp;
