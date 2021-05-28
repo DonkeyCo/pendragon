@@ -9,6 +9,8 @@ import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
 import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
 import dev.donkz.pendragon.exception.model.RequiredAttributeMissingException;
 
+import java.util.List;
+
 public class PlayerManagementService {
     private final PlayerRepository repository;
 
@@ -52,9 +54,22 @@ public class PlayerManagementService {
         return null;
     }
 
-    public void addPcForRegisteredPlayer(Pc pc) throws MultiplePlayersException, EntityNotFoundException {
+    public void addOrUpdatePcForRegisteredPlayer(Pc pc) throws MultiplePlayersException, EntityNotFoundException {
         Player player = repository.findRegisteredPlayer();
-        player.addCharacter(pc);
+        List<Pc> pcs = player.getCharacters();
+
+        int index = -1;
+        for (int i = 0; i < pcs.size(); i++) {
+            if (pcs.get(i).getId().equalsIgnoreCase(pc.getId())) {
+                index = i;
+            }
+        }
+
+        if (index != -1) {
+            player.updateCharacter(index, pc);
+        } else {
+            player.addCharacter(pc);
+        }
 
         repository.update(player.getId(), player);
     }

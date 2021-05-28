@@ -28,6 +28,10 @@ public class Player implements Entity {
         characters.add(pc);
     }
 
+    public void updateCharacter(int index, Pc pc) {
+        characters.set(index, pc);
+    }
+
     public static class PlayerBuilder {
         @JsonProperty private String id;
         @JsonProperty private String username;

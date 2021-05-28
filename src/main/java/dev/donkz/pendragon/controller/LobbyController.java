@@ -194,7 +194,7 @@ public class LobbyController implements Controller, Initializable {
                         e.printStackTrace();
                     }
                     try {
-                        playerManagementService.addPcForRegisteredPlayer(pc);
+                        playerManagementService.addOrUpdatePcForRegisteredPlayer(pc);
                     } catch (MultiplePlayersException | EntityNotFoundException e) {
                         e.printStackTrace();
                     }
