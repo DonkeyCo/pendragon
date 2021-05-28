@@ -148,16 +148,16 @@ public class ControlUtility {
                 String type = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getTypeName();
                 if (type.contains("String")) {
                     TextField textField = createTextField("Provide " + labelName + " (separate by comma)", "txt" + labelName);
-                    textField.setText(String.join(",", (List<String>) object));
+                    textField.setText(String.join(",", (List<String>) field.get(object)));
                     elements.put(labelName, textField);
                 } else {
                     CheckComboBox<Object> comboBox = createCheckComboBox("Choose " + labelName, "cmb" + labelName);
-                    comboBox.getItems().addAll((List<Object>) object);
+                    comboBox.getItems().addAll((List<Object>) field.get(object));
                     elements.put(labelName, comboBox);
                 }
             } else if (field.getType().toString().contains("float") || field.getType().toString().contains("int")) {
                 IntegerField integerField = createIntegerField("", "int" + labelName);
-                integerField.setValue((int) object);
+                integerField.setValue((int) field.get(object));
                 elements.put(labelName, integerField);
             } else if ((field.getType().toString().contains("String"))) {
                 TextField textField = createTextField("", "txt" + labelName);
@@ -165,7 +165,7 @@ public class ControlUtility {
                 elements.put(labelName, textField);
             } else if (field.getType().toString().contains("AbilityScore")) {
                 IntegerField integerField = createIntegerField("", "int" + labelName);
-                AbilityScore score = ((AbilityScore) object);
+                AbilityScore score = ((AbilityScore) field.get(object));
                 integerField.setValue(score.getScore());
                 elements.put(labelName, integerField);
             } else if (field.getType().toString().contains("PriceUnit")) {

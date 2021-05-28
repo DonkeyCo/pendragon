@@ -143,14 +143,13 @@ public class LobbyController implements Controller, Initializable {
     }
 
     public void onChange() {
-        String pcId = sessionService.getCurrentSession().getParticipants().get(playerManagementService.getRegisteredPlayer().getUsername());
+        String pcId = sessionService.getCurrentSession().getParticipants().get(playerManagementService.getRegisteredPlayer().getId());
         Map<String, Region> items = new LinkedHashMap<>();
-
         try {
             Pc pc = playableCharacterService.getPlayerCharacter(pcId);
             items = ControlUtility.createForm(Pc.class, pc);
         } catch (EntityNotFoundException | IllegalAccessException e) {
-            e.printStackTrace();
+            return;
         }
         Dialog<String> dialog = createDialog("Edit Character Sheet", items);
         dialog.show();

@@ -55,8 +55,8 @@ public class CharacterListController implements Initializable, Controller {
      */
     private SortedMap<String, String> getTileItems(Pc pc) {
         SortedMap<String, String> items = new TreeMap<>();
-        items.put("Class", pc.getKind());
-        items.put("Race", pc.getRace());
+        items.put("Class", pc.getKind().shortString());
+        items.put("Race", pc.getRace().shortString());
         items.put("Level", String.valueOf(pc.getLevel()));
         return items;
     }

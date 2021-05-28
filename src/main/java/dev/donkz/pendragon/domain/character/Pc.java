@@ -2,10 +2,7 @@ package dev.donkz.pendragon.domain.character;
 
 import dev.donkz.pendragon.domain.Entity;
 import dev.donkz.pendragon.domain.common.Ability;
-import dev.donkz.pendragon.domain.variant.Equipment;
-import dev.donkz.pendragon.domain.variant.Feature;
-import dev.donkz.pendragon.domain.variant.Proficiency;
-import dev.donkz.pendragon.domain.variant.Trait;
+import dev.donkz.pendragon.domain.variant.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,8 +21,8 @@ public class Pc implements Character, Entity {
     private String notes;
     private String alignment;
     private String background;
-    private String kind;
-    private String race;
+    private Kind kind;
+    private Race race;
     private List<Ability> savingThrows;
     private int level;
     private int exp;

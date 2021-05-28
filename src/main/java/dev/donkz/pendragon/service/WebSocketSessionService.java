@@ -215,6 +215,7 @@ public class WebSocketSessionService {
             player = playerRepository.findRegisteredPlayer();
         } catch (MultiplePlayersException e) {
             e.printStackTrace();
+            return;
         }
         communicator.send("sendMessage", session.getRoom(), player.getUsername(), message);
     }

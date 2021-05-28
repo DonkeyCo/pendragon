@@ -2,8 +2,10 @@ package dev.donkz.pendragon.controller;
 
 import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
+import dev.donkz.pendragon.domain.common.Ability;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.session.Session;
+import dev.donkz.pendragon.domain.variant.*;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
@@ -14,10 +16,12 @@ import dev.donkz.pendragon.ui.Tile;
 import dev.donkz.pendragon.util.ControlUtility;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Screen;
+import org.controlsfx.control.CheckComboBox;
 
 import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
@@ -65,12 +69,20 @@ public class CharacterSessionController implements Initializable, Controller {
     }
 
     public void onCreate() {
-        Map<String, Region> items = ControlUtility.createForm(Pc.class);
-        // ControlUtility.fillComboBox((ComboBox<Ability>) items.get("Type"), Arrays.asList(Ability.values()));
         Session session = sessionService.getCurrentSession();
+        Map<String, Region> items = ControlUtility.createForm(Pc.class);
+
+        ControlUtility.fillComboBox((ComboBox<Kind>) items.get("Kind"), session.getCampaign().getCampaignVariant().getKinds());
+        ControlUtility.fillComboBox((ComboBox<Race>) items.get("Race"), session.getCampaign().getCampaignVariant().getRaces());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("SavingThrows"), Arrays.asList(Ability.values()));
+        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("Proficiencies"), session.getCampaign().getCampaignVariant().getProficiencies());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Feature>) items.get("Features"), session.getCampaign().getCampaignVariant().getFeatures());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Trait>) items.get("Traits"), session.getCampaign().getCampaignVariant().getTraits());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Equipment>) items.get("Equipment"), session.getCampaign().getCampaignVariant().getEquipments());
+
         Campaign campaign = session.getCampaign();
 
-        Dialog<String> dialog = createDialog("Create Proficiency", items);
+        Dialog<String> dialog = createDialog("Create Playable Character", items);
         dialog.show();
 
         dialog.setResultConverter(buttonType -> {
@@ -162,8 +174,8 @@ public class CharacterSessionController implements Initializable, Controller {
      */
     private SortedMap<String, String> getTileItems(Pc pc) {
         SortedMap<String, String> items = new TreeMap<>();
-        items.put("Class", pc.getKind());
-        items.put("Race", pc.getRace());
+        items.put("Class", pc.getKind().shortString());
+        items.put("Race", pc.getRace().shortString());
         items.put("Level", String.valueOf(pc.getLevel()));
         return items;
     }
