@@ -4,8 +4,10 @@ import com.sun.javafx.tk.TKClipboard;
 import com.sun.javafx.tk.Toolkit;
 import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
+import dev.donkz.pendragon.domain.common.Ability;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.session.Session;
+import dev.donkz.pendragon.domain.variant.*;
 import dev.donkz.pendragon.exception.infrastructure.*;
 import dev.donkz.pendragon.service.*;
 import dev.donkz.pendragon.ui.CreateDialog;
@@ -19,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Screen;
 import javafx.util.Pair;
+import org.controlsfx.control.CheckComboBox;
 
 import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
@@ -145,14 +148,24 @@ public class LobbyController implements Controller, Initializable {
         Session session = sessionService.getCurrentSession();
         String pcId = session.getParticipants().get(playerManagementService.getRegisteredPlayer().getId());
         Map<String, Region> items;
+        Pc editedPc;
         try {
-            Pc pc = playableCharacterService.getPlayerCharacter(pcId);
-            items = ControlUtility.createForm(Pc.class, pc);
+            editedPc = playableCharacterService.getPlayerCharacter(pcId);
+            items = ControlUtility.createForm(Pc.class, editedPc);
         } catch (EntityNotFoundException | IllegalAccessException e) {
             return;
         }
         Dialog<String> dialog = createDialog("Edit Character Sheet", items);
         dialog.show();
+
+        ControlUtility.fillComboBox((ComboBox<Kind>) items.get("Kind"), session.getCampaign().getCampaignVariant().getKinds());
+        ControlUtility.fillComboBox((ComboBox<Race>) items.get("Race"), session.getCampaign().getCampaignVariant().getRaces());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("SavingThrows"), Arrays.asList(Ability.values()));
+        ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("Proficiencies"), session.getCampaign().getCampaignVariant().getProficiencies());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Feature>) items.get("Features"), session.getCampaign().getCampaignVariant().getFeatures());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Trait>) items.get("Traits"), session.getCampaign().getCampaignVariant().getTraits());
+        ControlUtility.fillCheckComboBox((CheckComboBox<Equipment>) items.get("Equipment"), session.getCampaign().getCampaignVariant().getEquipments());
+
 
         Campaign campaign = session.getCampaign();
         dialog.setResultConverter(buttonType -> {
@@ -160,13 +173,14 @@ public class LobbyController implements Controller, Initializable {
                 Pc pc = null;
                 try {
                     pc = ControlUtility.controlsToValues(Pc.class, items);
+                    pc.setId(editedPc.getId());
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
                 if (pc != null) {
                     try {
-                        playableCharacterService.createPlayerCharacter(pc);
-                    } catch (SessionAlreadyExists | IndexAlreadyExistsException sessionAlreadyExists) {
+                        playableCharacterService.updatePlayerCharacter(pc);
+                    } catch (EntityNotFoundException sessionAlreadyExists) {
                         sessionAlreadyExists.printStackTrace();
                     }
                     campaign.addCharacter(pc);
@@ -193,7 +207,7 @@ public class LobbyController implements Controller, Initializable {
 
                     render();
                     fillCode();
-                    parentController.updateSession(session);
+                    parentController.updateSession(sessionService.getCurrentSession());
                     return pc.toString();
                 }
             }
@@ -215,7 +229,7 @@ public class LobbyController implements Controller, Initializable {
         return dialog;
     }
 
-    private void fillCode() {
+    public void fillCode() {
         Session session = null;
         int tries = 0;
         do {

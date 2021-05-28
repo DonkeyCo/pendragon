@@ -134,6 +134,7 @@ public class SessionController implements Initializable, Controller, Controllabl
     @Override
     public void sync() {
         lobbyViewController.render();
+        lobbyViewController.fillCode();
     }
 
     @Override

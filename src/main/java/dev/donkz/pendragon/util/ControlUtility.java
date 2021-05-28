@@ -1,5 +1,6 @@
 package dev.donkz.pendragon.util;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.javafx.scene.control.IntegerField;
 import dev.donkz.pendragon.domain.Printable;
 import dev.donkz.pendragon.domain.character.AbilityScore;
@@ -152,7 +153,9 @@ public class ControlUtility {
                     elements.put(labelName, textField);
                 } else {
                     CheckComboBox<Object> comboBox = createCheckComboBox("Choose " + labelName, "cmb" + labelName);
-                    comboBox.getCheckModel().getCheckedItems().addAll((List<Object>) field.get(object));
+                    for (Object o : (List<Object>) field.get(object)) {
+                        comboBox.getCheckModel().check(o);
+                    }
                     elements.put(labelName, comboBox);
                 }
             } else if (field.getType().toString().contains("float") || field.getType().toString().contains("int")) {

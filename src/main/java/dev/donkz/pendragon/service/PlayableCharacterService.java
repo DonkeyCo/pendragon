@@ -37,4 +37,8 @@ public class PlayableCharacterService {
     public Pc getPlayerCharacter(String id) throws EntityNotFoundException {
         return pcRepository.findById(id);
     }
+
+    public void updatePlayerCharacter(Pc pc) throws EntityNotFoundException {
+        pcRepository.update(pc.getId(), pc);
+    }
 }
