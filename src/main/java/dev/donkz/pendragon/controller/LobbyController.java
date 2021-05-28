@@ -12,8 +12,10 @@ import dev.donkz.pendragon.exception.infrastructure.*;
 import dev.donkz.pendragon.service.*;
 import dev.donkz.pendragon.ui.CreateDialog;
 import dev.donkz.pendragon.util.ControlUtility;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
@@ -24,6 +26,7 @@ import javafx.util.Pair;
 import org.controlsfx.control.CheckComboBox;
 
 import javax.inject.Inject;
+import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.AttributedCharacterIterator;
@@ -49,14 +52,16 @@ public class LobbyController implements Controller, Initializable {
     private final CampaignListingService campaignListingService;
     private final SessionService sessionService;
     private final CampaignManipulationService manipulationService;
+    private final DiceService diceService;
 
     @Inject
-    public LobbyController(PlayerManagementService playerManagementService, PlayableCharacterService playableCharacterService, SessionService sessionService, CampaignListingService campaignListingService, CampaignManipulationService manipulationService) {
+    public LobbyController(PlayerManagementService playerManagementService, PlayableCharacterService playableCharacterService, SessionService sessionService, CampaignListingService campaignListingService, CampaignManipulationService manipulationService, DiceService diceService) {
         this.playerManagementService = playerManagementService;
         this.playableCharacterService = playableCharacterService;
         this.sessionService = sessionService;
         this.campaignListingService = campaignListingService;
         this.manipulationService = manipulationService;
+        this.diceService = diceService;
     }
 
     @Override
@@ -213,6 +218,17 @@ public class LobbyController implements Controller, Initializable {
             }
             return null;
         });
+    }
+
+    public void onRoll(Event event) {
+        MenuItem node = (MenuItem) event.getSource();
+        int rollMax = Integer.parseInt((String) node.getUserData());
+        int roll = diceService.rollDice(rollMax);
+
+        Player player = playerManagementService.getRegisteredPlayer();
+        String rollMessage = String.format("%s rolled a D%d. Rolled a %d.", player.getUsername(), rollMax, roll);
+        parentController.sendRoll(rollMessage);
+        parentController.roll(rollMessage);
     }
 
     private Dialog<String> createDialog(String title, Map<String, Region> items) {

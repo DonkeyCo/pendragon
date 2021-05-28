@@ -7,4 +7,5 @@ public interface ControllableSession {
     void left(String id);
     void joined(Player player);
     void message(String playerName, String message);
+    void roll(String rollMessage);
 }

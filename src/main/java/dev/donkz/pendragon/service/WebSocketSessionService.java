@@ -192,6 +192,10 @@ public class WebSocketSessionService {
 
             Platform.runLater(() -> controllableSession.message(playerName, message));
         });
+        communicator.getSocket().on("rolled", objects -> {
+           String message = (String) objects[0];
+           Platform.runLater(() -> controllableSession.roll(message));
+        });
     }
 
     public void leaveLobby(String room, String playerId, Session session) throws EntityNotFoundException {
@@ -224,5 +228,9 @@ public class WebSocketSessionService {
             return;
         }
         communicator.send("sendMessage", session.getRoom(), player.getUsername(), message);
+    }
+
+    public void sendRoll(String rollMessage, Session session) {
+        communicator.send("roll", session.getRoom(), rollMessage);
     }
 }

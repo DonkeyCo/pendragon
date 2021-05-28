@@ -98,8 +98,18 @@
         </VBox>
         <ButtonBar>
             <buttons>
-                <Button mnemonicParsing="false" text="Edit Character Sheet" onAction="#onChange"/>
+                <Button mnemonicParsing="false" onAction="#onChange" text="Edit Character Sheet"/>
                 <Button fx:id="btnChoose" mnemonicParsing="false" onAction="#onChoose" text="Choose Character"/>
+                <MenuButton mnemonicParsing="false" text="Roll a dice">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Roll D20" onAction="#onRoll" userData="20"/>
+                        <MenuItem mnemonicParsing="false" text="Roll D12" onAction="#onRoll" userData="12"/>
+                        <MenuItem mnemonicParsing="false" text="Roll D10" onAction="#onRoll" userData="10"/>
+                        <MenuItem mnemonicParsing="false" text="Roll D8" onAction="#onRoll" userData="8"/>
+                        <MenuItem mnemonicParsing="false" text="Roll D6" onAction="#onRoll" userData="6"/>
+                        <MenuItem mnemonicParsing="false" text="Roll D4" onAction="#onRoll" userData="4"/>
+                    </items>
+                </MenuButton>
                 <Button fx:id="btnExit" cancelButton="true" mnemonicParsing="false" onAction="#onExit" text="Exit"/>
             </buttons>
         </ButtonBar>

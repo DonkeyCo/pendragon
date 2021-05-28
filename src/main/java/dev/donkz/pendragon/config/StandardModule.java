@@ -80,4 +80,8 @@ public class StandardModule extends AbstractModule {
         return new WebSocketSessionService(communicator(), playerRepository(), sessionRepository(), campaignVariantRepository(), campaignRepository(), pcRepository());
     }
 
+    @Provides
+    static DiceService diceService() {
+        return new DiceService();
+    }
 }

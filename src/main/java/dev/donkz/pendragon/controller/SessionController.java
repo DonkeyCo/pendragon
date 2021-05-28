@@ -26,8 +26,6 @@ public class SessionController implements Initializable, Controller, Controllabl
     private LobbyController lobbyViewController; // injected via FXML
     @FXML
     private CharacterSessionController selectionViewController;
-    @FXML
-    private Pane chatBox;
 
     private Controller parentController;
     private final WebSocketSessionService webSocketSessionService;
@@ -152,6 +150,16 @@ public class SessionController implements Initializable, Controller, Controllabl
 
     public void sendMessage(String message, Session session) {
         webSocketSessionService.sendMessage(message, session);
+    }
+
+    public void sendRoll(String rollMessage) {
+        Session session = sessionService.getCurrentSession();
+        webSocketSessionService.sendRoll(rollMessage, session);
+    }
+
+    @Override
+    public void roll(String rollMessage) {
+        lobbyViewController.getChatBox().getChildren().add(ControlUtility.createLabel(rollMessage, false));
     }
 
     public void joined(Player player) {
