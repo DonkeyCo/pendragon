@@ -10,17 +10,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
 import javax.inject.Inject;
-import javax.swing.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PlayerCreationController implements Initializable, Controller {
+public class PlayerCreationController implements Initializable, ViewableController {
     @FXML
     private TextField txtUsername;
     @FXML
     private TextField txtProfile;
 
-    private Controller parentController;
+    private ViewableController parentController;
     private PlayerRepository playerRepository;
 
     @Inject
@@ -51,12 +50,12 @@ public class PlayerCreationController implements Initializable, Controller {
     }
 
     @Override
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return parentController;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
         this.parentController = parentController;
     }
 

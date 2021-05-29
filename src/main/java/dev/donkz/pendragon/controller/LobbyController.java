@@ -15,7 +15,6 @@ import dev.donkz.pendragon.util.ControlUtility;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
@@ -26,13 +25,11 @@ import javafx.util.Pair;
 import org.controlsfx.control.CheckComboBox;
 
 import javax.inject.Inject;
-import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.text.AttributedCharacterIterator;
 import java.util.*;
 
-public class LobbyController implements Controller, Initializable {
+public class LobbyController implements ViewableController, Initializable {
     @FXML
     private Label lblCode;
     @FXML
@@ -73,12 +70,12 @@ public class LobbyController implements Controller, Initializable {
     }
 
     @Override
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return parentController;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
         this.parentController = (SessionController) parentController;
     }
 

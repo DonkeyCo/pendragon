@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SessionController implements Initializable, Controller, ControllableSession {
+public class SessionController implements Initializable, ViewableController, ControllableSession {
     @FXML
     private Pane lobbyView;
     @FXML
@@ -27,7 +27,7 @@ public class SessionController implements Initializable, Controller, Controllabl
     @FXML
     private CharacterSessionController selectionViewController;
 
-    private Controller parentController;
+    private ViewableController parentController;
     private final WebSocketSessionService webSocketSessionService;
     private final SessionService sessionService;
 
@@ -47,12 +47,12 @@ public class SessionController implements Initializable, Controller, Controllabl
     }
 
     @Override
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return parentController;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
         this.parentController = parentController;
     }
 
@@ -129,7 +129,7 @@ public class SessionController implements Initializable, Controller, Controllabl
         }
     }
 
-    public Controller getLobbyController() {
+    public HierarchicalController getLobbyController() {
         return lobbyViewController;
     }
 

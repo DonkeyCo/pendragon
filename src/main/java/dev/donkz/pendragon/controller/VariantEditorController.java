@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class VariantEditorController implements Initializable, Controller {
+public class VariantEditorController implements Initializable, ViewableController {
     @FXML
     private Pane proficiencyPane;
     @FXML
@@ -451,12 +451,12 @@ public class VariantEditorController implements Initializable, Controller {
     }
 
     @Override
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return parentController;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
         this.parentController = (VariantListController) parentController;
     }
 

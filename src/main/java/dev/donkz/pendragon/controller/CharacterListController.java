@@ -12,11 +12,11 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.*;
 
-public class CharacterListController implements Initializable, Controller {
+public class CharacterListController implements Initializable, ViewableController {
     @FXML
     private TilePane tilePane;
 
-    private Controller parentController;
+    private ViewableController parentController;
     private final PlayableCharacterService listingService;
 
     @Inject
@@ -65,12 +65,12 @@ public class CharacterListController implements Initializable, Controller {
     }
 
     @Override
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return parentController;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
         this.parentController = parentController;
     }
 

@@ -1,28 +1,17 @@
 package dev.donkz.pendragon.controller;
 
 import dev.donkz.pendragon.domain.campaign.Campaign;
-import dev.donkz.pendragon.domain.character.Pc;
-import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
-import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
-import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.infrastructure.MultiplePlayersException;
-import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
-import dev.donkz.pendragon.exception.model.RequiredAttributeMissingException;
 import dev.donkz.pendragon.ui.CreateDialog;
-import dev.donkz.pendragon.util.ControlUtility;
 import javafx.fxml.FXML;
-import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 
 import javax.inject.Inject;
-import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -30,7 +19,7 @@ import java.util.Map;
  *
  * Controller for switching between the main scenes: Management View, Game View.
  */
-public class MainController implements Controller {
+public class MainController implements ViewableController {
     @FXML
     private Pane managementView;
     @FXML
@@ -94,12 +83,12 @@ public class MainController implements Controller {
     public void render() {
     }
 
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return null;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
     }
 
     public void activateLobby(Campaign campaign) {

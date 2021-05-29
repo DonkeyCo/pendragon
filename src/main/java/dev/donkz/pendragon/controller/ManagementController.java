@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 /**
  * Controller for Management view
  */
-public class ManagementController implements Initializable, Controller {
+public class ManagementController implements Initializable, ViewableController {
     @FXML private Pane campaignLayer;
     @FXML private Pane characterLayer;
     @FXML private StackPane contentPane;
@@ -24,12 +24,11 @@ public class ManagementController implements Initializable, Controller {
     @FXML private Pane variantLayer;
 
     // Child Controllers
-    @FXML private Controller campaignLayerController;
-    @FXML private Controller characterLayerController;
-    @FXML private Controller variantLayerController;
-    @FXML private Controller playerLayerController;
+    @FXML private ViewableController campaignLayerController;
+    @FXML private ViewableController characterLayerController;
+    @FXML private ViewableController variantLayerController;
 
-    private Controller parentController;
+    private ViewableController parentController;
     private Pane currentPane;
     private final HashMap<String, Pane> panes;
 
@@ -137,12 +136,12 @@ public class ManagementController implements Initializable, Controller {
     }
 
     @Override
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return parentController;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
         this.parentController = parentController;
     }
 
@@ -157,8 +156,6 @@ public class ManagementController implements Initializable, Controller {
             characterLayerController.render();
         } else if (variantLayer.isVisible()) {
             variantLayerController.render();
-        } else {
-            playerLayerController.render();
         }
     }
 }

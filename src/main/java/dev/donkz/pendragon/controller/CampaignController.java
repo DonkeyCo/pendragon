@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.*;
 
-public class CampaignController implements Initializable, Controller {
+public class CampaignController implements Initializable, ViewableController {
     @FXML private Button btnSave;
     @FXML private StackPane campaignRoot;
     @FXML private Pane editor;
@@ -37,7 +37,7 @@ public class CampaignController implements Initializable, Controller {
     @FXML private TextArea txtNotes;
     @FXML private Pane overview;
 
-    private Controller parentController;
+    private ViewableController parentController;
     private final CampaignListingService listingService;
     private final CampaignManipulationService manipulationService;
     private final PlayerManagementService playerManagementService;
@@ -73,7 +73,7 @@ public class CampaignController implements Initializable, Controller {
             if (campaign.getDm().getId().equalsIgnoreCase(player.getId())) {
                 tile.setHasStart(true);
                 tile.getBtnStart().setOnAction(actionEvent -> {
-                    Controller rootController = parentController;
+                    ViewableController rootController = parentController;
                     while (rootController.getParentController() != null) {
                         rootController = parentController.getParentController();
                     }
@@ -118,7 +118,7 @@ public class CampaignController implements Initializable, Controller {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setHeaderText("Enter Host Address");
         dialog.showAndWait().ifPresent(response -> {
-            Controller rootController = parentController;
+            ViewableController rootController = parentController;
             while (rootController.getParentController() != null) {
                 rootController = parentController.getParentController();
             }
@@ -254,12 +254,12 @@ public class CampaignController implements Initializable, Controller {
     }
 
     @Override
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return parentController;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
         this.parentController = parentController;
     }
 

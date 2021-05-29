@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class VariantListController implements Controller {
+public class VariantListController implements ViewableController {
     @FXML
     private TilePane tilePane;
     @FXML
@@ -24,7 +24,7 @@ public class VariantListController implements Controller {
     @FXML
     private VariantEditorController editorController;
 
-    private Controller parentController;
+    private ViewableController parentController;
     private final VariantListingService listingService;
     private final VariantMutationService mutationService;
 
@@ -93,12 +93,12 @@ public class VariantListController implements Controller {
     }
 
     @Override
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return parentController;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
         this.parentController = parentController;
     }
 }

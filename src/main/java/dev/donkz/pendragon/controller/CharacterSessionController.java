@@ -3,7 +3,6 @@ package dev.donkz.pendragon.controller;
 import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.common.Ability;
-import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.session.Session;
 import dev.donkz.pendragon.domain.variant.*;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
@@ -29,7 +28,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CharacterSessionController implements Initializable, Controller {
+public class CharacterSessionController implements Initializable, ViewableController {
     @FXML
     private TilePane tilePane;
 
@@ -50,12 +49,12 @@ public class CharacterSessionController implements Initializable, Controller {
     }
 
     @Override
-    public Controller getParentController() {
+    public ViewableController getParentController() {
         return parentController;
     }
 
     @Override
-    public void setParentController(Controller parentController) {
+    public void setParentController(ViewableController parentController) {
         this.parentController = (SessionController) parentController;
     }
 
