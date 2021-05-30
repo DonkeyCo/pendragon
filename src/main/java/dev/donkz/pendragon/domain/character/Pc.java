@@ -68,12 +68,12 @@ public class Pc implements Character, Entity {
 
     public void increaseAbility(int increment, Ability type) {
         switch (type) {
-            case CHA -> charisma = new AbilityScore(increment);
-            case CON -> constitution = new AbilityScore(increment);
-            case DEX -> dexterity = new AbilityScore(increment);
-            case INT -> intelligence = new AbilityScore(increment);
-            case STR -> strength = new AbilityScore(increment);
-            case WIS -> wisdom = new AbilityScore(increment);
+            case CHA -> charisma = new AbilityScore(charisma.getScore() + increment);
+            case CON -> constitution = new AbilityScore(constitution.getScore() + increment);
+            case DEX -> dexterity = new AbilityScore(dexterity.getScore() + increment);
+            case INT -> intelligence = new AbilityScore(intelligence.getScore() + increment);
+            case STR -> strength = new AbilityScore(strength.getScore() + increment);
+            case WIS -> wisdom = new AbilityScore(wisdom.getScore() + increment);
         }
     }
 
@@ -81,42 +81,42 @@ public class Pc implements Character, Entity {
         switch (type) {
             case CHA -> {
                 if (charisma.getScore() - decrement >= 0) {
-                    charisma = new AbilityScore(decrement);
+                    charisma = new AbilityScore(charisma.getScore() - decrement);
                 } else {
                     throw new AbilityScoreNegativeException();
                 }
             }
             case CON -> {
                 if (constitution.getScore() - decrement >= 0) {
-                    constitution = new AbilityScore(decrement);
+                    constitution = new AbilityScore(constitution.getScore() - decrement);
                 } else {
                     throw new AbilityScoreNegativeException();
                 }
             }
             case DEX -> {
                 if (dexterity.getScore() - decrement >= 0) {
-                    dexterity = new AbilityScore(decrement);
+                    dexterity = new AbilityScore(dexterity.getScore() - decrement);
                 } else {
                     throw new AbilityScoreNegativeException();
                 }
             }
             case INT -> {
                 if (intelligence.getScore() - decrement >= 0) {
-                    intelligence = new AbilityScore(decrement);
+                    intelligence = new AbilityScore(intelligence.getScore() - decrement);
                 } else {
                     throw new AbilityScoreNegativeException();
                 }
             }
             case STR -> {
                 if (strength.getScore() - decrement >= 0) {
-                    strength = new AbilityScore(decrement);
+                    strength = new AbilityScore(strength.getScore() - decrement);
                 } else {
                     throw new AbilityScoreNegativeException();
                 }
             }
             case WIS -> {
                 if (wisdom.getScore() - decrement >= 0) {
-                    wisdom = new AbilityScore(decrement);
+                    wisdom = new AbilityScore(wisdom.getScore() - decrement);
                 } else {
                     throw new AbilityScoreNegativeException();
                 }
