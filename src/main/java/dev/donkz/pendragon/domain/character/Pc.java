@@ -3,7 +3,7 @@ package dev.donkz.pendragon.domain.character;
 import dev.donkz.pendragon.domain.Entity;
 import dev.donkz.pendragon.domain.common.Ability;
 import dev.donkz.pendragon.domain.variant.*;
-import dev.donkz.pendragon.exception.model.AbilityScoreNegativeException;
+import dev.donkz.pendragon.exception.model.AbilityScoreBelowMinimum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -77,48 +77,48 @@ public class Pc implements Character, Entity {
         }
     }
 
-    public void decreaseAbility(int decrement, Ability type) throws AbilityScoreNegativeException {
+    public void decreaseAbility(int decrement, Ability type) throws AbilityScoreBelowMinimum {
         switch (type) {
             case CHA -> {
-                if (charisma.getScore() - decrement >= 0) {
+                if (charisma.getScore() - decrement >= 8) {
                     charisma = new AbilityScore(charisma.getScore() - decrement);
                 } else {
-                    throw new AbilityScoreNegativeException();
+                    throw new AbilityScoreBelowMinimum();
                 }
             }
             case CON -> {
-                if (constitution.getScore() - decrement >= 0) {
+                if (constitution.getScore() - decrement >= 8) {
                     constitution = new AbilityScore(constitution.getScore() - decrement);
                 } else {
-                    throw new AbilityScoreNegativeException();
+                    throw new AbilityScoreBelowMinimum();
                 }
             }
             case DEX -> {
-                if (dexterity.getScore() - decrement >= 0) {
+                if (dexterity.getScore() - decrement >= 8) {
                     dexterity = new AbilityScore(dexterity.getScore() - decrement);
                 } else {
-                    throw new AbilityScoreNegativeException();
+                    throw new AbilityScoreBelowMinimum();
                 }
             }
             case INT -> {
-                if (intelligence.getScore() - decrement >= 0) {
+                if (intelligence.getScore() - decrement >= 8) {
                     intelligence = new AbilityScore(intelligence.getScore() - decrement);
                 } else {
-                    throw new AbilityScoreNegativeException();
+                    throw new AbilityScoreBelowMinimum();
                 }
             }
             case STR -> {
-                if (strength.getScore() - decrement >= 0) {
+                if (strength.getScore() - decrement >= 8) {
                     strength = new AbilityScore(strength.getScore() - decrement);
                 } else {
-                    throw new AbilityScoreNegativeException();
+                    throw new AbilityScoreBelowMinimum();
                 }
             }
             case WIS -> {
-                if (wisdom.getScore() - decrement >= 0) {
+                if (wisdom.getScore() - decrement >= 8) {
                     wisdom = new AbilityScore(wisdom.getScore() - decrement);
                 } else {
-                    throw new AbilityScoreNegativeException();
+                    throw new AbilityScoreBelowMinimum();
                 }
             }
         }

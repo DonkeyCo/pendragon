@@ -3,6 +3,7 @@ package dev.donkz.pendragon.domain.campaign;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import dev.donkz.pendragon.domain.Entity;
+import dev.donkz.pendragon.domain.Printable;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.variant.CampaignVariant;
@@ -12,12 +13,13 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Setter
 @ToString
-public class Campaign implements Entity {
+public class Campaign implements Entity, Printable {
     @JsonProperty private String id;
 
     @JsonProperty private String name;
@@ -64,5 +66,19 @@ public class Campaign implements Entity {
                 }
             }
         }
+    }
+
+    @Override
+    public String shortString() {
+        return name;
+    }
+
+    @Override
+    public String longString() {
+        return name + ": " + description + " | "
+                + "Campaign Variant: " + (campaignVariant != null ? campaignVariant.shortString() : "None") + " | "
+                + "Dungeon Master: " + (dm != null ? dm.shortString() : "None") + " | "
+                + "Players: " + (players.size() > 0 ? players.stream().map(Player::getUsername).collect(Collectors.joining(",")) : "None") + " | "
+                + "Playable Characters: " + (pcs.size() > 0 ? pcs.stream().map(Pc::getName).collect(Collectors.joining(",")) : "None");
     }
 }

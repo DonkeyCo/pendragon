@@ -1,7 +1,7 @@
 package dev.donkz.pendragon.exception.model;
 
-public class AbilityScoreNegativeException extends Exception {
-    public AbilityScoreNegativeException() {
+public class AbilityScoreBelowMinimum extends Exception {
+    public AbilityScoreBelowMinimum() {
         super("Ability Score cannot be negative");
     }
 }

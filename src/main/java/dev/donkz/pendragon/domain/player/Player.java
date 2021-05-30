@@ -3,6 +3,7 @@ package dev.donkz.pendragon.domain.player;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import dev.donkz.pendragon.domain.Entity;
+import dev.donkz.pendragon.domain.Printable;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.exception.model.RequiredAttributeMissingException;
 import lombok.*;
@@ -10,6 +11,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @JsonDeserialize(builder = Player.PlayerBuilder.class)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -17,7 +19,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Builder
-public class Player implements Entity {
+public class Player implements Entity, Printable {
     private String id;
     private String username;
     private String profileIconUrl;
@@ -30,6 +32,16 @@ public class Player implements Entity {
 
     public void updateCharacter(int index, Pc pc) {
         characters.set(index, pc);
+    }
+
+    @Override
+    public String shortString() {
+        return username;
+    }
+
+    @Override
+    public String longString() {
+        return username + " | " + " Playable Characters: " + characters.stream().map(Pc::getName).collect(Collectors.joining(","));
     }
 
     public static class PlayerBuilder {
