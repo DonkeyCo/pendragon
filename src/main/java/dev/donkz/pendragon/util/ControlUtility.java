@@ -6,6 +6,7 @@ import dev.donkz.pendragon.domain.Printable;
 import dev.donkz.pendragon.domain.character.AbilityScore;
 import dev.donkz.pendragon.domain.common.Ability;
 import dev.donkz.pendragon.domain.common.PriceUnit;
+import dev.donkz.pendragon.ui.CreateDialog;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -13,6 +14,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Screen;
 import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
 
@@ -250,5 +252,19 @@ public class ControlUtility {
                 return items.stream().filter(t -> ((Printable) t).shortString().equalsIgnoreCase(s)).findFirst().orElse(null);
             }
         };
+    }
+
+    public static Dialog<String> createDialog(String title, Map<String, Region> items) {
+        CreateDialog dialogPane = new CreateDialog(title, items);
+        dialogPane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 5);
+        dialogPane.setMaxWidth(Screen.getPrimary().getBounds().getWidth() / 5);
+        dialogPane.setPrefHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
+        dialogPane.setMaxHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
+
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle(title);
+        dialog.setDialogPane(dialogPane);
+
+        return dialog;
     }
 }

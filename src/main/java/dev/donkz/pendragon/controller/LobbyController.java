@@ -170,7 +170,7 @@ public class LobbyController implements ViewableController, Initializable {
         } catch (EntityNotFoundException | IllegalAccessException e) {
             return;
         }
-        Dialog<String> dialog = createDialog("Edit Character Sheet", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Edit Character Sheet", items);
         dialog.show();
 
         ControlUtility.fillComboBox((ComboBox<Kind>) items.get("Kind"), session.getCampaign().getCampaignVariant().getKinds());
@@ -251,7 +251,7 @@ public class LobbyController implements ViewableController, Initializable {
         items.put("Ability Type", cmbAbility);
         items.put("Amount", ControlUtility.createIntegerField("Input an amount", "intAmount"));
         items.put("Operation Type", cmbOperation);
-        Dialog<String> dialog = createDialog("Increase/Decrease Ability", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Increase/Decrease Ability", items);
         dialog.show();
 
         dialog.setResultConverter(buttonType -> {
@@ -276,20 +276,6 @@ public class LobbyController implements ViewableController, Initializable {
             command.execute();
             return null;
         });
-    }
-
-    private Dialog<String> createDialog(String title, Map<String, Region> items) {
-        CreateDialog dialogPane = new CreateDialog(title, items);
-        dialogPane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 5);
-        dialogPane.setMaxWidth(Screen.getPrimary().getBounds().getWidth() / 5);
-        dialogPane.setPrefHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
-        dialogPane.setMaxHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
-
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle(title);
-        dialog.setDialogPane(dialogPane);
-
-        return dialog;
     }
 
     private void fillCode() {

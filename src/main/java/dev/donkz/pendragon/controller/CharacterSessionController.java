@@ -86,7 +86,7 @@ public class CharacterSessionController implements Initializable, ViewableContro
 
         Campaign campaign = session.getCampaign();
 
-        Dialog<String> dialog = createDialog("Create Playable Character", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Playable Character", items);
         dialog.show();
 
         dialog.setResultConverter(buttonType -> {
@@ -187,19 +187,5 @@ public class CharacterSessionController implements Initializable, ViewableContro
         }
         items.put("Level", String.valueOf(pc.getLevel()));
         return items;
-    }
-
-    private Dialog<String> createDialog(String title, Map<String, Region> items) {
-        CreateDialog dialogPane = new CreateDialog(title, items);
-        dialogPane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 5);
-        dialogPane.setMaxWidth(Screen.getPrimary().getBounds().getWidth() / 5);
-        dialogPane.setPrefHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
-        dialogPane.setMaxHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
-
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle(title);
-        dialog.setDialogPane(dialogPane);
-
-        return dialog;
     }
 }

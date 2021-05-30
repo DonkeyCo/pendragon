@@ -108,7 +108,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
 
         ControlUtility.fillComboBox((ComboBox<Ability>) items.get("Type"), Arrays.asList(Ability.values()));
 
-        Dialog<String> dialog = createDialog("Create Proficiency", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Proficiency", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Proficiency proficiency = null;
@@ -136,7 +136,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
 
         ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("Proficiencies"), campaignVariant.getProficiencies());
 
-        Dialog<String> dialog = createDialog("Create Trait", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Trait", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Trait trait = null;
@@ -165,7 +165,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
         ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("Proficiencies"), campaignVariant.getProficiencies());
         ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("SavingThrows"), Arrays.asList(Ability.values()));
 
-        Dialog<String> dialog = createDialog("Create Class", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Class", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Kind kind = null;
@@ -194,7 +194,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
         ControlUtility.fillCheckComboBox((CheckComboBox<Proficiency>) items.get("StartingProficiencies"), campaignVariant.getProficiencies());
         ControlUtility.fillCheckComboBox((CheckComboBox<Trait>) items.get("Traits"), campaignVariant.getTraits());
 
-        Dialog<String> dialog = createDialog("Create Race", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Race", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Race race = null;
@@ -222,7 +222,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
 
         ControlUtility.fillComboBox((ComboBox<Ability>) items.get("AbilityScore"), Arrays.asList(Ability.values()));
 
-        Dialog<String> dialog = createDialog("Create Skill", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Skill", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Skill skill = null;
@@ -250,7 +250,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
 
         ControlUtility.fillComboBox((ComboBox<Kind>) items.get("Kind"), campaignVariant.getKinds());
 
-        Dialog<String> dialog = createDialog("Create Feature", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Feature", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Feature feature = null;
@@ -276,7 +276,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
     public void onSpell() {
         Map<String, Region> items = ControlUtility.createForm(Spell.class);
 
-        Dialog<String> dialog = createDialog("Create Spell", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Spell", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Spell spell = null;
@@ -304,7 +304,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
 
         ControlUtility.fillComboBox((ComboBox<PriceUnit>) items.get("Unit"), Arrays.asList(PriceUnit.values()));
 
-        Dialog<String> dialog = createDialog("Create Equipment", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Equipment", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Equipment equipment = null;
@@ -338,7 +338,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
         ControlUtility.fillCheckComboBox((CheckComboBox<Trait>) items.get("Traits"), campaignVariant.getTraits());
         ControlUtility.fillCheckComboBox((CheckComboBox<Equipment>) items.get("Equipment"), campaignVariant.getEquipments());
 
-        Dialog<String> dialog = createDialog("Create NPC", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create NPC", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Npc npc = null;
@@ -366,7 +366,7 @@ public class VariantEditorController implements Initializable, ViewableControlle
 
         ControlUtility.fillCheckComboBox((CheckComboBox<Ability>) items.get("SavingThrows"), Arrays.asList(Ability.values()));
 
-        Dialog<String> dialog = createDialog("Create Monster", items);
+        Dialog<String> dialog = ControlUtility.createDialog("Create Monster", items);
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Monster monster = null;
@@ -387,20 +387,6 @@ public class VariantEditorController implements Initializable, ViewableControlle
         });
 
         dialog.show();
-    }
-
-    private Dialog<String> createDialog(String title, Map<String, Region> items) {
-        CreateDialog dialogPane = new CreateDialog(title, items);
-        dialogPane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 5);
-        dialogPane.setMaxWidth(Screen.getPrimary().getBounds().getWidth() / 5);
-        dialogPane.setPrefHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
-        dialogPane.setMaxHeight(Screen.getPrimary().getBounds().getHeight() / 1.5);
-
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle(title);
-        dialog.setDialogPane(dialogPane);
-
-        return dialog;
     }
 
     public void render() {
