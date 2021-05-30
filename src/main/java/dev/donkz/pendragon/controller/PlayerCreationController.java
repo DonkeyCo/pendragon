@@ -4,6 +4,7 @@ import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
 import dev.donkz.pendragon.exception.infrastructure.IndexAlreadyExistsException;
 import dev.donkz.pendragon.exception.model.RequiredAttributeMissingException;
+import dev.donkz.pendragon.service.PlayerManagementService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -13,36 +14,31 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PlayerCreationController implements Initializable, ViewableController {
+public class PlayerCreationController implements Initializable, HierarchicalController<ViewableController> {
     @FXML
     private TextField txtUsername;
     @FXML
     private TextField txtProfile;
 
     private ViewableController parentController;
-    private PlayerRepository playerRepository;
+    private PlayerManagementService playerManagementService;
 
     @Inject
-    public PlayerCreationController(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+    public PlayerCreationController(PlayerManagementService playerManagementService) {
+        this.playerManagementService = playerManagementService;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
+    /**
+     * Event Handler for Create Button. Creates a registered player
+     */
     public void onCreate() {
-        Player player;
         try {
-            player = Player.builder().username(txtUsername.getText()).profileIconUrl(txtProfile.getText()).build();
+            playerManagementService.createPlayer(txtUsername.getText(), txtProfile.getText());
         } catch (RequiredAttributeMissingException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Username is missing.");
-            alert.show();
-            return;
-        }
-        try {
-            playerRepository.saveClient(player);
-        } catch (IndexAlreadyExistsException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error occurred during saving.");
             alert.show();
         }
@@ -57,13 +53,5 @@ public class PlayerCreationController implements Initializable, ViewableControll
     @Override
     public void setParentController(ViewableController parentController) {
         this.parentController = parentController;
-    }
-
-    @Override
-    public void switchView() {
-    }
-
-    @Override
-    public void render() {
     }
 }

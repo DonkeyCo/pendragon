@@ -61,6 +61,9 @@ public class MainController implements ViewableController {
         managementViewController.setParentController(this);
     }
 
+    /**
+     * Switch views
+     */
     public void switchView() {
         if (playerCreationView.isVisible()) {
             managementView.setVisible(true);
@@ -91,12 +94,20 @@ public class MainController implements ViewableController {
     public void setParentController(ViewableController parentController) {
     }
 
+    /**
+     * Creates lobby as host for campaign
+     * @param campaign campaign object
+     */
     public void activateLobby(Campaign campaign) {
         managementView.setVisible(!managementView.isVisible());
         sessionView.setVisible(!sessionView.isVisible());
         sessionViewController.showHostLobby(campaign);
     }
 
+    /**
+     * Join a lobby
+     * @param host host room
+     */
     public void joinLobby(String host) {
         managementView.setVisible(!managementView.isVisible());
         sessionView.setVisible(!sessionView.isVisible());

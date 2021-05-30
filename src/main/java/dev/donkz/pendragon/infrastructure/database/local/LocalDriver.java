@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+/**
+ * Driver for local file system
+ */
 public class LocalDriver implements Driver {
     private static final Logger LOGGER = Logger.getLogger(LocalDriver.class.getName());
     private static final String DATA_PATH = "data";

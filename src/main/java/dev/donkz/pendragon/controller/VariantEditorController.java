@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for Variant Editor
+ */
 public class VariantEditorController implements Initializable, ViewableController {
     @FXML
     private Pane proficiencyPane;
@@ -91,6 +94,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         this.parentController.switchView();
     }
 
+    /**
+     * Event handler for Submit Button
+     */
     public void onSubmit() {
         try {
             this.variantMutationService.mutateVariant(campaignVariant, txtName.getText(), txtDescription.getText(), cbPublic.isSelected());
@@ -103,6 +109,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         this.parentController.switchView();
     }
 
+    /**
+     * Event Handler for Proficiency Box
+     */
     public void onProficiencies() {
         Map<String, Region> items = ControlUtility.createForm(Proficiency.class);
 
@@ -131,6 +140,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         dialog.show();
     }
 
+    /**
+     * Event Handler for Traits Box
+     */
     public void onTraits() {
         Map<String, Region> items = ControlUtility.createForm(Trait.class);
 
@@ -159,6 +171,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         dialog.show();
     }
 
+    /**
+     * Event Handler for Kinds
+     */
     public void onKinds() {
         Map<String, Region> items = ControlUtility.createForm(Kind.class);
 
@@ -188,6 +203,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         dialog.show();
     }
 
+    /**
+     * Event Handler for Race Box
+     */
     public void onRaces() {
         Map<String, Region> items = ControlUtility.createForm(Race.class);
 
@@ -217,6 +235,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         dialog.show();
     }
 
+    /**
+     * Event Handler for Skills Element
+     */
     public void onSkills() {
         Map<String, Region> items = ControlUtility.createForm(Skill.class);
 
@@ -245,6 +266,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         dialog.show();
     }
 
+    /**
+     * Event Handler for Feature Element
+     */
     public void onFeature() {
         Map<String, Region> items = ControlUtility.createForm(Feature.class);
 
@@ -273,6 +297,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         dialog.show();
     }
 
+    /**
+     * Event Handler for Spell Element
+     */
     public void onSpell() {
         Map<String, Region> items = ControlUtility.createForm(Spell.class);
 
@@ -299,6 +326,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         dialog.show();
     }
 
+    /**
+     * Event Handler for Equipment Element
+     */
     public void onEquipment() {
         Map<String, Region> items = ControlUtility.createForm(Equipment.class);
 
@@ -327,6 +357,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         dialog.show();
     }
 
+    /**
+     * Event Handler for NPC Element
+     */
     public void onNpc() {
         Map<String, Region> items = ControlUtility.createForm(Npc.class);
 
@@ -361,6 +394,9 @@ public class VariantEditorController implements Initializable, ViewableControlle
         dialog.show();
     }
 
+    /**
+     * Event Handler for Monster Element
+     */
     public void onMonster() {
         Map<String, Region> items = ControlUtility.createForm(Monster.class);
 
@@ -410,6 +446,11 @@ public class VariantEditorController implements Initializable, ViewableControlle
         renderPane(npcPane, campaignVariant.getNpcs());
     }
 
+    /**
+     * Render a pane
+     * @param pane pane object
+     * @param items controls
+     */
     private void renderPane(Pane pane, List<?> items) {
         pane.getChildren().clear();
 

@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.*;
 
-public class CharacterListController implements Initializable, ViewableController {
+public class CharacterListController implements Initializable, FlatViewController {
     @FXML
     private TilePane tilePane;
 
@@ -72,9 +72,6 @@ public class CharacterListController implements Initializable, ViewableControlle
     @Override
     public void setParentController(ViewableController parentController) {
         this.parentController = parentController;
-    }
-
-    public void switchView() {
     }
 
     @Override

@@ -20,24 +20,52 @@ public class PlayableCharacterService {
         this.playerRepository = playerRepository;
     }
 
+    /**
+     * Retrieves player characters for registered player
+     * @return
+     * @throws MultiplePlayersException
+     */
     public List<Pc> getPlayerCharacters() throws MultiplePlayersException {
         Player player = playerRepository.findRegisteredPlayer();
         return player.getCharacters();
     }
 
+    /**
+     * Retrieve PCs for given player
+     * @param playerId
+     * @return
+     * @throws EntityNotFoundException
+     */
     public List<Pc> getPlayerCharacters(String playerId) throws EntityNotFoundException {
         Player player = playerRepository.findById(playerId);
         return player.getCharacters();
     }
 
+    /**
+     * Create a new PC
+     * @param pc
+     * @throws SessionAlreadyExists
+     * @throws IndexAlreadyExistsException
+     */
     public void createPlayerCharacter(Pc pc) throws SessionAlreadyExists, IndexAlreadyExistsException {
         pcRepository.save(pc);
     }
 
+    /**
+     * Get a PC by ID
+     * @param id
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Pc getPlayerCharacter(String id) throws EntityNotFoundException {
         return pcRepository.findById(id);
     }
 
+    /**
+     * Update a PC
+     * @param pc
+     * @throws EntityNotFoundException
+     */
     public void updatePlayerCharacter(Pc pc) throws EntityNotFoundException {
         pcRepository.update(pc.getId(), pc);
     }

@@ -28,6 +28,9 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Character Controller for Session View. Editing/Creating of Characters while in a Lobby
+ */
 public class CharacterSessionController implements Initializable, ViewableController {
     @FXML
     private TilePane tilePane;
@@ -72,6 +75,10 @@ public class CharacterSessionController implements Initializable, ViewableContro
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
+    /**
+     * Event Handler for Create Button.
+     * Creates a Character Creator
+     */
     public void onCreate() {
         Session session = sessionService.getCurrentSession();
         Map<String, Region> items = ControlUtility.createForm(Pc.class);
@@ -132,10 +139,16 @@ public class CharacterSessionController implements Initializable, ViewableContro
         });
     }
 
+    /**
+     * Event Handler for Cancel Button
+     */
     public void onCancel() {
         parentController.switchView();
     }
 
+    /**
+     * Creates the tiles for every available PC
+     */
     public void createTiles() {
         Session session = sessionService.getCurrentSession();
         Campaign campaign = session.getCampaign();

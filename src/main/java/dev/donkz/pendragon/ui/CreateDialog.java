@@ -41,6 +41,9 @@ public class CreateDialog extends DialogPane {
         }
     }
 
+    /**
+     * Create a form
+     */
     private void createForm() {
         lblTitle.setText(title);
         items.forEach((labelText, control) -> {

@@ -26,7 +26,10 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.*;
 
-public class CampaignController implements Initializable, ViewableController {
+/**
+ * Controller for Campaign
+ */
+public class CampaignController implements Initializable, FlatViewController {
     @FXML private Button btnSave;
     @FXML private StackPane campaignRoot;
     @FXML private Pane editor;
@@ -51,11 +54,19 @@ public class CampaignController implements Initializable, ViewableController {
         this.variantListingService = variantListingService;
     }
 
+    /**
+     * Initialize FXML view
+     * @param url url
+     * @param resourceBundle resources
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         createTiles();
     }
 
+    /**
+     * Create tiles for the view
+     */
     private void createTiles() {
         Player player = playerManagementService.getRegisteredPlayer();
         if (player == null) {
@@ -113,6 +124,10 @@ public class CampaignController implements Initializable, ViewableController {
         return items;
     }
 
+    /**
+     * Event Handler for Join Button.
+     * Starts 'Join'-Process
+     */
     @FXML
     public void onJoin() {
         TextInputDialog dialog = new TextInputDialog();
@@ -126,6 +141,10 @@ public class CampaignController implements Initializable, ViewableController {
         });
     }
 
+    /**
+     * Event Handler for Create Button.
+     * Starts 'Create'-Process
+     */
     @FXML
     public void onCreate() {
         btnSave.setOnAction(actionEvent -> onSave());
@@ -133,6 +152,10 @@ public class CampaignController implements Initializable, ViewableController {
         switchMode();
     }
 
+    /**
+     * Event Handler for Save Button.
+     * Starts 'Save'-Process
+     */
     @FXML
     public void onSave() {
         String name = txtName.getText();
@@ -153,6 +176,10 @@ public class CampaignController implements Initializable, ViewableController {
         }
     }
 
+    /**
+     * Event Handler for Cancel Button.
+     * Starts 'Cancel'-Process
+     */
     @FXML
     public void onCancel() {
         txtName.clear();
@@ -163,6 +190,11 @@ public class CampaignController implements Initializable, ViewableController {
         switchMode();
     }
 
+    /**
+     * Event Handler for a Tile.
+     * Starts 'Edit'-Process
+     * @param campaignId ID of campaign
+     */
     public void onEdit(String campaignId) {
         Campaign campaign = null;
         try {
@@ -177,6 +209,11 @@ public class CampaignController implements Initializable, ViewableController {
         switchMode();
     }
 
+    /**
+     * Event Handler for Delete Button in Tile.
+     * Starts 'Delete'-Process
+     * @param campaignId ID of campaign
+     */
     public void onDelete(String campaignId) {
         try {
             manipulationService.deleteCampaign(campaignId);
@@ -186,6 +223,11 @@ public class CampaignController implements Initializable, ViewableController {
         createTiles();
     }
 
+    /**
+     * Event Handler to update a campaign.
+     * Starts 'Update'-Process
+     * @param campaignId ID of Campaign
+     */
     public void onUpdate(String campaignId) {
         String name = txtName.getText();
         String description = txtDescription.getText();
@@ -210,6 +252,10 @@ public class CampaignController implements Initializable, ViewableController {
         }
     }
 
+    /**
+     * Fills the form with campaign information
+     * @param campaign campaign object
+     */
     private void fillForm(Campaign campaign) {
         txtName.setText(campaign.getName());
         txtDescription.setText(campaign.getDescription());
@@ -220,6 +266,10 @@ public class CampaignController implements Initializable, ViewableController {
         cmbVariants.setValue(campaign.getCampaignVariant());
     }
 
+    /**
+     * Check if required fields are filled
+     * @return isFilled
+     */
     private boolean isFilled() {
         boolean isFilled = true;
         if (txtName.getText().matches("\\s*")) {
@@ -232,11 +282,17 @@ public class CampaignController implements Initializable, ViewableController {
         return isFilled;
     }
 
+    /**
+     * Switches its mode to either editor/overview
+     */
     private void switchMode() {
         editor.setVisible(!editor.isVisible());
         overview.setVisible(!overview.isVisible());
     }
 
+    /**
+     * Initializes the ComboBox Variant Picker
+     */
     private void initVariantPicker() {
         cmbVariants.setItems(FXCollections.observableList(variantListingService.getAvailableVariants()));
         cmbVariants.setConverter(new StringConverter<>() {
@@ -261,10 +317,6 @@ public class CampaignController implements Initializable, ViewableController {
     @Override
     public void setParentController(ViewableController parentController) {
         this.parentController = parentController;
-    }
-
-    @Override
-    public void switchView() {
     }
 
     @Override

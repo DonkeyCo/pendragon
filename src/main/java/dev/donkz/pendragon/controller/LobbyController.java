@@ -33,7 +33,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 
-public class LobbyController implements ViewableController, Initializable {
+public class LobbyController implements RenderableController, HierarchicalController<ViewableController>, Initializable {
     @FXML
     private Label lblCode;
     @FXML
@@ -81,9 +81,6 @@ public class LobbyController implements ViewableController, Initializable {
     @Override
     public void setParentController(ViewableController parentController) {
         this.parentController = (SessionController) parentController;
-    }
-
-    public void switchView() {
     }
 
     public void openSession(Campaign campaign) {

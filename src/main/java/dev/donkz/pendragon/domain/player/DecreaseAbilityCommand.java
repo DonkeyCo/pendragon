@@ -2,8 +2,11 @@ package dev.donkz.pendragon.domain.player;
 
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.common.Ability;
-import dev.donkz.pendragon.exception.model.AbilityScoreBelowMinimum;
+import dev.donkz.pendragon.exception.model.AbilityScoreBelowMinimumExcecption;
 
+/**
+ * Command to decrease a PC's ability score
+ */
 public class DecreaseAbilityCommand implements PlayerCommand {
     private final Pc pc;
     private final Ability type;
@@ -19,7 +22,7 @@ public class DecreaseAbilityCommand implements PlayerCommand {
     public void execute() {
         try {
             pc.decreaseAbility(amount, type);
-        } catch (AbilityScoreBelowMinimum e) {
+        } catch (AbilityScoreBelowMinimumExcecption e) {
             e.printStackTrace();
         }
     }

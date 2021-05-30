@@ -47,9 +47,6 @@ public class Npc implements Character, Printable {
     private int pp;
     private int gp;
 
-    // Spells
-    private SpellInformation spellInformation;
-
     // Ability Scores
     private AbilityScore strength;
     private AbilityScore dexterity;

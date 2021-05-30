@@ -7,6 +7,9 @@ import io.socket.client.Socket;
 
 import java.net.URISyntaxException;
 
+/**
+ * Communicator which uses WebSocket as means of communication
+ */
 public class WebSocketCommunicator implements Communicator {
 
     private Socket socket;

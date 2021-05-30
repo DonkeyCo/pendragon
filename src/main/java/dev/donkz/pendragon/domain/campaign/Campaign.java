@@ -51,12 +51,20 @@ public class Campaign implements Entity, Printable {
         campaignStates.add(state);
     }
 
+    /**
+     * Add a player to the participants
+     * @param player player object
+     */
     public void addPlayer(Player player) {
         if (!player.getId().equalsIgnoreCase(dm.getId())) {
             players.add(player);
         }
     }
 
+    /**
+     * Add a character of a player to the campaign
+     * @param pc PC of a player
+     */
     public void addCharacter(Pc pc) {
         for (Player player : players) {
             List<Pc> playerPcs = player.getCharacters();

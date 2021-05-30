@@ -11,6 +11,9 @@ import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
 
 import javax.inject.Inject;
 
+/**
+ * CUD Operation Service for Campaign Variant Mutation
+ */
 public class VariantMutationService {
     private final CampaignVariantRepository variantRepository;
     private final PlayerRepository playerRepository;

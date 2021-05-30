@@ -17,6 +17,9 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for Sessions/Lobbys
+ */
 public class SessionController implements Initializable, ViewableController, ControllableSession {
     @FXML
     private Pane lobbyView;
@@ -72,18 +75,29 @@ public class SessionController implements Initializable, ViewableController, Con
     public void render() {
     }
 
+    /**
+     * Show the lobby in a Host perspective
+     * @param campaign campaign object
+     */
     public void showHostLobby(Campaign campaign) {
         lobbyView.setVisible(true);
         lobbyViewController.openSession(campaign);
         lobbyViewController.render();
     }
 
+    /**
+     * Show the lobby in a Participant perspective
+     * @param host host room
+     */
     public void showJoinLobby(String host) {
         lobbyView.setVisible(true);
         lobbyViewController.joinSession(host);
         lobbyViewController.render();
     }
 
+    /**
+     * Connect to a web socket session
+     */
     public void connect() {
         try {
             webSocketSessionService.connect();
@@ -95,6 +109,10 @@ public class SessionController implements Initializable, ViewableController, Con
         }
     }
 
+    /**
+     * Create a lobby based on the campaign
+     * @param campaign campaign object
+     */
     public void createLobby(Campaign campaign) {
         try {
             webSocketSessionService.createLobby(campaign);
@@ -106,6 +124,10 @@ public class SessionController implements Initializable, ViewableController, Con
         }
     }
 
+    /**
+     * Join a lobby
+     * @param room room name
+     */
     public void joinLobby(String room) {
         try {
             webSocketSessionService.joinLobby(room);
@@ -117,10 +139,19 @@ public class SessionController implements Initializable, ViewableController, Con
         }
     }
 
+    /**
+     * Update Session
+     * @param session session object
+     */
     public void updateSession(Session session) {
         webSocketSessionService.updateSession(session);
     }
 
+    /**
+     * Leave the lobby
+     * @param session session object
+     * @param player player object
+     */
     public void leaveLobby(Session session, Player player) {
         try {
             webSocketSessionService.leaveLobby(session.getRoom(), player.getId(), session);
@@ -129,6 +160,10 @@ public class SessionController implements Initializable, ViewableController, Con
         }
     }
 
+    /**
+     * Get the controller for the lobby
+     * @return
+     */
     public HierarchicalController getLobbyController() {
         return lobbyViewController;
     }
@@ -151,10 +186,19 @@ public class SessionController implements Initializable, ViewableController, Con
         lobbyViewController.getChatBox().getChildren().add(ControlUtility.createRow(lblSender, lblMessage));
     }
 
+    /**
+     * Send a message
+     * @param message message string
+     * @param session session object
+     */
     public void sendMessage(String message, Session session) {
         webSocketSessionService.sendMessage(message, session);
     }
 
+    /**
+     * Send the roll
+     * @param rollMessage roll string
+     */
     public void sendRoll(String rollMessage) {
         Session session = sessionService.getCurrentSession();
         webSocketSessionService.sendRoll(rollMessage, session);

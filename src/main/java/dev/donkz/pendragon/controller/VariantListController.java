@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+/**
+ * Controller for Variant Listing
+ */
 public class VariantListController implements ViewableController {
     @FXML
     private TilePane tilePane;
@@ -38,6 +41,9 @@ public class VariantListController implements ViewableController {
         editorController.setParentController(this);
     }
 
+    /**
+     * Create Tiles for Campaign Variants
+     */
     public void createTiles() {
         tilePane.getChildren().clear();
         List<CampaignVariant> variants = listingService.getAvailableVariants();

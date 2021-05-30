@@ -1,18 +1,19 @@
 package dev.donkz.pendragon.service;
 
 import dev.donkz.pendragon.domain.campaign.Campaign;
-import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.character.PcRepository;
 import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.player.PlayerRepository;
 import dev.donkz.pendragon.domain.session.Session;
 import dev.donkz.pendragon.domain.session.SessionRepository;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
-import dev.donkz.pendragon.exception.infrastructure.SessionAlreadyExists;
 
 import javax.inject.Inject;
 import java.util.List;
 
+/**
+ * Service for Session Entity
+ */
 public class SessionService {
     private final SessionRepository sessionRepository;
     private final PlayerRepository playerRepository;
@@ -25,6 +26,10 @@ public class SessionService {
         this.pcRepository = pcRepository;
     }
 
+    /**
+     * Get current session
+     * @return
+     */
     public Session getCurrentSession() {
         List<Session> sessions = sessionRepository.findAll();
         if (sessions.size() == 1) {
@@ -42,6 +47,9 @@ public class SessionService {
         return null;
     }
 
+    /**
+     * Clear sessions
+     */
     public void clear() {
         List<Session> sessions = sessionRepository.findAll();
         for (Session session : sessions) {
@@ -53,6 +61,12 @@ public class SessionService {
         }
     }
 
+    /**
+     * Update participants of a session
+     * @param playerId
+     * @param pcId
+     * @throws EntityNotFoundException
+     */
     public void updateParticipant(String playerId, String pcId) throws EntityNotFoundException {
         Player player = playerRepository.findById(playerId);
 
@@ -63,6 +77,11 @@ public class SessionService {
         }
     }
 
+    /**
+     * Update campaign of a session
+     * @param campaign
+     * @throws EntityNotFoundException
+     */
     public void updateCampaign(Campaign campaign) throws EntityNotFoundException {
         Session session = getCurrentSession();
         session.setCampaign(campaign);

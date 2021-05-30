@@ -1,6 +1,5 @@
 package dev.donkz.pendragon.ui;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;

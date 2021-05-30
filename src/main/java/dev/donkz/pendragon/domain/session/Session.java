@@ -22,10 +22,19 @@ public class Session implements Entity {
         participants = new LinkedHashMap<>();
     }
 
+    /**
+     * Adds a participant to a running session
+     * @param playerId ID of player
+     * @param pcId ID of PC
+     */
     public void addParticipant(String playerId, String pcId) {
         participants.put(playerId, pcId);
     }
 
+    /**
+     * Remove participant for a given player
+     * @param playerId ID of a player
+     */
     public void removeParticipant(String playerId) {
         participants.remove(playerId);
     }

@@ -3,6 +3,9 @@ package dev.donkz.pendragon.domain.player;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.common.Ability;
 
+/**
+ * Increase the ability score for a given PC
+ */
 public class IncreaseAbilityCommand implements PlayerCommand {
     private final Pc pc;
     private final Ability ability;

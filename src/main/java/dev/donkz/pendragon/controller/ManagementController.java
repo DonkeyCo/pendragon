@@ -24,9 +24,9 @@ public class ManagementController implements Initializable, ViewableController {
     @FXML private Pane variantLayer;
 
     // Child Controllers
-    @FXML private ViewableController campaignLayerController;
-    @FXML private ViewableController characterLayerController;
-    @FXML private ViewableController variantLayerController;
+    @FXML private FlatViewController campaignLayerController;
+    @FXML private FlatViewController characterLayerController;
+    @FXML private FlatViewController variantLayerController;
 
     private ViewableController parentController;
     private Pane currentPane;

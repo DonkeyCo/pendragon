@@ -1,5 +1,7 @@
 package dev.donkz.pendragon.controller;
 
-public interface ViewableController extends HierarchicalController<ViewableController>, RenderableController{
-    void switchView();
+/**
+ * Interface for UI Views combining Hierarchy, Rendering and Layering Structures
+ */
+public interface ViewableController extends FlatViewController, ViewLayerController {
 }

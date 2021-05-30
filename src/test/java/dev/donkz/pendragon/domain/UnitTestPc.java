@@ -3,11 +3,10 @@ package dev.donkz.pendragon.domain;
 import dev.donkz.pendragon.domain.character.AbilityScore;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.common.Ability;
-import dev.donkz.pendragon.exception.model.AbilityScoreBelowMinimum;
+import dev.donkz.pendragon.exception.model.AbilityScoreBelowMinimumExcecption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions.*;
 
 public class UnitTestPc {
 
@@ -81,7 +80,7 @@ public class UnitTestPc {
 
     @Test
     @DisplayName("Decrease Charisma")
-    public void testDecreaseCHA() throws AbilityScoreBelowMinimum {
+    public void testDecreaseCHA() throws AbilityScoreBelowMinimumExcecption {
         pc.decreaseAbility(2, Ability.CHA);
 
         assert pc.getCharisma().getScore() == 8;
@@ -90,7 +89,7 @@ public class UnitTestPc {
 
     @Test
     @DisplayName("Decrease Constitution")
-    public void testDecreaseCON() throws AbilityScoreBelowMinimum {
+    public void testDecreaseCON() throws AbilityScoreBelowMinimumExcecption {
         pc.decreaseAbility(2, Ability.CON);
 
         assert pc.getConstitution().getScore() == 8;
@@ -99,7 +98,7 @@ public class UnitTestPc {
 
     @Test
     @DisplayName("Decrease Dexterity")
-    public void testDecreaseDEX() throws AbilityScoreBelowMinimum {
+    public void testDecreaseDEX() throws AbilityScoreBelowMinimumExcecption {
         pc.decreaseAbility(2, Ability.DEX);
 
         assert pc.getDexterity().getScore() == 8;
@@ -108,7 +107,7 @@ public class UnitTestPc {
 
     @Test
     @DisplayName("Decrease Intelligence")
-    public void testDecreaseINT() throws AbilityScoreBelowMinimum {
+    public void testDecreaseINT() throws AbilityScoreBelowMinimumExcecption {
         pc.decreaseAbility(2, Ability.INT);
 
         assert pc.getIntelligence().getScore() == 8;
@@ -117,7 +116,7 @@ public class UnitTestPc {
 
     @Test
     @DisplayName("Decrease Strength")
-    public void testDecreaseSTR() throws AbilityScoreBelowMinimum {
+    public void testDecreaseSTR() throws AbilityScoreBelowMinimumExcecption {
         pc.decreaseAbility(2, Ability.STR);
 
         assert pc.getStrength().getScore() == 8;
@@ -126,7 +125,7 @@ public class UnitTestPc {
 
     @Test
     @DisplayName("Decrease Wisdom")
-    public void testDecreaseWIS() throws AbilityScoreBelowMinimum {
+    public void testDecreaseWIS() throws AbilityScoreBelowMinimumExcecption {
         pc.decreaseAbility(2, Ability.WIS);
 
         assert pc.getWisdom().getScore() == 8;
@@ -138,7 +137,7 @@ public class UnitTestPc {
     public void testDecreaseCHAOverMin() {
         try {
             pc.decreaseAbility(3, Ability.CHA);
-        } catch (AbilityScoreBelowMinimum e) {
+        } catch (AbilityScoreBelowMinimumExcecption e) {
             assert true;
         }
     }
@@ -148,7 +147,7 @@ public class UnitTestPc {
     public void testDecreaseCONOverMin() {
         try {
             pc.decreaseAbility(3, Ability.CON);
-        } catch (AbilityScoreBelowMinimum e) {
+        } catch (AbilityScoreBelowMinimumExcecption e) {
             assert true;
         }
     }
@@ -158,7 +157,7 @@ public class UnitTestPc {
     public void testDecreaseDEXOverMin() {
         try {
             pc.decreaseAbility(3, Ability.DEX);
-        } catch (AbilityScoreBelowMinimum e) {
+        } catch (AbilityScoreBelowMinimumExcecption e) {
             assert true;
         }
     }
@@ -168,7 +167,7 @@ public class UnitTestPc {
     public void testDecreaseINTOverMin() {
         try {
             pc.decreaseAbility(3, Ability.INT);
-        } catch (AbilityScoreBelowMinimum e) {
+        } catch (AbilityScoreBelowMinimumExcecption e) {
             assert true;
         }
     }
@@ -178,7 +177,7 @@ public class UnitTestPc {
     public void testDecreaseSTROverMin() {
         try {
             pc.decreaseAbility(3, Ability.STR);
-        } catch (AbilityScoreBelowMinimum e) {
+        } catch (AbilityScoreBelowMinimumExcecption e) {
             assert true;
         }
     }
@@ -188,7 +187,7 @@ public class UnitTestPc {
     public void testDecreaseWISOverMin() {
         try {
             pc.decreaseAbility(3, Ability.WIS);
-        } catch (AbilityScoreBelowMinimum e) {
+        } catch (AbilityScoreBelowMinimumExcecption e) {
             assert true;
         }
     }

@@ -18,8 +18,21 @@ public class PlayerManagementService {
         this.repository = repository;
     }
 
-    public void createPlayer(String username) throws RequiredAttributeMissingException {
-        Player player = Player.builder().username(username).build();
+    /**
+     * Create a player
+     * @param username
+     * @param profileIconUrl
+     * @throws RequiredAttributeMissingException
+     */
+    public void createPlayer(String username, String profileIconUrl) throws RequiredAttributeMissingException {
+        Player.PlayerBuilder builder = Player.builder().username(username);
+
+        if (profileIconUrl != null) {
+            builder.profileIconUrl(profileIconUrl);
+        }
+
+        Player player = builder.build();
+
         try {
             repository.saveClient(player);
         } catch (IndexAlreadyExistsException e) {
@@ -27,6 +40,10 @@ public class PlayerManagementService {
         }
     }
 
+    /**
+     * Retrieve registered Player
+     * @return
+     */
     public Player getRegisteredPlayer() {
         try {
             return repository.findRegisteredPlayer();
@@ -36,15 +53,12 @@ public class PlayerManagementService {
         return null;
     }
 
-    public boolean isPlayerRegistered() {
-        try {
-            return repository.findRegisteredPlayer() != null;
-        } catch (MultiplePlayersException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
+    /**
+     * Retrieve player by id
+     * @param id
+     * @return
+     */
     public Player findPlayerById(String id) {
         try {
             return repository.findById(id);
@@ -54,6 +68,12 @@ public class PlayerManagementService {
         return null;
     }
 
+    /**
+     * Add or update PC based on wheter it already exists
+     * @param pc
+     * @throws MultiplePlayersException
+     * @throws EntityNotFoundException
+     */
     public void addOrUpdatePcForRegisteredPlayer(Pc pc) throws MultiplePlayersException, EntityNotFoundException {
         Player player = repository.findRegisteredPlayer();
         List<Pc> pcs = player.getCharacters();
