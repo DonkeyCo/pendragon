@@ -18,7 +18,6 @@ public class ManagementController implements Initializable, ViewableController {
     @FXML private Pane campaignLayer;
     @FXML private Pane characterLayer;
     @FXML private StackPane contentPane;
-    @FXML private Pane playerLayer;
     @FXML private ToggleButton tbtnCampaigns;
     @FXML private ToggleGroup toggleMenu;
     @FXML private Pane variantLayer;
@@ -58,7 +57,6 @@ public class ManagementController implements Initializable, ViewableController {
         panes.put("campaigns", campaignLayer);
         panes.put("characters", characterLayer);
         panes.put("variants", variantLayer);
-        panes.put("player", playerLayer);
     }
 
     /**

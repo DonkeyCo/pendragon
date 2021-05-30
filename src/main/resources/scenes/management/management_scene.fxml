@@ -25,7 +25,6 @@
                         </ToggleButton>
                         <ToggleButton id="tbtnCharacters" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Characters" toggleGroup="$toggleMenu" />
                         <ToggleButton id="tbtnVariants" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Variants" toggleGroup="$toggleMenu" />
-                        <ToggleButton id="tbtnPlayer" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Player" toggleGroup="$toggleMenu" />
                     </children>
                 </VBox>
                 <ScrollPane fitToHeight="true" fitToWidth="true" SplitPane.resizableWithParent="false">
@@ -35,7 +34,6 @@
                                 <fx:include fx:id="campaignLayer" source="campaign/campaign_main.fxml" />
                                 <fx:include fx:id="characterLayer" source="character/character_main.fxml" />
                                 <fx:include fx:id="variantLayer" source="variant/variant_main.fxml" />
-                                <fx:include fx:id="playerLayer" source="player/player_main.fxml" />
                             </children>
                         </StackPane>
                     </content>
