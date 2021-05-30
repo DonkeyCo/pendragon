@@ -72,20 +72,7 @@ public class ControlUtility {
         HBox.setHgrow(cmbBox, Priority.ALWAYS);
         cmbBox.setTitle(title);
         cmbBox.setId(id);
-        cmbBox.setConverter(new StringConverter<T>() {
-            @Override
-            public String toString(T t) {
-                if (t instanceof Printable) {
-                    return ((Printable) t).shortString();
-                }
-                return t.toString();
-            }
-
-            @Override
-            public T fromString(String s) {
-                return null;
-            }
-        });
+        cmbBox.setConverter(stringConverter(cmbBox.getItems()));
 
         return cmbBox;
     }

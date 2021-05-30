@@ -26,16 +26,6 @@ public class JSONUtility {
         return object;
     }
 
-    public <T> T json2Object(File file, TypeReference<T> typeRef) {
-        T object = null;
-        try {
-            object = this.mapper.readValue(file, typeRef);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return object;
-    }
-
     public <T> T json2Object(String content, Class<T> classType) {
         T object = null;
         try {

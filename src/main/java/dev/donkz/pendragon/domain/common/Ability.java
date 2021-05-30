@@ -1,6 +1,8 @@
 package dev.donkz.pendragon.domain.common;
 
-public enum Ability {
+import dev.donkz.pendragon.domain.Printable;
+
+public enum Ability implements Printable {
     STR("Strength"),
     DEX("Dexterity"),
     CON("Constitution"),
@@ -13,7 +15,12 @@ public enum Ability {
         this.longName = longName;
     }
 
-    public String getLongName() {
+    public String longString() {
         return longName;
+    }
+
+    @Override
+    public String shortString() {
+        return name();
     }
 }

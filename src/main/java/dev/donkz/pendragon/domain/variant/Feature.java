@@ -17,6 +17,13 @@ public class Feature implements Printable {
         this.level = 0;
     }
 
+    public Feature(String name, String description, Kind kind, int level) {
+        this.name = name;
+        this.description = description;
+        this.kind = kind;
+        this.level = Math.max(level, 0);
+    }
+
     @Override
     public String shortString() {
         return name;

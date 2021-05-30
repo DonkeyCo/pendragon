@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
-public class Monster implements Character, Printable {
+public class Monster implements Printable {
     private String id;
 
     // General Information
@@ -74,7 +74,7 @@ public class Monster implements Character, Printable {
                 + "Max. HP: " + maxHp + " | "
                 + "Speed: " + speed + " | "
                 + "Challenge Rating: " + challengeRating + " | "
-                + "Saving Throws: " + savingThrows.stream().map(Ability::getLongName).collect(Collectors.joining(",")) + " | "
+                + "Saving Throws: " + savingThrows.stream().map(Ability::longString).collect(Collectors.joining(",")) + " | "
                 + "Hit Dice: " + String.join(",", hitDice) + " | "
                 + "Strength: " + strength.getScore() + "(" + strength.getModifier() + ")" + " | "
                 + "Dexterity: " + dexterity.getScore() + "(" + dexterity.getModifier() + ")" + " | "

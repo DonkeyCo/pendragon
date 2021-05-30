@@ -1,11 +1,15 @@
 package dev.donkz.pendragon.controller;
 
+import com.sun.javafx.scene.control.IntegerField;
 import com.sun.javafx.tk.TKClipboard;
 import com.sun.javafx.tk.Toolkit;
 import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.common.Ability;
+import dev.donkz.pendragon.domain.player.DecreaseAbilityCommand;
+import dev.donkz.pendragon.domain.player.IncreaseAbilityCommand;
 import dev.donkz.pendragon.domain.player.Player;
+import dev.donkz.pendragon.domain.player.PlayerCommand;
 import dev.donkz.pendragon.domain.session.Session;
 import dev.donkz.pendragon.domain.variant.*;
 import dev.donkz.pendragon.exception.infrastructure.*;
@@ -234,6 +238,44 @@ public class LobbyController implements ViewableController, Initializable {
         String rollMessage = String.format("%s rolled a D%d. Rolled a %d.", player.getUsername(), rollMax, roll);
         parentController.sendRoll(rollMessage);
         parentController.roll(rollMessage);
+    }
+
+    public void onAbility() {
+        Session session = sessionService.getCurrentSession();
+
+        Map<String, Region> items = new LinkedHashMap<>();
+        ComboBox<Ability> cmbAbility = ControlUtility.createComboBox("Choose an ability", "cmbAbility");
+        ControlUtility.fillComboBox(cmbAbility, Arrays.asList(Ability.values()));
+        ComboBox<String> cmbOperation = ControlUtility.createComboBox("Choose an operation", "cmbOperation");
+        ControlUtility.fillComboBox(cmbOperation, Arrays.asList("Increase", "Decrease"));
+        items.put("Ability Type", cmbAbility);
+        items.put("Amount", ControlUtility.createIntegerField("Input an amount", "intAmount"));
+        items.put("Operation Type", cmbOperation);
+        Dialog<String> dialog = createDialog("Increase/Decrease Ability", items);
+        dialog.show();
+
+        dialog.setResultConverter(buttonType -> {
+            Ability ability = ((ComboBox<Ability>) items.get("Ability Type")).getValue();
+            int amount = ((IntegerField) items.get("Amount")).getValue();
+            String operation = ((ComboBox<String>) items.get("Operation Type")).getValue();
+            String pcId = session.getParticipants().get(playerManagementService.getRegisteredPlayer().getId());
+            Pc editedPc;
+            try {
+                editedPc = playableCharacterService.getPlayerCharacter(pcId);
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            PlayerCommand command = null;
+            if (operation.equalsIgnoreCase("Increase")) {
+                 command = new IncreaseAbilityCommand(editedPc, ability, amount);
+            } else {
+                command = new DecreaseAbilityCommand(editedPc, ability, amount);
+            }
+            command.execute();
+            return null;
+        });
     }
 
     private Dialog<String> createDialog(String title, Map<String, Region> items) {

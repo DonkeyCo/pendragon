@@ -50,10 +50,19 @@ public class Campaign implements Entity {
     }
 
     public void addPlayer(Player player) {
-        players.add(player);
+        if (!player.getId().equalsIgnoreCase(dm.getId())) {
+            players.add(player);
+        }
     }
 
     public void addCharacter(Pc pc) {
-        pcs.add(pc);
+        for (Player player : players) {
+            List<Pc> playerPcs = player.getCharacters();
+            for (Pc playerPc : playerPcs) {
+                if (playerPc.getId().equalsIgnoreCase(pc.getId())) {
+                    pcs.add(pc);
+                }
+            }
+        }
     }
 }

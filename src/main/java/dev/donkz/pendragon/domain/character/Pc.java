@@ -3,6 +3,7 @@ package dev.donkz.pendragon.domain.character;
 import dev.donkz.pendragon.domain.Entity;
 import dev.donkz.pendragon.domain.common.Ability;
 import dev.donkz.pendragon.domain.variant.*;
+import dev.donkz.pendragon.exception.model.AbilityScoreNegativeException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -63,5 +64,63 @@ public class Pc implements Character, Entity {
 
     public Pc() {
         this.id = UUID.randomUUID().toString();
+    }
+
+    public void increaseAbility(int increment, Ability type) {
+        switch (type) {
+            case CHA -> charisma = new AbilityScore(increment);
+            case CON -> constitution = new AbilityScore(increment);
+            case DEX -> dexterity = new AbilityScore(increment);
+            case INT -> intelligence = new AbilityScore(increment);
+            case STR -> strength = new AbilityScore(increment);
+            case WIS -> wisdom = new AbilityScore(increment);
+        }
+    }
+
+    public void decreaseAbility(int decrement, Ability type) throws AbilityScoreNegativeException {
+        switch (type) {
+            case CHA -> {
+                if (charisma.getScore() - decrement >= 0) {
+                    charisma = new AbilityScore(decrement);
+                } else {
+                    throw new AbilityScoreNegativeException();
+                }
+            }
+            case CON -> {
+                if (constitution.getScore() - decrement >= 0) {
+                    constitution = new AbilityScore(decrement);
+                } else {
+                    throw new AbilityScoreNegativeException();
+                }
+            }
+            case DEX -> {
+                if (dexterity.getScore() - decrement >= 0) {
+                    dexterity = new AbilityScore(decrement);
+                } else {
+                    throw new AbilityScoreNegativeException();
+                }
+            }
+            case INT -> {
+                if (intelligence.getScore() - decrement >= 0) {
+                    intelligence = new AbilityScore(decrement);
+                } else {
+                    throw new AbilityScoreNegativeException();
+                }
+            }
+            case STR -> {
+                if (strength.getScore() - decrement >= 0) {
+                    strength = new AbilityScore(decrement);
+                } else {
+                    throw new AbilityScoreNegativeException();
+                }
+            }
+            case WIS -> {
+                if (wisdom.getScore() - decrement >= 0) {
+                    wisdom = new AbilityScore(decrement);
+                } else {
+                    throw new AbilityScoreNegativeException();
+                }
+            }
+        }
     }
 }
