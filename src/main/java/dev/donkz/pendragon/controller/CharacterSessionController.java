@@ -3,6 +3,7 @@ package dev.donkz.pendragon.controller;
 import dev.donkz.pendragon.domain.campaign.Campaign;
 import dev.donkz.pendragon.domain.character.Pc;
 import dev.donkz.pendragon.domain.common.Ability;
+import dev.donkz.pendragon.domain.player.Player;
 import dev.donkz.pendragon.domain.session.Session;
 import dev.donkz.pendragon.domain.variant.*;
 import dev.donkz.pendragon.exception.infrastructure.EntityNotFoundException;
@@ -110,8 +111,11 @@ public class CharacterSessionController implements Initializable, ViewableContro
                     } catch (SessionAlreadyExists | IndexAlreadyExistsException sessionAlreadyExists) {
                         sessionAlreadyExists.printStackTrace();
                     }
-                    campaign.addCharacter(pc);
                     try {
+                        playerManagementService.addOrUpdatePcForRegisteredPlayer(pc);
+                        Player player = playerManagementService.getRegisteredPlayer();
+                        campaign.addPlayer(player);
+                        campaign.addCharacter(pc);
                         if (campaignListingService.campaignExists(campaign.getId())) {
                             manipulationService.updateCampaign(campaign);
                         } else {
@@ -131,7 +135,7 @@ public class CharacterSessionController implements Initializable, ViewableContro
                     } catch (EntityNotFoundException e) {
                         e.printStackTrace();
                     }
-                    createTiles();
+                    render();
                     return pc.toString();
                 }
             }

@@ -50,6 +50,8 @@ public class LobbyController implements RenderableController, HierarchicalContro
     private Button btnEdit;
     @FXML
     private Button btnChoose;
+    @FXML
+    private Button btnScore;
 
     private SessionController parentController;
     private final PlayerManagementService playerManagementService;
@@ -89,6 +91,7 @@ public class LobbyController implements RenderableController, HierarchicalContro
         parentController.createLobby(campaign);
         btnEdit.setVisible(false);
         btnChoose.setVisible(false);
+        btnScore.setVisible(false);
         render();
     }
 
@@ -98,6 +101,7 @@ public class LobbyController implements RenderableController, HierarchicalContro
         parentController.joinLobby(room);
         btnEdit.setVisible(true);
         btnChoose.setVisible(true);
+        btnScore.setVisible(true);
         render();
     }
 
@@ -183,6 +187,7 @@ public class LobbyController implements RenderableController, HierarchicalContro
         dialog.setResultConverter(buttonType -> {
             if (buttonType != null) {
                 Pc pc = null;
+                Player player = playerManagementService.getRegisteredPlayer();
                 try {
                     pc = ControlUtility.controlsToValues(Pc.class, items);
                     pc.setId(editedPc.getId());
@@ -190,12 +195,15 @@ public class LobbyController implements RenderableController, HierarchicalContro
                     e.printStackTrace();
                 }
                 if (pc != null) {
+                    player.addCharacter(pc);
+                    campaign.addPlayer(player);
+                    campaign.addCharacter(pc);
                     try {
                         playableCharacterService.updatePlayerCharacter(pc);
-                    } catch (EntityNotFoundException sessionAlreadyExists) {
+                        playerManagementService.addOrUpdatePcForRegisteredPlayer(pc);
+                    } catch (EntityNotFoundException | MultiplePlayersException sessionAlreadyExists) {
                         sessionAlreadyExists.printStackTrace();
                     }
-                    campaign.addCharacter(pc);
                     try {
                         if (campaignListingService.campaignExists(campaign.getId())) {
                             manipulationService.updateCampaign(campaign);
@@ -203,11 +211,6 @@ public class LobbyController implements RenderableController, HierarchicalContro
                             manipulationService.createCampaign(campaign);
                         }
                     } catch (MultiplePlayersException | EntityNotFoundException | SessionAlreadyExists | IndexAlreadyExistsException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        playerManagementService.addOrUpdatePcForRegisteredPlayer(pc);
-                    } catch (MultiplePlayersException | EntityNotFoundException e) {
                         e.printStackTrace();
                     }
                     try {
@@ -250,6 +253,7 @@ public class LobbyController implements RenderableController, HierarchicalContro
         items.put("Operation Type", cmbOperation);
         Dialog<String> dialog = ControlUtility.createDialog("Increase/Decrease Ability", items);
         dialog.show();
+        dialog.setOnShowing(dialogEvent -> dialog.setResult(null));
 
         dialog.setResultConverter(buttonType -> {
             Ability ability = ((ComboBox<Ability>) items.get("Ability Type")).getValue();
@@ -271,7 +275,12 @@ public class LobbyController implements RenderableController, HierarchicalContro
                 command = new DecreaseAbilityCommand(editedPc, ability, amount);
             }
             command.execute();
-            return null;
+            try {
+                playableCharacterService.updatePlayerCharacter(editedPc);
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+            return "";
         });
     }
 

@@ -99,7 +99,7 @@
             <buttons>
                 <Button fx:id="btnChoose" mnemonicParsing="false" onAction="#onChoose" text="Choose Character" />
                 <Button fx:id="btnEdit" mnemonicParsing="false" onAction="#onChange" text="Edit Character Sheet" />
-                <Button mnemonicParsing="false" onAction="#onAbility" text="Ability Score" />
+                <Button fx:id="btnScore" mnemonicParsing="false" onAction="#onAbility" text="Ability Score" />
                 <MenuButton mnemonicParsing="false" text="Roll a dice">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#onRoll" text="Roll D20" userData="20" />
